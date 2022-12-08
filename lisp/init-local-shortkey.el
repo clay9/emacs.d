@@ -128,6 +128,9 @@ _2_: insert        _w_: o narrow      _RET_: tag          _o_: open       _C-2_:
 (define-key org-mode-map (kbd "C-c j") 'org-edit-special)
 (define-key org-src-mode-map (kbd "C-c j") 'org-edit-src-exit)
 
+;; 禁用
+(define-key org-mode-map (kbd "C-'") 'nil)                ;停止使用org-cycle-agenda-files
+
 
 ;; ****************************************************
 ;; 7.org-agenda-mode
