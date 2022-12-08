@@ -1,0 +1,17 @@
+
+;; 编 写 人:  王成庆
+;; 编写时间:  2022/11/21  23:57
+;; 变更记录: 
+
+
+目录架构
+ |- emacs.d
+   |- init.el                 -- 配置文件索引
+   |- lisp                    -- 各mode的配置文件
+   |- script                  -- elisp脚本(当前为hugo使用)
+   |- site-lisp               -- 第三方mode包, 一般来自github
+   |- snippets                -- 常用的yas-mode expand文件
+   |- elpa                    -- 自动生成. 根据init.el自动到elpa中下载生成
+   |- README.org              -- 目录说明文件
+   |-                         其余为垃圾文件
+   

@@ -1,0 +1,6 @@
+.trash
+elpa*
+eshell/
+transient/
+.DS_Store
+custom.el
