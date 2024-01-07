@@ -1,0 +1,11 @@
+[submodule "tree-sitter/windows"]
+	path = tree-sitter/windows
+	url = https://github.com/clay9/tree-sitter-module.git
+	branch = windows
+[submodule "tree-sitter/macos"]
+	path = tree-sitter/macos
+	url = https://github.com/clay9/tree-sitter-module.git
+	branch = macos
+[submodule "site-lisp/copilot"]
+	path = site-lisp/copilot
+	url = git@github.com:zerolfx/copilot.el.git

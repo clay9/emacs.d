@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: property
+# key: property
+# --
+:PROPERTIES:
+:Party A :  $1
+:Price   :  $2
+:Time    :  $3
+:Content :  $4
+:Note    :  $5
+:END:

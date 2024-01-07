@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: 函数注释comments
+# key:comment
+# --
+/*
+** 函数名字 : $1
+** 函数功能 : $2
+** 形参说明 : $3
+** 返 回 值 : $4
+** 作    者 : WangChengQing
+** 时    间 : `(current-time-string)`
+** 备    注 : $5
+*/
