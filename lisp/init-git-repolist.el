@@ -12,12 +12,12 @@
           ("C" . magit-repolist/magit-repolist-clone))
   :config
   (setq magit-repolist-my-repos
-        '(("clay9/emacs.d"            . "~/.emacs.d")
-          ("clay9/clay9.github.io"    . "~/my/blog")
-          ("clay9/gtd"                . "~/my/gtd")
+        '(("clay9/emacs.d"            "~/.emacs.d")
+          ("clay9/blog"               "~/my/blog")
+          ("clay9/gtd"                "~/my/gtd")
           ;; company
-          ("wytemp/wytemp.github.io"  . "~/wy/hugo")
-          ("wytemp/wytemp.github.io"  . "~/wy/wytemp.github.io")))
+          ("clay9/blog_company"      "~/my/blog_company")
+          ("clay9/blog_company"      "~/my/nginx" ("--branch=gh-pages"))))
           ;; qydocker
           ;; ("qydocker/build_image_dev" . "~/qy/docker/build_image_dev")
           ;; ("qydocker/build_publish"   . "~/qy/docker/build_publish")
@@ -35,7 +35,7 @@
   (setq magit-repository-directories
         (let* ((new-list ))
           (dolist (v magit-repolist-my-repos)
-            (add-to-list 'new-list (cons (cdr v) 0)))
+            (add-to-list 'new-list (cons (cadr v) 0)))
           new-list))
   (setq magit-repolist-columns
         '(("Name" 18 magit-repolist-column-ident  nil)
@@ -118,9 +118,11 @@
     (let* ((magit-clone-set-remote.pushDefault nil))
       (dolist (v magit-repolist-my-repos)
         (let* ((url (magit-clone--name-to-url (car v)))
-               (path (cdr v)))
+               (path (cadr v))
+               (args (caddr v)))
           (unless (file-exists-p path)
-            (magit-clone-internal url path nil))))))
+            (magit-run-git-async "clone" args "--" url
+                                 (magit-convert-filename-for-git path)))))))
   )
 
 
