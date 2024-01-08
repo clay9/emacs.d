@@ -29,6 +29,8 @@
 (setq org-export-with-sub-superscripts '{})
 ;; rm blank-lines
 (setq org-ascii-headline-spacing nil)
+;; rm blank-lines -- TODO test
+(setq org-list-two-spaces-after-bullet-regexp nil)
 
 ;;; ox-hugo
 ;; use org-mode-generate-toc
