@@ -27,7 +27,8 @@
 (setq org-html-html5-fancy t)
 ;; Subscripts and Superscripts ::  a_b not, a_{b} is
 (setq org-export-with-sub-superscripts '{})
-
+;; rm blank-lines
+(setq org-ascii-headline-spacing nil)
 
 ;;; ox-hugo
 ;; use org-mode-generate-toc
