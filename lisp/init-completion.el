@@ -20,6 +20,7 @@
   (add-to-list 'consult-buffer-filter "\\`\\*Disabled Command\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*Backtrace\\*\\'")
   (add-to-list 'consult-buffer-filter "\\*EGLOT*")
+  (add-to-list 'consult-buffer-filter "magit-process:*")
 
   (add-to-list 'consult-buffer-filter "diary.org")
   (add-to-list 'consult-buffer-filter "life.org")

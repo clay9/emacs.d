@@ -31,6 +31,8 @@
 (setq org-ascii-headline-spacing nil)
 ;; rm blank-lines -- TODO test
 (setq org-list-two-spaces-after-bullet-regexp nil)
+;; rm blank-lines
+(setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
 ;;; ox-hugo
 ;; use org-mode-generate-toc
