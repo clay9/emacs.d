@@ -146,7 +146,8 @@
 
    org-agenda-inhibit-startup nil
    org-startup-folded t
-   org-catch-invisible-edits 'error)
+   org-catch-invisible-edits 'error
+   org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
   
 ;;; indent
   
