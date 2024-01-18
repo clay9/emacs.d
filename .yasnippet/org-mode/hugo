@@ -5,14 +5,14 @@
 #+title: $1
 #+date: `(format-time-string "%Y-%m-%d %T")`
 #+hugo_section: docs
-#+hugo_bundle: $2
-#+export_file_name: _index
-#+hugo_weight: $3
+#+hugo_bundle: `(yas/hugo-get-bundle)`
+#+export_file_name: `(yas/hugo-get-bundle-name)`
+#+hugo_weight: $2
 #+hugo_draft: false
 #+hugo_auto_set_lastmod: t
 #+hugo_custom_front_matter: :bookCollapseSection true
 
- $5
+ $3
 
 #+hugo: more
 
