@@ -44,27 +44,7 @@
   (setq org-hugo-base-dir root_dir)
   (dolist (file (directory-files-recursively root_dir ".org"))
     (with-current-buffer (find-file-noselect file)
-      (org-hugo-export-to-md)))
-  ;;(my/hugo-rm-br root_dir)
-  )
-
-;; fun: rm <br/> after plain-list
-(defun my/hugo-rm-br(root_dir)
-  (dolist (file (directory-files-recursively root_dir ".md"))
-    (with-current-buffer (find-file-noselect file)
-      (save-excursion
-        (save-restriction
-          (beginning-of-buffer)
-          (while (not (eobp))
-            (let* ((info (thing-at-point 'line))
-                   (m1 (string-match "^[ \t]*\\(\\(?:[-+*]\\|\\(?:[0-9]+\\|[A-Za-z]\\)[.)]\\)\\(?:[ \t]*+\\|$\\)\\)" info))
-                   (m2 (string-match "<br/>[ \t]*?$" info)))
-              (when (and m1 m2)
-                (beginning-of-line)
-                (delete-region (point) (line-end-position))
-                (insert (substring info 0 m2))))
-            (forward-line 1))
-          (save-buffer))))))
+      (org-hugo-export-to-md))))
           
 (provide 'export-org-to-md)
 ;;; export-org-to-md.el ends here
