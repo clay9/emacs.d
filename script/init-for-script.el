@@ -12,4 +12,8 @@
 
 (require 'export-org-to-md)
 
+;; org-files 输出为 md-files
+;; github action中, 该fun 会在./hugo中执行. 因此这里传递.即可
+(my/hugo-export-all (expand-file-name "."))
+
 ;;; init-for-script.el ends here
