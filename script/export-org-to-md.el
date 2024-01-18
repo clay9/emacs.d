@@ -45,7 +45,8 @@
   (dolist (file (directory-files-recursively root_dir ".org"))
     (with-current-buffer (find-file-noselect file)
       (org-hugo-export-to-md)))
-  (my/hugo-rm-br root_dir))
+  ;;(my/hugo-rm-br root_dir)
+  )
 
 ;; fun: rm <br/> after plain-list
 (defun my/hugo-rm-br(root_dir)
