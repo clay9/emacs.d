@@ -50,7 +50,8 @@
    [:class transient-column "navigate"
            ("m" "imenu" consult-imenu)
            ("o" "outline" consult-outline)
-           ("g" "go line" consult-goto-line)]
+           ("g" "go line" consult-goto-line)
+           ("l" "!truncate line" toggle-truncate-lines)]
 
    [:class transient-column "sexp"
            ("i" "put" embark-toggle-highlight)
