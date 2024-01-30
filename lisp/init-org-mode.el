@@ -144,6 +144,7 @@
    org-hide-emphasis-markers t
    org-pretty-entities t
 
+   org-link-file-path-type 'relative
    org-agenda-inhibit-startup nil
    org-startup-folded t
    org-catch-invisible-edits 'error
