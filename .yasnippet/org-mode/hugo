@@ -10,7 +10,7 @@
 #+hugo_weight: $2
 #+hugo_draft: false
 #+hugo_auto_set_lastmod: t
-#+hugo_custom_front_matter: :bookCollapseSection true
+#+hugo_custom_front_matter: :bookCollapseSection `(yas/hugo-get-collapse-section)`
 
  $3
 
