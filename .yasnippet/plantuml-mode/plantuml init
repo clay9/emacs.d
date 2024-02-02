@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: plantuml init
-# key: pi
+# key: init
 # --
 
 @startuml
