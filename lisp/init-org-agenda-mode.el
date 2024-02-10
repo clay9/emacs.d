@@ -8,7 +8,7 @@
 (defvar my/file-inbox   (expand-file-name "gtd_common/inbox.org"   my/gtd-dir))
 (defvar my/file-task    (expand-file-name "gtd_common/task.org"    my/gtd-dir))
 (defvar my/file-archive (expand-file-name "gtd_common/archive.org" my/gtd-dir))
-(defvar my/file-diary   (expand-file-name "diary/diary.org"        my/gtd-dir))
+(defvar my/file-diary   (expand-file-name "diary.org"              my/gtd-dir))
 (defvar my/file-life    (expand-file-name "life.org"               my/gtd-dir))
 
 
@@ -120,11 +120,8 @@
 (with-eval-after-load 'org-agenda
   (setq org-agenda-files (let ((rlist))
                                (when (file-directory-p my/gtd-dir)
-                                 (dolist (file (directory-files my/gtd-dir nil "^gtd_"))
-	                           (if (string= file "gtd_common")
-	                               (push (concat my/gtd-dir "gtd_common") rlist)
-	                             (let*  ((key (substring file 4)))
-	                               (push (concat my/gtd-dir file "/" key ".org") rlist))))
+                                 (dolist (file (directory-files my/gtd-dir nil "^gtd"))
+                                   (push (concat my/gtd-dir file) rlist))
                                  rlist)))
 
   ;; ignore tags in agenda buffer
@@ -189,7 +186,7 @@
 		  ((org-agenda-overriding-header "WAITING")))
 	    (todo "PROJECT"
 		  ((org-agenda-overriding-header "STUCK PROJECT")
-                   (org-agenda-files (delete (expand-file-name "~/my/gtd/gtd_emacs/emacs.org") (org-agenda-files)))
+                   (org-agenda-files (delete (expand-file-name "gtd/emacs.org" my/gtd-dir) (org-agenda-files)))
 		   (org-agenda-prefix-format "%(my/org-agenda-pf-next-p)%l%l")
 		   (org-agenda-skip-function `(org-agenda-skip-subtree-if 'todo '("TODO" "WAITING"))))))
 	   ((_ (my/org-agenda-set-buffer-number 2))
@@ -222,44 +219,25 @@
 	    (org-agenda-sorting-strategy '(category-keep))))
 	  ("r" "archive"
 	   ((tags "CAPTURE_TODO={PROJECT}"
-		  ((org-agenda-overriding-header "PROJECT")))
+		  ((org-agenda-overriding-header "Archive PROJECT")))
             (tags "CAPTURE_TODO={TODO}"
-		  ((org-agenda-overriding-header "DONE && CANCEL")))
+		  ((org-agenda-overriding-header "Archive DONE && CANCEL")))
 	    (tags "CAPTURE_TODO={DONE}"
-		  ((org-agenda-overriding-header "Interrupt")
+		  ((org-agenda-overriding-header "Archive Interrupt")
 		   (org-tags-match-list-sublevels nil) )))
 	   ((_ (my/org-agenda-set-buffer-number 5))
 	    (org-agenda-sorting-strategy '(category-keep))
 	    (org-agenda-files (list my/file-archive))
 	    (org-agenda-prefix-format "")
 	    (org-agenda-todo-keyword-format "")
-	    (org-overriding-columns-format "%24ITEM %1PRIORITY %10TAGS %Effort %10CLOCKSUM %22ARCHIVE_TIME")))
-          ("l" "life"
-	   ((tags "LEVEL=2-ITEM={五年目标\\|三年目标\\|一年目标\\|一月目标\\|一周目标}"
-		  ((org-agenda-overriding-header "today")
-                   (org-agenda-skip-function `(my/org-agenda-skip-future-entry))))
-            (tags "LEVEL=2+ITEM={一周目标\\|一月目标}"
-		  ((org-agenda-overriding-header "week && month")
-                   (org-agenda-sorting-strategy '(alpha-up))))
-            (tags "LEVEL=2+ITEM={五年目标\\|三年目标\\|一年目标}"
-		  ((org-agenda-overriding-header "year")
-                   (org-agenda-sorting-strategy '(alpha-up)))))
-	   ((_ (my/org-agenda-set-buffer-number 6))
-	    (org-agenda-files (list my/file-life))
-	    (org-agenda-prefix-format "")
-	    (org-agenda-todo-keyword-format "")
 	    (org-overriding-columns-format "%24ITEM %1PRIORITY %10TAGS %Effort %10CLOCKSUM %22ARCHIVE_TIME"))))))
+          
 
 
-;; hook
+;; hook -- TODO: not work
 (with-eval-after-load 'org
-  ;; when kill emacs, sort && save  org-files
-  (defun my/save-org-files-when-kill-emacs()
-    ;; don't sort
-    ;;  (dolist (file (org-agenda-files))
-    ;;    (my-org-sort-entries file))
-    (org-save-all-org-buffers))
-  (add-hook 'kill-emacs-hook 'my/save-org-files-when-kill-emacs))
+  ;; when kill emacs, save org-files
+  (add-hook 'kill-emacs-hook 'org-save-all-org-buffers))
 
 
 ;;; shortkey
@@ -328,11 +306,6 @@
   (define-key org-agenda-mode-map (kbd "SPC") 'my/org-agenda-forward)
   (define-key org-agenda-mode-map (kbd "1") #'(lambda() (interactive) (org-agenda nil "a")))
   (define-key org-agenda-mode-map (kbd "2") #'(lambda() (interactive) (org-agenda nil "p")))
-  (define-key org-agenda-mode-map (kbd "3") #'(lambda() (interactive)
-                                                (org-agenda nil "l")
-                                                (goto-char (point-min))
-                                                (org-agenda-next-item 1)
-                                                (my/org-agenda-entry-text-show)))
 
   ;; entry show && entry enter
   (define-key org-agenda-mode-map (kbd "TAB") 'my/org-agenda-show)

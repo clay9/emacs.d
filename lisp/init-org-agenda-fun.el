@@ -26,17 +26,6 @@
     (buffer-substring (point-min) (point-max))))
 
 
-;; check timestamp in  file-diary.
-;; 暂时还未使用. 后续: 1.life.org 自动化处理table;  2. agenda diary view
-(defun my/check-timestamp-in-diary()
-  (with-current-buffer (find-buffer-visiting my/file-diary)
-    (let* ((ts (my/org-timestamp-string 0 nil))
-           (to (org-timestamp-from-string ts))
-           (tt (org-format-timestamp to "%Y-%m-%d %A"))
-           (pos (org-find-exact-headline-in-buffer tt)))
-      (if pos "o" "x"))))
-
-
 ;; 输入农历日期, 返回对应的阳历日期
 (defun my/lunar (lunar-month lunar-day)
   (let* ((current-month (car (calendar-current-date)))
@@ -49,18 +38,6 @@
 	 (date (calendar-gregorian-from-absolute
 		(+ (cadr run-yue) (1- lunar-day)))))
     date))
-
-
-;;; org-table 计算
-
-;; 根据 "x" "o" 计算达成率 xxoox => 2/5
-(defun my/org-table-cal (&rest args)
-  (let ((all_length 0)
-        (o_length 0))
-    (dolist (var args)
-      (when (or (string= var "o") (string= var "x")) (setq all_length (+ 1 all_length)))
-      (when (string= var "o") (setq o_length (+ 1 o_length))))
-    (format "%d/%d" o_length all_length)))
 
 
 ;;; org-agenda-entry-text-mode => org-agenda-entry-text-show for single entry
@@ -202,12 +179,11 @@ Function: Move next buffer;"
      ((= my/org-agenda-buffer-number 4)
       (org-agenda nil "r"))
      ((= my/org-agenda-buffer-number 5)
-      (org-agenda nil "p"))
-     ((= my/org-agenda-buffer-number 6)
-      (org-agenda nil "a")))))
+      (org-agenda nil "p")))))
 
 
-;; 快速显示关闭 item
+;;; 快速显示关闭 item
+
 (defvar my/last-show-entry "")
 (defun my/org-agenda-show ()
   "Used in agenda-buffer by user;
@@ -244,40 +220,24 @@ Fucntion: enter the item org-file"
 
 
 ;;; 按r 刷新
+
 (require 'org-archive)
 
 (defun my/org-agenda-redo ()
   "Used in agenda-buffer by user;
 Function: refresh agenda bufffer"
   (interactive)
-  ;;file: inbox.org => task.org, gtd_xxx/xxx.org
+  ;;file: inbox.org => task.org, gtd/xxx.org
   (my/org-refile-file-inbox)
   ;;file: task.org  => archive.org
-  (no-message 'no-confirm 'org-archive-all-done)
-  ;;done life.org
-  (my/org-handle-file-life)
+  (no-message 'no-confirm 'org-archive-all-done)  
   ;;save
   (no-message 'org-save-all-org-buffers)
   ;;call origin redo
   (no-message 'org-agenda-redo t))
-(defun my/org-handle-file-life ()
-  "Handle life.org:
-1. DONE day-heading who's timestamp before today.
-2. Create today heading
-3. TODO: DONE week-heading who's timestamp before today (by property: TIME_END).
-4. TODO: Create new-week-heading."
-  
-  (with-current-buffer  (find-buffer-visiting my/file-life)
-    ;; archive && create week task
-    (my/org-handle-file-life/week-task)
-    
-    ;; create today task (must before archive-day-tasks)
-    (my/org-handle-file-life/create-today-task)
-    ;; archive day tasks
-    (my/org-handle-file-life/done-day-tasks)))
 (defun my/org-refile-file-inbox()
   "Refile todo-state heading in inbox.org.
-1. Has tags => gtd_xxx/xxx.org.
+1. Has tags => gtd/xxx.org.
 2. No  tags => task.org"
   (with-current-buffer  (find-buffer-visiting my/file-inbox)
     ;; show level 1 headings
@@ -311,138 +271,6 @@ Function: refresh agenda bufffer"
 		  ;; rm tags && refile
 		  (org-toggle-tag tag 'off)
 		  (org-refile nil nil (list nil file nil pos)))))))))))
-
-(defun my/org-handle-file-life/week-task()
-  (let* ((pos (org-find-exact-headline-in-buffer "一周目标")))
-    (if (not pos) (error "Not Found 一周目标 in life.org")
-      (goto-char pos)
-      (let* ((btime (org-entry-get nil "TIME_START"))
-             (etime (org-entry-get nil "TIME_END"))
-             (df (org-time-stamp-to-now etime))
-             (org-archive-location "%s_week_archive::")
-             (org-archive-save-context-info nil)
-             (org-archive-reversed-order t))
-        (when (< df 0)
-          ;; archive old entry
-          (org-edit-headline (format "%s--%s" btime etime))
-          (org-delete-property "TIME_START")
-          (org-delete-property "TIME_END")
-          (org-archive-subtree)
-
-          ;; create new entry
-          (org-insert-heading)
-          (insert "一周目标")
-          (org-set-property "TIME_START" (my/org-timestamp-string 0 nil))
-          (org-set-property "TIME_END" (my/org-timestamp-string 6 nil)))))))
-(defun my/org-handle-file-life/done-day-tasks()
-  "Archive day tasks."
-  ;; show level 2 headings
-  (org-fold-show-all '(headings))
-  (no-message 'org-shifttab 2)
-  (goto-char (point-min))
-  ;; loop: Archive day-task  before today
-  (let* ((org-archive-location "%s_day_archive::")
-         (org-archive-save-context-info nil)
-         (org-archive-reversed-order t))
-    (while (not (org-next-visible-heading 1))
-      (ignore-errors
-        (let* ((dtime (org-entry-get nil "ITEM"))
-               (df (org-time-stamp-to-now dtime)))
-          (when (< df 0)
-            (org-archive-subtree)))))))
-(defun my/org-handle-file-life/create-today-task()
-  "Create today-task."
-  (unless (org-find-exact-headline-in-buffer (my/org-timestamp-string 0 nil))
-    (let* ((ots (my/org-timestamp-string -1 nil))
-           (tts (my/org-timestamp-string 0 nil))
-           (tpos (org-find-exact-headline-in-buffer ots))
-           (pos (org-find-exact-headline-in-buffer "第一个五年规划")))
-      (when (and tpos pos)
-        ;; copy Ori-Headline
-        (goto-char tpos)
-        (org-refile 3 nil (list nil my/file-life nil pos))
-
-        ;; goto New-Headline
-        (goto-char (point-max))
-        (org-back-to-heading t)
-
-        ;; edit headline.
-        ;; TODO: org-edit-headline bug: 改变的是buff中pos所在的headline, 而不是函数中pos所在的headline
-        (when (search-forward ots (line-end-position) t)
-          (replace-match tts t t nil))
-
-        ;; edit checkbox && edit keyword "last", "new"
-        (org-fold-show-entry)
-        (let* ((start (org-entry-beginning-position))
-               (end (org-entry-end-position))
-               (show-last-p nil))
-          (goto-char (point-max))
-          (while (> (point) start)
-            (let* ((line (thing-at-point 'line)))
-              ;; checkbox
-              (when (org-at-item-checkbox-p)
-                ;; fold checkbox
-                (org-cycle)
-                (while (not (or (eq org-cycle-subtree-status 'folded)
-                                (eq org-cycle-subtree-status nil)))
-                  (org-cycle))
-                (if (string-match (quote "[X]") line)
-                    (progn (org-kill-line) (delete-line))
-                  (setq show-last-p t)))
-              
-              ;; keyword "last"
-              (while (search-forward "last" (line-end-position) t)
-                (if show-last-p
-                    (let* ((num (string-to-number (buffer-substring-no-properties
-                                                   (point) (point-at-eol))))
-                           (num (if (= num 0) 1 num)))
-
-                      ;; delete (point) -- (point-at-bol - "\n")
-                      (delete-char (if (= num 1 ) 0
-                                     (length (number-to-string num))))
-                      (insert (number-to-string (+ num 1))))
-                  (delete-line))
-                (setq show-last-p nil))
-
-              ;; keyword "new"
-              (while (search-forward "new" (line-end-position) t)
-                (if show-last-p
-                    (replace-match "last" nil t)
-                  (delete-line))
-                (setq show-last-p nil)))
-            (forward-line -1))
-
-          ;; update checkbox
-          (org-update-checkbox-count)
-
-          ;; rm content blank between HEADLINE .. CONTENT
-          (forward-line 1)
-          (while (and (< (point) end)
-                      (string-blank-p (thing-at-point 'line)))
-            (delete-line)
-            (forward-line 1)))))))
-
-
-;; 对agenda-file 进行排序
-(defun my-org-sort-entries (file)
-  "Used by `'my/org-agenda-hook' in org-agenda-mode.el
-Function: sort agenda entries"
-  (let ((buf (find-buffer-visiting file)))
-    (when buf
-      (with-current-buffer buf
-	(goto-char (point-min))
-	;; check if file has heading, avoid 'org-sort-entries' put 'user-error'
-	(or (org-at-heading-p) (outline-next-heading))
-	(when (org-at-heading-p)
-	  (goto-char (point-min))
-	  (org-sort-entries t ?a) ;sort by alpha
-
-	  (goto-char (point-min))
-	  (org-sort-entries t ?p) ;sort by proprity
-
-	  (goto-char (point-min))
-	  (org-sort-entries nil ?o) ) ;sort by TODO KEY
-	))))
 
 
 ;;; org-agenda-day|week|month|year-view 切换上一个与下一个
