@@ -132,17 +132,6 @@ Function: return %-10c."
     ;;(when (string= todo_keyword "TODO") )
     (when (string= todo_keyword "WAITING") (setq v "[w]"))
     (format "%-10s" v)))
-(defun my/org-agenda-pf-archive ()
-  "Used by `org-agenda-custom-commands' (init-org-agenda-mode.el)
-Function: return Properties INIT_TODO value."
-  (let ((todo_keyword (org-entry-get nil "CAPTURE_TODO"))
-	(v ""))
-    (when (string= todo_keyword "PROJECT")
-      (setq v todo_keyword))
-    ;;(when (string= todo_keyword "TODO"))
-    (when (string= todo_keyword "WAITING")
-      (setq v todo_keyword))
-    (format "%s" v)))
 
 
 ;;; 快速切换agenda buffer

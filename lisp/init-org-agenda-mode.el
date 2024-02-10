@@ -110,7 +110,7 @@
       (org-set-property "CAPTURE_TIME" (my/org-timestamp-string 0 t))
       (when (or (string= todo_key "TODO")
 	        (string= todo_key "WAITING")
-                (string= todo_key "PROJECT"))
+                (string= todo_key "PROJECT"))        
         (org-set-effort))))
   (add-hook 'org-capture-prepare-finalize-hook 'my/org-capture-prepare-finalize-hook))
 
@@ -192,6 +192,7 @@
 	   ((_ (my/org-agenda-set-buffer-number 2))
 	    (org-agenda-todo-keyword-format "")
 	    (org-agenda-prefix-format "%(my/org-agenda-pf-next)")
+            (org-agenda-files (delete my/file-inbox (org-agenda-files)))
 	    (org-agenda-tags-todo-honor-ignore-options t)
 	    (org-agenda-todo-ignore-scheduled 'all)
 	    (org-agenda-todo-ignore-deadlines 'all)
@@ -205,11 +206,11 @@
 	    (org-agenda-files (list my/file-inbox))
 	    (org-agenda-sorting-strategy '(priority-down alpha-up effort-up))))
 	  ("p" "project"
-	   ((tags "CAPTURE_TODO={PROJECT}/-DONE-CANCEL"
+	   ((tags "LEVEL=1/PROJECT"
 		  ((org-agenda-overriding-header "PROJECT")))
-	    (tags "CAPTURE_TODO={PROJECT}/DONE"
+	    (tags "LEVEL=1/DONE"
 		  ((org-agenda-overriding-header "PROJECT - DONE")))
-	    (tags "CAPTURE_TODO={PROJECT}/CANCEL"
+	    (tags "LEVEL=1/CANCEL"
 		  ((org-agenda-overriding-header "PROJECT - CANCEL"))))
 	   ((_ (my/org-agenda-set-buffer-number 4))
 	    (org-agenda-prefix-format "%-10c")
@@ -231,7 +232,6 @@
 	    (org-agenda-prefix-format "")
 	    (org-agenda-todo-keyword-format "")
 	    (org-overriding-columns-format "%24ITEM %1PRIORITY %10TAGS %Effort %10CLOCKSUM %22ARCHIVE_TIME"))))))
-          
 
 
 ;; hook -- TODO: not work
