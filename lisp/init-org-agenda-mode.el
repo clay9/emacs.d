@@ -3,7 +3,8 @@
 ;;; Code:
 
 
-;; files
+;;; files
+
 (defvar my/gtd-dir "~/my/gtd/")
 (defvar my/file-inbox   (expand-file-name "gtd_common/inbox.org"   my/gtd-dir))
 (defvar my/file-task    (expand-file-name "gtd_common/task.org"    my/gtd-dir))
@@ -11,19 +12,20 @@
 (defvar my/file-diary   (expand-file-name "diary.org"              my/gtd-dir))
 (defvar my/file-life    (expand-file-name "life.org"               my/gtd-dir))
 
+(require 'init-org-agenda-fun)
+
 
+;;; todo && tag && priority
+
 (with-eval-after-load 'org
-  (require 'init-org-agenda-fun)
-;;; todo, tag, priority
-  
-  ;; TODO keywords
+  ;; todo keywords
   (setq org-todo-keywords
         '((type  "TODO(t)" "WAITING(w)" "PROJECT(p)" "|"  "DONE(d)" "CANCEL(c)")))
   (setq org-enforce-todo-dependencies t)
   (setq org-closed-keep-when-no-todo 'nil)
   (setq org-use-fast-todo-selection 'expert)
 
-  ;; Priority
+  ;; priority
   (setq org-highest-priority ?A
         org-lowest-priority  ?D
         org-default-priority ?D)
@@ -31,17 +33,12 @@
         '((?A . (:background "" :foreground "red" :weight bold))
 	  (?B . (:background "" :foreground "DarkOrange" :weight bold))
 	  (?C . (:background "" :foreground "yellow" :weight bold))
-	  (?D . (:background "" :foreground "DodgerBlue" :weight bold))))
+	  (?D . (:background "" :foreground "DodgerBlue" :weight bold)))))
 
-;;; org columns
-
-  (setq org-columns-default-format "%24ITEM %7TODO %1PRIORITY %10TAGS %Effort %10CLOCKSUM")
-  (set-face-attribute 'org-column nil
-		      :height (face-attribute 'default :height)
-		      :family (face-attribute 'default :family))
-
+
 ;;; clock && effort
 
+(with-eval-after-load 'org
   (setq org-global-properties
       (quote (("Effort_ALL" . "0:00 0:15 0:30 1:00 2:00 3:00 4:00 5:00 6:00 7:00 8:00"))))
 
@@ -70,6 +67,10 @@
   (add-hook 'org-clock-in-hook 'my/show-org-clock-in-header-line)
   (add-hook 'org-clock-out-hook 'my/hide-org-clock-from-header-line)
   (add-hook 'org-clock-cancel-hook 'my/hide-org-clock-from-header-line))
+
+(with-eval-after-load 'org-agenda
+  ;; skip zero-time in clock-report
+  (setq org-agenda-clockreport-parameter-plist '(:stepskip0 t :link t :maxlevel 3 :fileskip0 t)))
   
 
 ;;; capture, refile, archive
@@ -115,7 +116,7 @@
   (add-hook 'org-capture-prepare-finalize-hook 'my/org-capture-prepare-finalize-hook))
 
 
-;;; files, todo, tag, priority
+;;; agenda files
 
 (with-eval-after-load 'org-agenda
   (setq org-agenda-files (let ((rlist))
@@ -126,14 +127,12 @@
 
   ;; ignore tags in agenda buffer
   (setq org-agenda-hide-tags-regexp
-        "emacs\\|org\\|ccIDE\\|qygame\\|habit")
-
-  ;; active project == not stuck block project
-  ;; (set-face-attribute 'org-agenda-dimmed-todo-face nil :foreground "green3")
+        "emacs\\|org\\|ccIDE\\|qygame\\|habit"))
 
 
-;;; schedule, deadline
+;;; agenda-view
 
+(with-eval-after-load 'org-agenda
   ;; 显示标准: day
   (setq org-agenda-span 'day)
 
@@ -149,16 +148,11 @@
 
   ;; 设置Schedule 和 Deadline的提示样式
   (setq org-agenda-scheduled-leaders '("Start" "Start %dd"))
-  (setq org-agenda-deadline-leaders '("Dead" "In %dd" "Dead %dd"))
-
-
-;;; clock report
-
-  ;; skip zero-time in clock-report
-  (setq org-agenda-clockreport-parameter-plist '(:stepskip0 t :link t :maxlevel 3 :fileskip0 t))
+  (setq org-agenda-deadline-leaders '("Dead" "In %dd" "Dead %dd")))
 
 ;;; agenda buffers
 
+(with-eval-after-load 'org-agenda
   ;; window setup
   (setq org-agenda-window-setup 'current-window)
   ;; not show sublevels in agenda
@@ -216,7 +210,7 @@
 	    (org-agenda-prefix-format "%-10c")
             (org-agenda-files (delete my/file-archive (org-agenda-files)))
 	    (org-agenda-todo-keyword-format "")
-	    (org-overriding-columns-format "%24ITEM %10CATEGORY %1PRIORITY %10TAGS %Effort %10CLOCKSUM %22ARCHIVE_TIME")
+	    (org-overriding-columns-format "%24ITEM %10CATEGORY %1PRIORITY %Effort %10CLOCKSUM")
 	    (org-agenda-sorting-strategy '(category-keep))))
 	  ("r" "archive"
 	   ((tags "CAPTURE_TODO={PROJECT}"
@@ -234,78 +228,111 @@
 	    (org-overriding-columns-format "%24ITEM %1PRIORITY %10TAGS %Effort %10CLOCKSUM %22ARCHIVE_TIME"))))))
 
 
-;; hook -- TODO: not work
+;;; hook -- TODO: not work
+
 (with-eval-after-load 'org
   ;; when kill emacs, save org-files
   (add-hook 'kill-emacs-hook 'org-save-all-org-buffers))
 
 
+;;; org columns
+
+(with-eval-after-load 'org-colview
+  (setq org-columns-default-format "%24ITEM %7TODO %1PRIORITY %10TAGS %Effort %10CLOCKSUM")
+  (set-face-attribute 'org-column nil
+                      :background (face-attribute 'default :background)
+		      :height (face-attribute 'default :height)
+		      :family (face-attribute 'default :family)))
+
+
 ;;; shortkey
 
 (with-eval-after-load 'org-agenda
-  (transient-define-prefix my/transient/org-agenda-a()
-    [[:class transient-column "view"
-	     ("d" "day" (lambda() (interactive) (org-agenda-goto-today) (org-agenda-day-view)))
-             ("w" "week" org-agenda-week-view)
-	     ("W" "fortnight" org-agenda-fortnight-view)
-	     ("m" "month" org-agenda-month-view)
-	     ("y" "year" org-agenda-year-view)]
-     [:class transient-column "nav"
-	     ("g" "go data" org-agenda-goto-date)
-	     ("-" "previous" my/org-agenda-dwmy-view-previous)
-	     ("+" "next" my/org-agenda-dwmy-view-next)]])
-  (transient-define-prefix my/transient/org-agenda-mode()
-    [[:class transient-column "view"
-	     ("1" "colum" org-agenda-columns)
-	     ("2" "clock report" org-agenda-clockreport-mode)
-	     ("3" "log" (lambda() (interactive) (org-agenda-log-mode 'clockcheck)))
-	     ("4" "tags" org-search-view)
-	     ("5" "search" org-tags-view)
-             ("a" "agenda act" (lambda() (interactive)
-                                 (org-agenda-check-type t 'agenda)
-                                 (my/transient/org-agenda-a)))]
+  (transient-define-prefix transient/org-agenda-a()
+    [["view"
+      ("d" "day" (lambda() (interactive) (org-agenda-goto-today) (org-agenda-day-view)))
+      ("w" "week" org-agenda-week-view)
+      ("W" "fortnight" org-agenda-fortnight-view)
+      ("m" "month" org-agenda-month-view)
+      ("y" "year" org-agenda-year-view)]
+     ["nav"
+      ("g" "go data" org-agenda-goto-date)
+      ("-" "previous" my/org-agenda-dwmy-view-previous)
+      ("=" "next" my/org-agenda-dwmy-view-next)]])
+  (transient-define-prefix transient/org-statistics()
+    [["clock report"
+      ("d" "day" (lambda() (interactive)
+                   (org-agenda nil "a")
+                   (org-agenda-clockreport-mode)))
+      ("w" "week" (lambda() (interactive)
+                    (org-agenda nil "a")
+                    (org-agenda-week-view)
+                    (org-agenda-clockreport-mode)))
+      ("m" "month" (lambda() (interactive)
+                     (org-agenda nil "a")
+                     (org-agenda-month-view)
+                     (org-agenda-clockreport-mode)))]
+     ["log"
+      ("l" "!log" (lambda() (interactive) (org-agenda-log-mode 'clockcheck)))]
+     ["project"
+      ("p" "project" (lambda() (interactive)
+                       (org-agenda nil "p")
+                       (org-agenda-columns)
+                       (org-agenda-next-item 1)))
+      ("a" "archive" (lambda() (interactive)
+                       (org-agenda nil "r")
+                       (org-agenda-columns)
+                       (org-agenda-next-item 1)))]])
+  (transient-define-prefix transient/org-filter()
+    [["filter"
+      ("t" "tags" org-search-view)
+      ("s" "search" org-tags-view)
+      ("f" "filter" org-agenda-filter)
+      ("<backspace>" "clear" org-agenda-filter-remove-all)]
+     ["quick choose"
+      ("e" "effort < 15min" (lambda() (interactive)
+		              (org-agenda-filter-remove-all)
+		              ;; must set this val. or `r' will remove all filter
+		              (setq org-agenda-effort-filter (list "+<0:15"))
+		              (org-agenda-filter-apply org-agenda-effort-filter 'effort)))]])
+  (transient-define-prefix transient/org-agenda-mode()
+    [["filter"
+      ("a" "agenda act" transient/org-agenda-a :if (lambda() (org-agenda-check-type nil 'agenda)) :transient t)
+      ("f" "filter" transient/org-filter :transient t)]
      
-     [:class transient-column "property"
-	     ("t" "todo" org-agenda-todo)
-	     (":" "tag" org-agenda-set-tags)
-	     ("-" "-priority" org-agenda-priority-down)
-	     ("=" "+priority" org-agenda-priority-up)
-	     ("p" "property set" org-agenda-set-property)
-	     ("e" "effort" org-agenda-set-effort)]
+     ["property"
+      ("t" "todo" org-agenda-todo)
+      (":" "tag" org-agenda-set-tags)
+      ("-" "-priority" org-agenda-priority-down)
+      ("=" "+priority" org-agenda-priority-up)
+      ("p" "property set" org-agenda-set-property)
+      ("e" "effort" org-agenda-set-effort)]
 
-     [:class transient-column "timestamp"
-	     ("s" "schedule" org-agenda-schedule)
-	     ("d" "deadline" org-agenda-deadline)]
+     ["timestamp"
+      ("s" "schedule" org-agenda-schedule)
+      ("d" "deadline" org-agenda-deadline)]
 
-     [:class transient-column "clock"
-	     ("SPC" "clock in" (lambda() (interactive)
-			         (org-agenda-clock-in)
-			         (my-org-agenda-redo)))
-	     ("RET" "clock out" (lambda() (interactive)
-				  (org-agenda-clock-out)
-				  (my-org-agenda-redo)))
-	     ("c" "clock cancel" org-agenda-clock-cancel)
-	     ("g" "clock go" org-agenda-clock-goto)]
+     ["clock"
+      ("SPC" "clock in" (lambda() (interactive)
+			  (org-agenda-clock-in)
+			  (my-org-agenda-redo)))
+      ("RET" "clock out" (lambda() (interactive)
+			   (org-agenda-clock-out)
+			   (my-org-agenda-redo)))
+      ("c" "clock cancel" org-agenda-clock-cancel)
+      ("g" "clock go" org-agenda-clock-goto)]
+     
+     ["statistics"
+      ("j" "statistics" transient/org-statistics :transient t)]])
 
-     [:class transient-column "filter"
-             ("\\" "filter" org-agenda-filter)
-             ("<backspace>" "rm filter" org-agenda-filter-remove-all)
-             ("`" "show effort<15" (lambda() (interactive)
-		                     (org-agenda-filter-remove-all)
-		                     ;; must set this val. or `r' will remove all filter
-		                     (setq org-agenda-effort-filter (list "+<0:15"))
-		                     (org-agenda-filter-apply org-agenda-effort-filter 'effort)))]])
+  (define-key org-agenda-mode-map (kbd "C-j") 'transient/org-agenda-mode)
 
-  (define-key org-agenda-mode-map (kbd "C-j") 'my/transient/org-agenda-mode)
-
-  ;; previous & next
+  ;; previous && next
   (define-key org-agenda-mode-map (kbd "p") 'org-agenda-previous-item)
   (define-key org-agenda-mode-map (kbd "n") 'org-agenda-next-item)
 
   ;; choose agenda view
   (define-key org-agenda-mode-map (kbd "SPC") 'my/org-agenda-forward)
-  (define-key org-agenda-mode-map (kbd "1") #'(lambda() (interactive) (org-agenda nil "a")))
-  (define-key org-agenda-mode-map (kbd "2") #'(lambda() (interactive) (org-agenda nil "p")))
 
   ;; entry show && entry enter
   (define-key org-agenda-mode-map (kbd "TAB") 'my/org-agenda-show)
@@ -318,6 +345,12 @@
                                                   (org-agenda-quit)
                                                   (delete-window win))))
   (define-key org-agenda-mode-map (kbd "r") 'my/org-agenda-redo))
-    
+
+(with-eval-after-load 'org-colview
+  ;; previous && next
+  (define-key org-columns-map (kbd "p") 'org-agenda-previous-item)
+  (define-key org-columns-map (kbd "n") 'org-agenda-next-item))
+
+
 (provide 'init-org-agenda-mode)
 ;;; init-org-agenda-mode.el ends here

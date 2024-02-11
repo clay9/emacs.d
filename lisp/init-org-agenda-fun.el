@@ -166,9 +166,13 @@ Function: Move next buffer;"
       (org-agenda nil "a"))
      ;; project view, archive view 互相滚动
      ((= my/org-agenda-buffer-number 4)
-      (org-agenda nil "r"))
+      (org-agenda nil "r")
+      (org-agenda-columns)
+      (org-agenda-next-item 1))
      ((= my/org-agenda-buffer-number 5)
-      (org-agenda nil "p")))))
+      (org-agenda nil "p")
+      (org-agenda-columns)
+      (org-agenda-next-item 1)))))
 
 
 ;;; 快速显示关闭 item
