@@ -39,7 +39,9 @@
  create-lockfiles nil
  save-interprogram-paste-before-kill t
  scroll-preserve-screen-position 'always
- set-mark-command-repeat-pop t)
+ set-mark-command-repeat-pop t
+
+ system-time-locale "C")
 
 (add-hook 'after-init-hook 'global-auto-revert-mode)
 (setq global-auto-revert-non-file-buffers t

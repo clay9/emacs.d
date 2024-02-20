@@ -315,10 +315,10 @@
      ["clock"
       ("SPC" "clock in" (lambda() (interactive)
 			  (org-agenda-clock-in)
-			  (my-org-agenda-redo)))
+			  (my/org-agenda-redo)))
       ("RET" "clock out" (lambda() (interactive)
 			   (org-agenda-clock-out)
-			   (my-org-agenda-redo)))
+			   (my/org-agenda-redo)))
       ("c" "clock cancel" org-agenda-clock-cancel)
       ("g" "clock go" org-agenda-clock-goto)]
      
