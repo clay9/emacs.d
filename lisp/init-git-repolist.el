@@ -6,37 +6,62 @@
 (use-package magit
   :commands (magit-list-repositories)
   :bind ( :map magit-repolist-mode-map
-          ("f" . magit-repolist/magit-repolist-fetch)
-          ("F" . magit-repolist/magit-repolist-fetch-all)
-          ("P" . magit-repolist/magit-repolist-push)
-          ("C" . magit-repolist/magit-repolist-clone))
+          ("SPC" . magit-repos/switch)
+          ("C-j" . transient/magit-repolist))
   :config
-  (setq magit-repolist-my-repos
-        '(("clay9/emacs.d"            "~/.emacs.d")
-          ("clay9/blog"               "~/my/blog")
-          ("clay9/gtd"                "~/my/gtd")
-          ;; company
-          ("clay9/blog_company"      "~/my/blog_company")
+  (setq magit-repolist-my-repos-my
+        '(("clay9/emacs.d"           "~/.emacs.d")
+          ("clay9/blog"              "~/my/blog")
+          ("clay9/gtd"               "~/my/gtd")))
+  (setq magit-repolist-my-repos-company
+        '(("clay9/blog_company"      "~/my/blog_company")
           ("clay9/blog_company"      "~/my/nginx" ("--branch=gh-pages"))))
-          ;; qydocker
-          ;; ("qydocker/build_image_dev" . "~/qy/docker/build_image_dev")
-          ;; ("qydocker/build_publish"   . "~/qy/docker/build_publish")
-          ;; ("qydocker/docker_compose"  . "~/qy/docker/docker_compose")
-          ;; ("qydocker/k8s"             . "~/qy/docker/k8s")
-          ;; qygame
-          ;; ("qygame/svr-kernel"        . "~/qy/server/kernel")
-          ;; ("qygame/svr-client"        . "~/qy/server/client")
-          ;; ("qygame/svr-db"            . "~/qy/server/db")
-          ;; ("qygame/svr-gate"          . "~/qy/server/gate")          
-          ;; ("qygame/svr-room"          . "~/qy/server/room")
-          ;; ("qygame/svr-22"            . "~/qy/server/22")
-          ;; ("qygame/database"          . "~/qy/database")))
+  (setq magit-repolist-my-repos-qy
+        '(("qygame/build_image_dev"  "~/qy/ops/build_image_dev")
+          ("qygame/build_publish"    "~/qy/ops/build_publish")
+          ("qygame/docker_compose"   "~/qy/ops/docker_compose")
+          ("qygame/k8s"              "~/qy/ops/k8s")
+          ("qygame/svr-kernel"       "~/qy/server/kernel")
+          ("qygame/svr-client"       "~/qy/server/client")
+          ("qygame/svr-db"           "~/qy/server/db")
+          ("qygame/svr-gate"         "~/qy/server/gate")
+          ("qygame/svr-room"         "~/qy/server/room")
+          ("qygame/svr-22"           "~/qy/server-sub/22")
+          ("qygame/database"         "~/qy/database")
+          ("qygame/client"           "~/qy/client")))
+
+  (setq magit-repolist-index 0)
+  (defun magit-repos/get-repos()
+    (cl-case magit-repolist-index
+      (0 magit-repolist-my-repos-my)
+      (1 magit-repolist-my-repos-company)
+      (2 magit-repolist-my-repos-qy)))
+  (defun reset-magit-repository-directories()
+    (let* ((new-list ))
+      (dolist (v (magit-repos/get-repos))
+        (add-to-list 'new-list (cons (cadr v) 0)))
+      new-list))
+
   :config
-  (setq magit-repository-directories
-        (let* ((new-list ))
-          (dolist (v magit-repolist-my-repos)
-            (add-to-list 'new-list (cons (cadr v) 0)))
-          new-list))
+  (transient-define-prefix transient/magit-repolist()
+    [["fetch"
+      ("f" "pull" magit-repolist/magit-repolist-fetch)
+      ("F" "fetch all" magit-repolist/magit-repolist-fetch-all)]
+     ["push"
+      ("p" "push" magit-repolist/magit-repolist-push)]
+     ["clone"
+      ("c" "clone all" magit-repolist/magit-repolist-clone)]])
+  (defun magit-repos/switch ()
+    (interactive)
+    (cl-case magit-repolist-index
+      (0 (setq magit-repolist-index 1) (rename-buffer "repos company"))
+      (1 (setq magit-repolist-index 2) (rename-buffer "repos qy"))
+      (2 (setq magit-repolist-index 0) (rename-buffer "repos my")))
+    (setq magit-repository-directories (reset-magit-repository-directories))
+    (revert-buffer))
+  
+  :config
+  (setq magit-repository-directories (reset-magit-repository-directories))
   (setq magit-repolist-columns
         '(("Name" 18 magit-repolist-column-ident  nil)
           ("S"    3  magit-repolist-column-flag   nil)
@@ -116,7 +141,7 @@
     (interactive)
     (run-hooks 'magit-credential-hook)
     (let* ((magit-clone-set-remote.pushDefault nil))
-      (dolist (v magit-repolist-my-repos)
+      (dolist (v (magit-repos/get-repos))
         (let* ((url (magit-clone--name-to-url (car v)))
                (path (cadr v))
                (args (caddr v)))

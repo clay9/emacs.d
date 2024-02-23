@@ -54,7 +54,7 @@
            ("l" "!truncate line" toggle-truncate-lines)]
 
    [:class transient-column "sexp"
-           ("i" "put" embark-toggle-highlight)
+           ("i" "put" embark-toggle-highlight :transient t)
            ("p" "previous" embark-previous-symbol :transient t)
            ("n" "next" embark-next-symbol :transient t)]
    
