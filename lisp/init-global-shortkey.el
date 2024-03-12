@@ -63,7 +63,11 @@
 
    [:class transient-column "org"
            ("C-s" "capture" org-capture)
-           ("C-l" "store link" org-store-link)]
+           ("C-l" "store link" org-store-link)
+           ("SPC" "clock out" (lambda() (interactive)
+			        (org-agenda-clock-out)
+			        (my/org-agenda-redo)))]
+   
    [:class transient-column "maximize"
            ("<return>" "toggle" toggle-frame-maximized)]])
 (global-set-key (kbd "C-s") 'transient/c-s)

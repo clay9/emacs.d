@@ -170,7 +170,7 @@
 	    (org-agenda-skip-scheduled-if-done t)
 	    (org-agenda-skip-deadline-if-done  t)
 	    (org-deadline-warning-days 2)
-	    (org-agenda-files (cons my/file-diary (org-agenda-files)))
+	    ;;(org-agenda-files (cons my/file-diary (org-agenda-files)))
 	    (org-agenda-sorting-strategy '(time-up todo-state-up scheduled-up deadline-up priority-up))))
 	  ("n" "Next Step"
 	   ((todo "TODO"
