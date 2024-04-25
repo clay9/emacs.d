@@ -1,5 +1,6 @@
 .trash
 elpa*
+.elpa*
 eshell/
 transient/
 .DS_Store

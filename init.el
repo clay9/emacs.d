@@ -58,7 +58,7 @@
 (require 'init-artist)
 (require 'init-c++-ts-mode)
 (require 'init-dockerfile-ts-mode)
-(require 'init-yaml-ts-mode)
+(require 'init-yaml-mode)
 (require 'init-protobuf-mode)
 (require 'init-plantuml)
 (require 'init-emacs-lisp-mode)
