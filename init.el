@@ -45,7 +45,7 @@
 (require 'init-flymake)
 (require 'init-eglot)
 (require 'init-compile)
-;;(require 'init-gdb) ;; TODO: 需要重新整理
+;;(require 'init-gdb) ;; TODO re-write
 (require 'init-ai)
 
 ;; project
@@ -73,9 +73,6 @@
 (require 'init-translate)
 ;;(require 'init-gnus)
 
-;; test script
-;;(add-to-list 'load-path (expand-file-name "script" user-emacs-directory))
-;;(require 'export-org-to-md)
 
 ;; Variables configured via the interactive 'customize' interface
 (when (file-exists-p custom-file) (load custom-file))

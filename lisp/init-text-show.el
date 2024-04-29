@@ -18,14 +18,14 @@
 
 
 ;; show whitespace
-;; (setq-default show-trailing-whitespace nil)
+(setq-default show-trailing-whitespace nil)
 
-;; (defun sanityinc/show-trailing-whitespace ()
-;;   "Enable display of trailing whitespace in this buffer."
-;;   (setq-local show-trailing-whitespace t))
+(defun sanityinc/show-trailing-whitespace ()
+  "Enable display of trailing whitespace in this buffer."
+  (setq-local show-trailing-whitespace t))
 
-;; (dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook))
-;;   (add-hook hook 'sanityinc/show-trailing-whitespace))
+(dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook))
+  (add-hook hook 'sanityinc/show-trailing-whitespace))
 
 
 ;; show line-number
@@ -40,7 +40,7 @@
   :hook (after-init . global-page-break-lines-mode))
 
 
-;; show column indicator (代码70列指示)
+;; show column indicator
 (when (boundp 'display-fill-column-indicator)
   (setq-default indicate-buffer-boundaries 'left)
   (setq-default display-fill-column-indicator-character ?\u254e)

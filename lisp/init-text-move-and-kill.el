@@ -5,8 +5,8 @@
 
 ;;; delete
 
-;; target object: (具体可以看thing-at-point的参数)
-;; 1.char {backword, forword} => 忽略char forword
+;; target object: (see thing-at-point)
+;; 1.char {backword, forword} => ignore char forword
 ;; 2.word
 ;; 3.sentence
 ;; 4.line {[point, line-end], whole-line}
