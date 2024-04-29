@@ -31,7 +31,6 @@
 (require 'init-buffers)
 (require 'init-recentf)
 (require 'init-sessions)
-(require 'init-nt)
 
 ;; text editor
 (require 'init-text-show)
