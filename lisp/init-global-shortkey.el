@@ -46,7 +46,7 @@
   [[:class transient-column "search"
 	   ("s" "search" consult-line)
            ("t" "replace" replace-string)]
-   
+
    [:class transient-column "navigate"
            ("m" "imenu" consult-imenu)
            ("o" "outline" consult-outline)
@@ -57,7 +57,7 @@
            ("i" "put" embark-toggle-highlight :transient t)
            ("p" "previous" embark-previous-symbol :transient t)
            ("n" "next" embark-next-symbol :transient t)]
-   
+
    [:class transient-column "comment"
            ("c" "!comment" comment-or-uncomment-region)]
 
@@ -67,9 +67,9 @@
            ("SPC" "clock out" (lambda() (interactive)
 			        (org-agenda-clock-out)
 			        (my/org-agenda-redo)))]
-   
-   [:class transient-column "maximize"
-           ("<return>" "toggle" toggle-frame-maximized)]])
+
+   [:class transient-column "file"
+           ("C-d" "delete current" my/delete-current-file)]])
 (global-set-key (kbd "C-s") 'transient/c-s)
 
 
@@ -80,7 +80,7 @@
            ("s" "grep" project-find-regexp)
            ("t" "replace" project-query-replace-regexp)
            ("f" "find-grep" find-grep)]
-   
+
    [:class transient-column "status"
            ("a" "view all" magit-list-repositories)
            ("m" "status" magit-status)]
@@ -96,7 +96,7 @@
    [:class transient-column "lsp &compile"
            ("g" "eglot" eglot)
            ("c" "compile" project-compile)]
-   
+
    [:class transient-column "flymake"
            ("C-p" "previous" flymake-goto-prev-error)
            ("C-n" "next" flymake-goto-next-error)
@@ -128,11 +128,11 @@
   [[:class transient-column "tanslate"
            ("j" "point & region" my/translate-at-point)
            ("b" "buffer" my/translate-buffer)]
-   
+
    [:class transient-column "shell"
            ("r" "term" ansi-term)
            ("e" "eshell" project-eshell)]
-   
+
    [:class transient-column "snippet"
            ("v" "visit" yas-visit-snippet-file)
            ("i" "insert" yas-new-snippet)]

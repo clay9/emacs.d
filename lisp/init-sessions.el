@@ -9,26 +9,6 @@
       desktop-auto-save-timeout 600)
 (desktop-save-mode 1)
 
-(defun sanityinc/desktop-time-restore (orig &rest args)
-  (let ((start-time (current-time)))
-    (prog1
-        (apply orig args)
-      (message "Desktop restored in %.2fms"
-               (sanityinc/time-subtract-millis (current-time)
-                                               start-time)))))
-(advice-add 'desktop-read :around 'sanityinc/desktop-time-restore)
-
-(defun sanityinc/desktop-time-buffer-create (orig ver filename &rest args)
-  (let ((start-time (current-time)))
-    (prog1
-        (apply orig ver filename args)
-      (message "Desktop: %.2fms to restore %s"
-               (sanityinc/time-subtract-millis (current-time)
-                                               start-time)
-               (when filename
-                 (abbreviate-file-name filename))))))
-(advice-add 'desktop-create-buffer :around 'sanityinc/desktop-time-buffer-create)
-
 
 ;; Restore histories and registers after saving
 

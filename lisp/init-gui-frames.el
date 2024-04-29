@@ -62,18 +62,6 @@
   :config
   (global-disable-mouse-mode 1))
 
-
-;;; measure time
-
-;; Measure startup time
-(require 'init-benchmarking)
-;; Measure session time
-(use-package uptimes
-  :config
-  (setq uptimes-database (concat my/ecfg-dir "uptimes.el"))
-  (setq-default uptimes-keep-count 200)
-  (add-hook 'after-init-hook (lambda () (require 'uptimes))))
-
 
 (provide 'init-gui-frames)
 ;;; init-gui-frames.el ends here

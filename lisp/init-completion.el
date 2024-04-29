@@ -79,7 +79,7 @@
 
 ;;; actions for minibuffer && buffer
 (use-package embark)
-  
+
 (use-package embark-consult
   :after (embark consult)
   :hook (embark-collect-mode . embark-consult-preview-minor-mode))

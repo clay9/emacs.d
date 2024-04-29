@@ -18,14 +18,8 @@
 
 
 ;; show whitespace
-(setq-default show-trailing-whitespace nil)
-
-(defun sanityinc/show-trailing-whitespace ()
-  "Enable display of trailing whitespace in this buffer."
-  (setq-local show-trailing-whitespace t))
-
-(dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook))
-  (add-hook hook 'sanityinc/show-trailing-whitespace))
+(setq-default show-trailing-whitespace t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
 ;; show line-number
@@ -41,10 +35,10 @@
 
 
 ;; show column indicator
-(when (boundp 'display-fill-column-indicator)
-  (setq-default indicate-buffer-boundaries 'left)
-  (setq-default display-fill-column-indicator-character ?\u254e)
-  (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode))
+;; (when (boundp 'display-fill-column-indicator)
+;;   (setq-default indicate-buffer-boundaries 'left)
+;;   (setq-default display-fill-column-indicator-character ?\u254e)
+;;   (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode))
 
 (provide 'init-text-show)
 ;;; init-text-show.el ends here

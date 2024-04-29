@@ -39,6 +39,14 @@
 ;; ibuffer
 ;;(require 'init-ibuffer)
 
+
+;; file && buffer
+(defun my/delete-current-file ()
+  (interactive)
+  (let ((delete-by-moving-to-trash t))
+    (delete-file (buffer-file-name)))
+  (kill-current-buffer))
+
 
 (provide 'init-buffers)
 ;;; init-buffers.el ends here
