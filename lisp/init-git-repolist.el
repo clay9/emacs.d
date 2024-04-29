@@ -29,7 +29,8 @@
           ;;("qygame/svr-publish"      "~/qy/server/publish")
           ("qygame/svr-22"           "~/qy/server-sub/22")
           ("qygame/database"         "~/qy/database")
-          ("qygame/client"           "~/qy/client")))
+          ;;("qygame/client"           "~/qy/client")
+          ))
 
   (setq magit-repolist-index 0)
   (defun magit-repos/get-repos()
