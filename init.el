@@ -31,6 +31,7 @@
 (require 'init-buffers)
 (require 'init-recentf)
 (require 'init-sessions)
+(require 'init-tty-keys)
 
 ;; text editor
 (require 'init-text-show)
