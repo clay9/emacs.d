@@ -7,7 +7,7 @@
 (setq tab-always-indent 'complete)
 
 
-;;; complete -- 基于emacs completion, 提供候选 provide candidates
+;;; complete -- base on emacs completion, provide candidates
 (use-package consult
   :config
   ;; buffer filter
@@ -36,12 +36,12 @@
   (add-to-list 'consult-buffer-filter "algo.org"))
 
 
-;;; 为候选添加注释信息
+;;; add ex-info for candidates
 (use-package marginalia
   :hook (after-init . marginalia-mode))
 
 
-;;; 候选过滤匹配规则
+;;; order candidates
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))
