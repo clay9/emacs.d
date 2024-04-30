@@ -82,7 +82,7 @@
            ("f" "find-grep" find-grep)]
 
    [:class transient-column "status"
-           ("a" "view all" magit-list-repositories)
+           ("a" "view all" transient/magit-list-repos)
            ("m" "status" magit-status)]
 
    [:class transient-column "file & buffer"

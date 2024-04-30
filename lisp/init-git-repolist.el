@@ -61,7 +61,21 @@
       (2 (setq magit-repolist-index 0) (rename-buffer "repos my")))
     (setq magit-repository-directories (reset-magit-repository-directories))
     (revert-buffer))
-  
+
+  :config
+  (defun transient/magit-list-repos ()
+    ;; 1. if buffer "repos *" exist, reuse it
+    ;; 2. or call magit-list-repositories
+    ;;    TODO: also set index=0 && rename-buffer "repos my"
+    (interactive)
+    (let ((buff_already_exist nil))
+      (dolist (buf '("repos my" "repos company" "repos qy"))
+        (when (and (get-buffer buf) (not buff_already_exist))
+          (setq buff_already_exist t)
+          (switch-to-buffer buf)))
+      (when (not buff_already_exist)
+        (magit-list-repositories))))
+
   :config
   (setq magit-repository-directories (reset-magit-repository-directories))
   (setq magit-repolist-columns
