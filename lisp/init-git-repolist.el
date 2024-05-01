@@ -4,7 +4,7 @@
 
 
 (use-package magit
-  :commands (magit-list-repositories)
+  :commands (transient/magit-list-repos)
   :bind ( :map magit-repolist-mode-map
           ("SPC" . magit-repos/switch)
           ("C-j" . transient/magit-repolist))
