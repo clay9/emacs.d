@@ -16,6 +16,26 @@
       (apply fun args))))
 
 
+;; Get org-agenda item property
+(defun my/org-agenda-get-property (POM PROPERTY)
+  "Get a property for the current headline."
+  (interactive)
+  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+		       (org-agenda-error)))
+	 (buffer (marker-buffer hdmarker))
+	 (pos (marker-position hdmarker))
+	 (inhibit-read-only t)
+         (result))
+    ;; newhead
+    (org-with-remote-undo buffer
+      (with-current-buffer buffer
+	(widen)
+	(goto-char pos)
+	(org-fold-show-context 'agenda)
+        (setq result (org-entry-get POM PROPERTY))))
+    result))
+
+
 ;; Get timestamp string
 (defun my/org-timestamp-string (DAY &optional WITH-HM)
   "Get current timestamp string."
@@ -223,7 +243,7 @@ Function: refresh agenda bufffer"
   ;;file: inbox.org => task.org, gtd/xxx.org
   (my/org-refile-file-inbox)
   ;;file: task.org  => archive.org
-  (no-message 'no-confirm 'org-archive-all-done)  
+  (no-message 'no-confirm 'org-archive-all-done)
   ;;save
   (no-message 'org-save-all-org-buffers)
   ;;call origin redo

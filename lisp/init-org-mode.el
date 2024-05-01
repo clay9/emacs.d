@@ -28,7 +28,6 @@
                                         ;(message "%s, %s, point: %s" begin end point)
         (org-indent-region begin end)
         (goto-char point) )))
-
   (defun transient/org-mode/org-insert-structure-template (type)
   (interactive
    ;; get key && val
@@ -73,7 +72,7 @@
       (indent-to column)
       (insert (format "#+end_%s"  (car (split-string val))))
 
-      ;; insert \n after #+end-line 
+      ;; insert \n after #+end-line
       (if (looking-at "[ \t]*$") (replace-match "")
 	(insert "\n"))
       (when (and (eobp) (not (bolp))) (insert "\n")))
@@ -82,54 +81,66 @@
     (goto-char pos)
     (indent-to column)
 
-    ;; insert summary key:+ 保留为不使用    
+    ;; insert summary key:+ 保留为不使用
     (when is_summary_details (org-insert-structure-template "summary"))))
-  
+  (transient-define-prefix transient/org-statistics()
+    ["columns"
+     ("1" "view" org-columns)
+     ("2" "insert" org-columns-insert-dblock)])
+  (transient-define-prefix transient/org-timestamp()
+    ["timestamp"
+     ("t" "time inactive" org-time-stamp-inactive)
+     ("T" "time active" org-time-stamp)])
+  (transient-define-prefix transient/org-export()
+    ["export"
+     ("a" "ascill" org-ascii-export-to-ascii)
+     ("m" "md" org-md-export-to-markdown)
+     ("h" "html" org-html-export-to-html)
+     ("t" "texinfo" org-texinfo-export-to-texinfo)])
+
   (transient-define-prefix transient/org-mode()
-    [[:class transient-column "columns"
-	     ("1" "view" org-columns)
-	     ("2" "insert" org-columns-insert-dblock)]
-     
-     [:class transient-column "subtree"
-	     ("j" "indent" transient/org-mode/org-indent-subtree)
-	     ("n" "o narrow" org-narrow-to-subtree)
-	     ("C-n" "c narrow" widen)
-             ("r" "refile" org-refile)
-	     ("w" "copy" org-copy-subtree)
-	     ("y" "paste" org-paste-subtree)
-	     ("a" "archive" org-archive-subtree)]
+    [["subtree"
+      ("j" "indent" transient/org-mode/org-indent-subtree)
+      ("n" "o narrow" org-narrow-to-subtree)
+      ("C-n" "c narrow" widen)
+      ("r" "refile" org-refile)
+      ("w" "copy" org-copy-subtree)
+      ("y" "paste" org-paste-subtree)
+      ("a" "archive" org-archive-subtree)]
 
-     [:class transient-column "add info"
-	     ("SPC" "todo" org-todo)
-	     ("RET" "tag" org-set-tags-command)
-	     ("p" "property" org-set-property)
-	     ("-" "property-" org-priority-down)
-	     ("=" "property+" org-priority-up)
-	     ("t" "time inactive" org-time-stamp-inactive)
-	     ("T" "time active" org-time-stamp)
-	     ("e" "effort" org-set-effort)]
+     ["statistics"
+      ("j" "statistics" transient/org-statistics :transient t)]
 
-     [:class transient-column "link"
-	     ("i" "i&e" (lambda() (interactive) (call-interactively 'org-insert-link)))
-	     ("o" "open" org-open-at-point)
-	     ("b" "goback" org-mark-ring-goto)]
+     ["add info"
+      ("t" "todo" org-todo)
+      (":" "tag" org-set-tags-command)
+      ("-" "property-" org-priority-down)
+      ("=" "property+" org-priority-up)
+      ("p" "property" org-set-property)
+      ("e" "effort" org-set-effort)
+      ("d" "archive done" org-toggle-archive-tag)]
 
-     [:class transient-column "export"
-	     ("C-1" "ascill" org-ascii-export-to-ascii)
-	     ("C-2" "md" org-md-export-to-markdown)
-	     ("C-3" "html" org-html-export-to-html)
-	     ("C-4" "texinfo" org-texinfo-export-to-texinfo)]
+     ["timestamp"
+      ("s" "timestamp" transient/org-timestamp)]
 
-     [:class transient-column "src"
-	     ("s" "add" transient/org-mode/org-insert-structure-template)
-	     ("C-j" "exit" org-edit-special)]])
+     ["link"
+      ("i" "i&e" (lambda() (interactive) (call-interactively 'org-insert-link)))
+      ("o" "open" org-open-at-point)
+      ("b" "goback" org-mark-ring-goto)]
+
+     ["src"
+      ("s" "add" transient/org-mode/org-insert-structure-template)
+      ("C-j" "exit" org-edit-special)]
+
+     ["export"
+      ("C-e" "export" transient/org-export)]])
 
   :config
   
 ;;; show type
-  
+
   (use-package org-bullets :init (with-eval-after-load 'org (org-bullets-mode)))
-  
+
   ;; when window-system, show image
   ;; (when (window-system)
   ;;   ;; iimage-mode
@@ -149,9 +160,9 @@
    org-startup-folded t
    org-catch-invisible-edits 'error
    org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
-  
+
 ;;; indent
-  
+
   ;; indent content with headline
   (setq org-adapt-indentation t)
   ;; show same index in org-mode|org-src-mode
@@ -165,7 +176,7 @@
 
 ;;; Subscripts and Superscripts ::  a_b not, a_{b} is
   (setq org-use-sub-superscripts '{})
-  
+
 
 ;;; Babel languages
 
@@ -196,7 +207,7 @@
           ("ss" . "shell")
 	  ("se" . "emacs-lisp")
 	  ("sp" . "plantuml :exports results :eval no-export :file xxx.png")))
-  
+
   ;; active Babel languages
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -210,7 +221,7 @@
 
 
 ;;; ob-plantuml
-  
+
   ;; 使用site-lisp/plantuml-mode 代替 org-mode 绘图.
   ;; plantuml-mode使用 plantuml server绘制, 不需要在本地下载plantuml.jar包
   (defun org-babel-execute:plantuml (body params)

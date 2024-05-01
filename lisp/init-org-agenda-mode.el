@@ -71,7 +71,7 @@
 (with-eval-after-load 'org-agenda
   ;; skip zero-time in clock-report
   (setq org-agenda-clockreport-parameter-plist '(:stepskip0 t :link t :maxlevel 3 :fileskip0 t)))
-  
+
 
 ;;; capture, refile, archive
 
@@ -92,7 +92,7 @@
   (setq org-refile-targets '((nil . (:maxlevel . 2))))
 
   ;; archive
-  
+
   ;; log type
   (setq org-log-done 'nil)
   (setq org-log-refile 'nil)
@@ -111,7 +111,7 @@
       (org-set-property "CAPTURE_TIME" (my/org-timestamp-string 0 t))
       (when (or (string= todo_key "TODO")
 	        (string= todo_key "WAITING")
-                (string= todo_key "PROJECT"))        
+                (string= todo_key "PROJECT"))
         (org-set-effort))))
   (add-hook 'org-capture-prepare-finalize-hook 'my/org-capture-prepare-finalize-hook))
 
@@ -248,6 +248,15 @@
 ;;; shortkey
 
 (with-eval-after-load 'org-agenda
+  (defun org-agenda/archive ()
+    (interactive)
+    ;; 1. add tag "ARCHIVE"
+    (org-agenda-set-tags "ARCHIVE" `on)
+    ;; 2. close clock if in this item TODONOW
+    (when (string= (org-agenda-get-property nil "ITEM") org-clock-current-task)
+      (org-agenda-clock-out))
+    ;; 3. revert org-agenda buff
+    (my/org-agenda-redo))
   (transient-define-prefix transient/org-agenda-a()
     [["view"
       ("d" "day" (lambda() (interactive) (org-agenda-goto-today) (org-agenda-day-view)))
@@ -259,7 +268,7 @@
       ("g" "go data" org-agenda-goto-date)
       ("-" "previous" my/org-agenda-dwmy-view-previous)
       ("=" "next" my/org-agenda-dwmy-view-next)]])
-  (transient-define-prefix transient/org-statistics()
+  (transient-define-prefix transient/org-agenda-statistics()
     [["clock report"
       ("d" "day" (lambda() (interactive)
                    (org-agenda nil "a")
@@ -295,22 +304,29 @@
 		              ;; must set this val. or `r' will remove all filter
 		              (setq org-agenda-effort-filter (list "+<0:15"))
 		              (org-agenda-filter-apply org-agenda-effort-filter 'effort)))]])
+  (transient-define-prefix transient/org-agenda-timestamp()
+    ["timestamp"
+     ("s" "schedule" org-agenda-schedule)
+     ("d" "deadline" org-agenda-deadline)])
   (transient-define-prefix transient/org-agenda-mode()
     [["filter"
       ("a" "agenda act" transient/org-agenda-a :if (lambda() (org-agenda-check-type nil 'agenda)) :transient t)
       ("f" "filter" transient/org-filter :transient t)]
-     
-     ["property"
+
+     ["statistics"
+      ("j" "statistics" transient/org-agenda-statistics :transient t)]
+
+     ["add info"
       ("t" "todo" org-agenda-todo)
       (":" "tag" org-agenda-set-tags)
       ("-" "-priority" org-agenda-priority-down)
       ("=" "+priority" org-agenda-priority-up)
       ("p" "property set" org-agenda-set-property)
-      ("e" "effort" org-agenda-set-effort)]
+      ("e" "effort" org-agenda-set-effort)
+      ("d" "archive done" org-agenda/archive)]
 
      ["timestamp"
-      ("s" "schedule" org-agenda-schedule)
-      ("d" "deadline" org-agenda-deadline)]
+      ("s" "timestamp" transient/org-agenda-timestamp)]
 
      ["clock"
       ("SPC" "clock in" (lambda() (interactive)
@@ -320,10 +336,7 @@
 			   (org-agenda-clock-out)
 			   (my/org-agenda-redo)))
       ("c" "clock cancel" org-agenda-clock-cancel)
-      ("g" "clock go" org-agenda-clock-goto)]
-     
-     ["statistics"
-      ("j" "statistics" transient/org-statistics :transient t)]])
+      ("g" "clock go" org-agenda-clock-goto)]])
 
   (define-key org-agenda-mode-map (kbd "C-j") 'transient/org-agenda-mode)
 
@@ -338,7 +351,7 @@
   (define-key org-agenda-mode-map (kbd "TAB") 'my/org-agenda-show)
   (define-key org-agenda-mode-map (kbd "RET") 'my/org-agenda-enter)
   (define-key org-agenda-mode-map (kbd "a") 'my/org-agenda-entry-text-show)
-  
+
   ;; quit && refresh
   (define-key org-agenda-mode-map (kbd "q") #'(lambda() (interactive)
                                                 (let ((win (selected-window)))
