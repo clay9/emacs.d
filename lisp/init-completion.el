@@ -79,6 +79,10 @@
   ;; `global-corfu-modes' to exclude certain modes.
   :init
   (global-corfu-mode))
+(use-package corfu-terminal
+  :init
+  (unless (display-graphic-p)
+    (corfu-terminal-mode +1)))
 
 
 ;;; actions for minibuffer && buffer
