@@ -296,7 +296,6 @@
     [["filter"
       ("t" "tags" org-search-view)
       ("s" "search" org-tags-view)
-      ("f" "filter" org-agenda-filter)
       ("<backspace>" "clear" org-agenda-filter-remove-all)]
      ["quick choose"
       ("e" "effort < 15min" (lambda() (interactive)
@@ -311,10 +310,13 @@
   (transient-define-prefix transient/org-agenda-mode()
     [["filter"
       ("a" "agenda act" transient/org-agenda-a :if (lambda() (org-agenda-check-type nil 'agenda)) :transient t)
-      ("f" "filter" transient/org-filter :transient t)]
+      ("f" "filter" transient/org-filter :transient t)
+      ("j" "quick filter" (lambda() (interactive)
+                      (org-agenda-filter-remove-all)
+                      (org-agenda-filter)))]
 
      ["statistics"
-      ("j" "statistics" transient/org-agenda-statistics :transient t)]
+      ("l" "statistics" transient/org-agenda-statistics :transient t)]
 
      ["add info"
       ("t" "todo" org-agenda-todo)

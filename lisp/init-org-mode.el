@@ -109,7 +109,7 @@
       ("a" "archive" org-archive-subtree)]
 
      ["statistics"
-      ("j" "statistics" transient/org-statistics :transient t)]
+      ("l" "statistics" transient/org-statistics :transient t)]
 
      ["add info"
       ("t" "todo" org-todo)
