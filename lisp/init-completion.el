@@ -39,7 +39,7 @@
     :narrow   ?b
     :category buffer
     :face     consult-buffer
-    :history  buffer-name-history
+    :history  buffer-name-history    
     :state    ,#'consult--buffer-state
     :default  t
     :items
@@ -47,11 +47,36 @@
                                        :predicate (lambda(buf) (not (member (buffer-name buf) (consult/gtd-buffers))))
                                        :as #'buffer-name)))
   "Buffer candidate source for `consult-buffer'.")
+  (defvar consult--source-recent-file
+  `(:name     "File"
+    :narrow   ?f
+    :category file
+    :preview-key nil
+    :face     consult-file
+    :history  file-name-history
+    :state    ,#'consult--file-state
+    :new      ,#'consult--file-action
+    :enabled  ,(lambda () recentf-mode)
+    :items
+    ,(lambda ()
+       (let ((ht (consult--buffer-file-hash))
+             items)
+         (dolist (file (bound-and-true-p recentf-list) (nreverse items))
+           ;; Emacs 29 abbreviates file paths by default, see
+           ;; `recentf-filename-handlers'.  I recommend to set
+           ;; `recentf-filename-handlers' to nil to avoid any slow down.
+           (unless (eq (aref file 0) ?/)
+             (let (file-name-handler-alist) ;; No Tramp slowdown please.
+               (setq file (expand-file-name file))))
+           (unless (gethash file ht)
+             (push (consult--fast-abbreviate-file-name file) items))))))
+  "Recent file candidate source for `consult-buffer'.")
   (defvar consult--source-bookmark
   `(:name     "Bookmark"
     :narrow   ?m
     :category bookmark
     :hidden   t
+    :preview-key nil
     :face     consult-bookmark
     :history  bookmark-history
     :items    ,#'bookmark-all-names
