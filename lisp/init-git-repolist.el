@@ -15,7 +15,8 @@
           ("clay9/gtd"               "~/my/gtd")))
   (setq magit-repolist-my-repos-company
         '(("clay9/blog_company"      "~/yy/blog_company")
-          ("clay9/blog_company"      "~/yy/nginx" ("--branch=gh-pages"))))
+          ;; ("clay9/blog_company"      "~/yy/nginx" ("--branch=gh-pages"))
+          ))
   (setq magit-repolist-my-repos-qy
         '(("qygame/build_publish"    "~/qy/ops/build_publish")
           ("qygame/compiler"         "~/qy/ops/compiler")
