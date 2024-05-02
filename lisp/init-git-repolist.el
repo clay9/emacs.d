@@ -17,8 +17,8 @@
         '(("clay9/blog_company"      "~/yy/blog_company")
           ("clay9/blog_company"      "~/yy/nginx" ("--branch=gh-pages"))))
   (setq magit-repolist-my-repos-qy
-        '(("qygame/build_image_dev"  "~/qy/ops/build_image_dev")
-          ("qygame/build_publish"    "~/qy/ops/build_publish")
+        '(("qygame/build_publish"    "~/qy/ops/build_publish")
+          ("qygame/compiler"         "~/qy/ops/compiler")
           ("qygame/docker_compose"   "~/qy/ops/docker_compose")
           ("qygame/k8s"              "~/qy/ops/k8s")
           ("qygame/svr-kernel"       "~/qy/server-kernel")
