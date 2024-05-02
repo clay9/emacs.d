@@ -45,6 +45,6 @@
   (dolist (file (directory-files-recursively root_dir ".org"))
     (with-current-buffer (find-file-noselect file)
       (org-hugo-export-to-md))))
-          
+
 (provide 'export-org-to-md)
 ;;; export-org-to-md.el ends here
