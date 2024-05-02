@@ -29,7 +29,7 @@
                     '(display-buffer-same-window)))))
 
 ;;; git status
-  
+
   ;; headers
   (setq magit-status-headers-hook
         '(magit-insert-repo-header
@@ -61,7 +61,7 @@
 
 
 ;;; git diff
-  
+
   (setq magit-diff-paint-whitespace nil))
 
 (provide 'init-git)
