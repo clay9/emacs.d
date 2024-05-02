@@ -47,10 +47,20 @@
                                        :predicate (lambda(buf) (not (member (buffer-name buf) (consult/gtd-buffers))))
                                        :as #'buffer-name)))
   "Buffer candidate source for `consult-buffer'.")
+  (defvar consult--source-bookmark
+  `(:name     "Bookmark"
+    :narrow   ?m
+    :category bookmark
+    :hidden   t
+    :face     consult-bookmark
+    :history  bookmark-history
+    :items    ,#'bookmark-all-names
+    :state    ,#'consult--bookmark-state)
+  "Bookmark candidate source for `consult-buffer'.")
   (defvar consult--source-gtd-source
     `( :name     "GTD Buffer"
        :narrow   ?g
-       :category buffer-gtd
+       :category buffer
        :hidden   t
        :face     consult-buffer
        :history  buffer-name-history

@@ -167,16 +167,16 @@
   :config
   ;;; my/gtd: auto pull && auto push
 
-  (add-hook 'after-init-hook #'(lambda ()
-                                 (let* ((default-directory (file-name-as-directory "~/my/gtd")))
-                                   (when default-directory                                     
-                                     (when (magit-anything-modified-p)
-                                       (magit-call-git "commit" "-am auto-commit"))
-                                     (magit-call-git "fetch")
-                                     (let* ((br (magit-get-upstream-branch))
-                                            (unpull-count (cadr (magit-rev-diff-count "HEAD" br))))
-                                       (when (> unpull-count 0)
-                                         (magit-call-git "rebase")))))))
+  ;; (add-hook 'after-init-hook #'(lambda ()
+  ;;                                (let* ((default-directory (file-name-as-directory "~/my/gtd")))
+  ;;                                  (when default-directory                                     
+  ;;                                    (when (magit-anything-modified-p)
+  ;;                                      (magit-call-git "commit" "-am auto-commit"))
+  ;;                                    (magit-call-git "fetch")
+  ;;                                    (let* ((br (magit-get-upstream-branch))
+  ;;                                           (unpull-count (cadr (magit-rev-diff-count "HEAD" br))))
+  ;;                                      (when (> unpull-count 0)
+  ;;                                        (magit-call-git "rebase")))))))
   (add-hook 'kill-emacs-hook #'(lambda ()
                                  (let* ((default-directory (file-name-as-directory "~/my/gtd")))
                                    (when default-directory
