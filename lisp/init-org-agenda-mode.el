@@ -253,7 +253,7 @@
     ;; 1. add tag "ARCHIVE"
     (org-agenda-set-tags "ARCHIVE" `on)
     ;; 2. close clock if in this item TODONOW
-    (when (string= (org-agenda-get-property nil "ITEM") org-clock-current-task)
+    (when (string= (my/org-agenda-get-property nil "ITEM") org-clock-current-task)
       (org-agenda-clock-out))
     ;; 3. revert org-agenda buff
     (my/org-agenda-redo))
