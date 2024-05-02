@@ -26,14 +26,39 @@
   (add-to-list 'consult-buffer-filter "repos company")
   (add-to-list 'consult-buffer-filter "repos qy")
 
-  (add-to-list 'consult-buffer-filter "diary.org")
-  (add-to-list 'consult-buffer-filter "life.org")
-  (add-to-list 'consult-buffer-filter "inbox.org")
-  (add-to-list 'consult-buffer-filter "task.org")
-  (add-to-list 'consult-buffer-filter "archive.org")
-  (add-to-list 'consult-buffer-filter "emacs.org")
-  (add-to-list 'consult-buffer-filter "qygame.org")
-  (add-to-list 'consult-buffer-filter "algo.org"))
+  :init
+  (defun consult/gtd-buffers()
+    (let* ((buf-list (mapcar 'get-file-buffer (directory-files-recursively "~/my/gtd" ".org")))
+           (result))
+      (dolist (buf buf-list)
+        (when buf
+          (add-to-list 'result (buffer-name buf) t)))
+      result))
+  (defvar consult--source-buffer
+  `(:name     "Buffer"
+    :narrow   ?b
+    :category buffer
+    :face     consult-buffer
+    :history  buffer-name-history
+    :state    ,#'consult--buffer-state
+    :default  t
+    :items
+    ,(lambda () (consult--buffer-query :sort 'visibility
+                                       :predicate (lambda(buf) (not (member (buffer-name buf) (consult/gtd-buffers))))
+                                       :as #'buffer-name)))
+  "Buffer candidate source for `consult-buffer'.")
+  (defvar consult--source-gtd-source
+    `( :name     "GTD Buffer"
+       :narrow   ?g
+       :category buffer-gtd
+       :hidden   t
+       :face     consult-buffer
+       :history  buffer-name-history
+       :state    ,#'consult--buffer-state
+       :items    ,#'consult/gtd-buffers))
+
+  :config
+  (add-to-list 'consult-buffer-sources 'consult--source-gtd-source 'append))
 
 
 ;;; add ex-info for candidates
