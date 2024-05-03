@@ -121,10 +121,7 @@
 
 ;;; minibuffer complete-ui
 (use-package vertico
-  :hook (after-init . vertico-mode)
-  :config
-  ;; change vertico sort
-  (setq vertico-sort-function 'vertico-sort-alpha))
+  :hook (after-init . vertico-mode))
 
 
 ;;; buffer complete-ui (instead of company-mode)

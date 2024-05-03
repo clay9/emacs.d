@@ -41,6 +41,7 @@
  scroll-preserve-screen-position 'always
  set-mark-command-repeat-pop t
 
+ enable-recursive-minibuffers t
  system-time-locale "C")
 
 (add-hook 'after-init-hook 'global-auto-revert-mode)
