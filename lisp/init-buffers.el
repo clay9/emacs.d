@@ -36,10 +36,6 @@
 (setq uniquify-ignore-buffers-re "^\\*")
 
 
-;; ibuffer
-;;(require 'init-ibuffer)
-
-
 ;; file && buffer
 (defun my/delete-current-file ()
   (interactive)
