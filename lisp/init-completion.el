@@ -11,21 +11,13 @@
 (use-package consult
   :config
   ;; buffer filter
-  (add-to-list 'consult-buffer-filter ".DS_Store")
-  (add-to-list 'consult-buffer-filter "\\`\\*Messages\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*Ibuffer\\*\\'")
-  (add-to-list 'consult-buffer-filter "\\`\\*Org Agenda\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*Calendar\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*Disabled Command\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*Backtrace\\*\\'")
   (add-to-list 'consult-buffer-filter "\\*EGLOT*")
   (add-to-list 'consult-buffer-filter "magit-process:*")
-
-  (add-to-list 'consult-buffer-filter "\\`\\*Magit Repositories\\*\\'")
-  (add-to-list 'consult-buffer-filter "repos my")
-  (add-to-list 'consult-buffer-filter "repos company")
-  (add-to-list 'consult-buffer-filter "repos qy")
-
+  
   :init
   (defun consult/gtd-buffers()
     (let* ((buf-list (mapcar 'get-file-buffer (directory-files-recursively "~/my/gtd" ".org")))
@@ -34,54 +26,73 @@
         (when buf
           (add-to-list 'result (buffer-name buf) t)))
       result))
+  (defun consult/nerver-show-buffers ()
+    '("repos my" "repos company" "repos qy" ".DS_Store" "*Messages*" "*Org Agenda*" "*Magit Repositories*"))
+      
   (defvar consult--source-buffer
-  `(:name     "Buffer"
-    :narrow   ?b
-    :category buffer
-    :face     consult-buffer
-    :history  buffer-name-history    
-    :state    ,#'consult--buffer-state
-    :default  t
-    :items
-    ,(lambda () (consult--buffer-query :sort 'visibility
-                                       :predicate (lambda(buf) (not (member (buffer-name buf) (consult/gtd-buffers))))
-                                       :as #'buffer-name)))
-  "Buffer candidate source for `consult-buffer'.")
+    `( :name     "Buffer"
+       :narrow   ?b
+       :category buffer
+       :face     consult-buffer
+       :history  buffer-name-history    
+       :state    ,#'consult--buffer-state
+       :default  t
+       :items
+       ,(lambda () (consult--buffer-query :sort 'visibility
+                                          :predicate
+                                          (lambda(buf)
+                                            (not (or (member (buffer-name buf) (consult/gtd-buffers))
+                                                     (member (buffer-name buf) (consult/nerver-show-buffers)))))
+                                          :as #'buffer-name)))
+    "Buffer candidate source for `consult-buffer'.")
+  (defvar consult--source-hidden-buffer
+    `( :name     "Hidden Buffer"
+       :narrow   ?\s
+       :hidden   t
+       :category buffer
+       :face     consult-buffer
+       :history  buffer-name-history
+       :action   ,#'consult--buffer-action
+       :items
+       ,(lambda () (consult--buffer-query :sort 'visibility
+                                          :filter 'invert
+                                          :as #'buffer-name)))
+    "Hidden buffer candidate source for `consult-buffer'.")
   (defvar consult--source-recent-file
-  `(:name     "File"
-    :narrow   ?f
-    :category file
-    :preview-key nil
-    :face     consult-file
-    :history  file-name-history
-    :state    ,#'consult--file-state
-    :new      ,#'consult--file-action
-    :enabled  ,(lambda () recentf-mode)
-    :items
-    ,(lambda ()
-       (let ((ht (consult--buffer-file-hash))
-             items)
-         (dolist (file (bound-and-true-p recentf-list) (nreverse items))
-           ;; Emacs 29 abbreviates file paths by default, see
-           ;; `recentf-filename-handlers'.  I recommend to set
-           ;; `recentf-filename-handlers' to nil to avoid any slow down.
-           (unless (eq (aref file 0) ?/)
-             (let (file-name-handler-alist) ;; No Tramp slowdown please.
-               (setq file (expand-file-name file))))
-           (unless (gethash file ht)
-             (push (consult--fast-abbreviate-file-name file) items))))))
-  "Recent file candidate source for `consult-buffer'.")
+    `( :name     "File"
+       :narrow   ?f
+       :category file
+       :preview-key nil
+       :face     consult-file
+       :history  file-name-history
+       :state    ,#'consult--file-state
+       :new      ,#'consult--file-action
+       :enabled  ,(lambda () recentf-mode)
+       :items
+       ,(lambda ()
+          (let ((ht (consult--buffer-file-hash))
+                items)
+            (dolist (file (bound-and-true-p recentf-list) (nreverse items))
+              ;; Emacs 29 abbreviates file paths by default, see
+              ;; `recentf-filename-handlers'.  I recommend to set
+              ;; `recentf-filename-handlers' to nil to avoid any slow down.
+              (unless (eq (aref file 0) ?/)
+                (let (file-name-handler-alist) ;; No Tramp slowdown please.
+                  (setq file (expand-file-name file))))
+              (unless (gethash file ht)
+                (push (consult--fast-abbreviate-file-name file) items))))))
+    "Recent file candidate source for `consult-buffer'.")
   (defvar consult--source-bookmark
-  `(:name     "Bookmark"
-    :narrow   ?m
-    :category bookmark
-    :hidden   t
-    :preview-key nil
-    :face     consult-bookmark
-    :history  bookmark-history
-    :items    ,#'bookmark-all-names
-    :state    ,#'consult--bookmark-state)
-  "Bookmark candidate source for `consult-buffer'.")
+    `( :name     "Bookmark"
+       :narrow   ?m
+       :category bookmark
+       :hidden   t
+       :preview-key nil
+       :face     consult-bookmark
+       :history  bookmark-history
+       :items    ,#'bookmark-all-names
+       :state    ,#'consult--bookmark-state)
+    "Bookmark candidate source for `consult-buffer'.")
   (defvar consult--source-gtd-source
     `( :name     "GTD Buffer"
        :narrow   ?g
@@ -91,7 +102,7 @@
        :history  buffer-name-history
        :state    ,#'consult--buffer-state
        :items    ,#'consult/gtd-buffers))
-
+  
   :config
   (add-to-list 'consult-buffer-sources 'consult--source-gtd-source 'append))
 

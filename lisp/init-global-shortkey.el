@@ -12,7 +12,7 @@
 
 ;; buffer
 (global-set-key (kbd "C-x b") 'consult-buffer)
-;;(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x C-b") 'consult-project-buffer)
 (global-set-key (kbd "C-x a") 'beginning-of-buffer)
 (global-set-key (kbd "C-x e") 'end-of-buffer)
 (global-set-key (kbd "C-x s") 'save-buffer)
