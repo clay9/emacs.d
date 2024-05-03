@@ -162,6 +162,11 @@ Function: return %-10c."
 (defun my/org-agenda-set-buffer-number(number)
   (setq my/org-agenda-buffer-number number))
 
+(defun my/org-agenda-empty-p()
+  (with-current-buffer org-agenda-buffer
+    (unless (next-single-property-change (line-end-position) 'org-marker)
+      (org-agenda nil "n")))
+  (remove-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p))
 (defun my/is-inbox-have-headings()
   "Check inbox.org if have something."
   (with-current-buffer (find-buffer-visiting my/file-inbox)
@@ -181,18 +186,10 @@ Function: Move next buffer;"
      ((= my/org-agenda-buffer-number 2)
       (if (my/is-inbox-have-headings)
 	  (org-agenda nil "i")
-	(org-agenda nil "a")))
+        (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
+        (org-agenda nil "a")))
      ((= my/org-agenda-buffer-number 3)
-      (org-agenda nil "a"))
-     ;; project view, archive view 互相滚动
-     ((= my/org-agenda-buffer-number 4)
-      (org-agenda nil "r")
-      (org-agenda-columns)
-      (org-agenda-next-item 1))
-     ((= my/org-agenda-buffer-number 5)
-      (org-agenda nil "p")
-      (org-agenda-columns)
-      (org-agenda-next-item 1)))))
+      (org-agenda nil "a")))))
 
 
 ;;; 快速显示关闭 item
@@ -360,6 +357,7 @@ Function: refresh agenda bufffer"
 
       (let ((org-agenda-overriding-arguments (list (car args) sd curspan)))
 	(org-agenda-redo) ))))
+
 
 (provide 'init-org-agenda-fun)
 ;;; init-org-agenda-fun.el ends here

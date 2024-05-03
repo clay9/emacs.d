@@ -36,8 +36,12 @@
 (global-set-key (kbd "C-u") 'embark-act) ;; 适应C-u
 
 ;; org-mode
-(global-set-key (kbd "C-\\") #'(lambda() (interactive) (org-agenda nil "a")))
-(global-set-key (kbd "C-、") #'(lambda() (interactive) (org-agenda nil "a"))) ;;make it work when in 中文输入法
+(global-set-key (kbd "C-\\") #'(lambda() (interactive)
+                                 (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
+                                 (org-agenda nil "a")))
+(global-set-key (kbd "C-、") #'(lambda() (interactive)
+                                 (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
+                                 (org-agenda nil "a"))) ;;make it work when in 中文输入法
 
 
 ;; C-s:
