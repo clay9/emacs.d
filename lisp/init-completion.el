@@ -62,6 +62,7 @@
     `( :name     "File"
        :narrow   ?f
        :category file
+       :hidden   t
        :preview-key nil
        :face     consult-file
        :history  file-name-history
