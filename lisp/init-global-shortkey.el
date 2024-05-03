@@ -137,14 +137,6 @@
            ("v" "visit" yas-visit-snippet-file)
            ("i" "insert" yas-new-snippet)]
 
-   ;; [:class transient-column "crontab"
-   ;;         ("c" "crontab" my/crontab)]
-
-   ;; TODO: call transient/c-r 会加载screencast, 导致c-r启动变慢
-   ;;       暂时放到了 myy/ 命令下处理
-   ;; [:class transient-column "screencast"
-   ;;         ("p" "!screencast" myy/screencast-toggle)]
-
    [:class transient-column "api document"
 	   ("k" "lookup" devdocs-lookup)]])
 (global-set-key (kbd "C-r") 'transient/c-r)
