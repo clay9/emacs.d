@@ -112,7 +112,7 @@
   :hook (after-init . marginalia-mode))
 
 
-;;; order candidates
+;;; filter candidates
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))
