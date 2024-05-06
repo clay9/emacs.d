@@ -151,7 +151,9 @@
 (use-package corfu-terminal
   :init
   (unless (display-graphic-p)
-    (corfu-terminal-mode +1)))
+    (corfu-terminal-mode +1))
+  :config
+  (set-face-attribute 'corfu-default nil :foreground "color-240" ))
 
 
 ;;; actions for minibuffer && buffer
