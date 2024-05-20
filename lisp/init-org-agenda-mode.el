@@ -107,7 +107,6 @@
   (defun my/org-capture-prepare-finalize-hook()
     (let ((todo_key (org-get-todo-state)))
       (goto-char (point-min))
-      (when todo_key (org-set-property "CAPTURE_TODO" todo_key))
       (org-set-property "CAPTURE_TIME" (my/org-timestamp-string 0 t))
       (when (or (string= todo_key "TODO")
 	        (string= todo_key "WAITING")
@@ -213,11 +212,11 @@
 	    (org-overriding-columns-format "%24ITEM %10CATEGORY %1PRIORITY %Effort %10CLOCKSUM")
 	    (org-agenda-sorting-strategy '(category-keep))))
 	  ("r" "archive"
-	   ((tags "CAPTURE_TODO={PROJECT}"
+	   ((tags "TODO={PROJECT}"
 		  ((org-agenda-overriding-header "Archive PROJECT")))
-            (tags "CAPTURE_TODO={TODO}"
+            (tags "TODO={TODO}"
 		  ((org-agenda-overriding-header "Archive DONE && CANCEL")))
-	    (tags "CAPTURE_TODO={DONE}"
+	    (tags "TODO={DONE}"
 		  ((org-agenda-overriding-header "Archive Interrupt")
 		   (org-tags-match-list-sublevels nil) )))
 	   ((_ (my/org-agenda-set-buffer-number 5))
