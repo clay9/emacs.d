@@ -248,14 +248,14 @@
 ;;; shortkey
 
 (with-eval-after-load 'org-agenda
-  (defun org-agenda/archive ()
+  (defun transient/org-agenda/archive ()
     (interactive)
-    ;; 1. add tag "ARCHIVE"
-    (org-agenda-set-tags "ARCHIVE" `on)
-    ;; 2. close clock if in this item TODONOW
+    ;; 1. close clock if in this item TODONOW
     (when (and (org-clock-is-active)
                (string= (my/org-agenda-get-property nil "ITEM") org-clock-current-task))
       (org-agenda-clock-out))
+    ;; 2. move to %project%_archive
+    (org-agenda-archive)
     ;; 3. revert org-agenda buff
     (my/org-agenda-redo))
   (transient-define-prefix transient/org-agenda-a()
@@ -326,7 +326,7 @@
       ("=" "+priority" org-agenda-priority-up)
       ("p" "property set" org-agenda-set-property)
       ("e" "effort" org-agenda-set-effort)
-      ("d" "archive done" org-agenda/archive)]
+      ("d" "archive done" transient/org-agenda/archive)]
 
      ["timestamp"
       ("s" "timestamp" transient/org-agenda-timestamp)]

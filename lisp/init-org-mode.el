@@ -15,6 +15,14 @@
           :map org-src-mode-map
           ("C-c C-c" . org-edit-src-exit))
   :config
+  (defun transient/org-mode/archive ()
+    (interactive)
+    ;; 1. close clock if in this item TODONOW
+    (when (and (org-clock-is-active)
+               (string= (my/org-agenda-get-property nil "ITEM") org-clock-current-task))
+      (org-agenda-clock-out))
+    ;; 2. move to %project%_archive
+    (org-archive-subtree))
   (defun transient/org-mode/org-indent-subtree ()
     "Indent current heading && childs heading"
     (interactive)
@@ -118,7 +126,7 @@
       ("=" "property+" org-priority-up)
       ("p" "property" org-set-property)
       ("e" "effort" org-set-effort)
-      ("d" "archive done" org-toggle-archive-tag)]
+      ("d" "archive done" transient/org-mode/archive)]
 
      ["timestamp"
       ("s" "timestamp" transient/org-timestamp)]
