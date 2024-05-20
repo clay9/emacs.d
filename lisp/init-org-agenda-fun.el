@@ -145,13 +145,8 @@ Function: return time_duration since capture_time"
 (defun my/org-agenda-pf-next-p ()
   "Used by `org-agenda-custom-commands' (init-org-agenda-mode.el)
 Function: return %-10c."
-  (let* ((todo_keyword (org-get-todo-state))
-	 (category (org-get-category))
-	 (v ""))
-    (when (string= todo_keyword "PROJECT") (setq v category))
-    ;;(when (string= todo_keyword "TODO") )
-    (when (string= todo_keyword "WAITING") (setq v "[w]"))
-    (format "%-10s" v)))
+  (let* ((category (org-get-category)))
+    (format "%-15s" category)))
 (defun my/org-agenda-pf-project ()
   "Used by `org-agenda-custom-commands' (init-org-agenda-mode.el)
 Function: return time_duration since capture_time"
