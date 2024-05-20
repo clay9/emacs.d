@@ -152,7 +152,35 @@ Function: return %-10c."
     ;;(when (string= todo_keyword "TODO") )
     (when (string= todo_keyword "WAITING") (setq v "[w]"))
     (format "%-10s" v)))
+(defun my/org-agenda-pf-project ()
+  "Used by `org-agenda-custom-commands' (init-org-agenda-mode.el)
+Function: return time_duration since capture_time"
+  (let* ((capture_time (org-entry-get nil "CAPTURE_TIME"))
+	 (v1 "")
+         (todo-state (org-get-todo-state))
+	 (v2 ""))
+    ;; capture_time format
+    (when capture_time
+      (let* ((dura_time (org-time-since capture_time))
+	     (h_seconds (car dura_time))
+	     (seconds (cadr dura_time))
+	     (seconds (+ seconds (* h_seconds 65535) ))
+	     (day (/ seconds 86400))
+	     (seconds (- seconds (* day 86400)))
+	     (hour (/ seconds 3600))
+	     (seconds (- seconds (* hour 3600)))
+	     (minute (/ seconds 60)) )
 
+	(when (> minute 0)
+	  (setq v1 (concat (number-to-string minute) "m")))
+	(when (> hour 0)
+	  (setq v1 (concat (number-to-string hour) "h")))
+	(when (> day 0)
+	  (setq v1 (concat (number-to-string day) "d")))))
+
+    (when (string= todo-state "WAITING")
+      (setq v2 "wait"))
+    (format "%-6s%-9s" v1 v2)))
 
 ;;; 快速切换agenda buffer
 
