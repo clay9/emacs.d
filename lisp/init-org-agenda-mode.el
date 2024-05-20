@@ -165,10 +165,10 @@
         '(("a" "agenda"
 	   ((agenda ""))
 	   ((_ (my/org-agenda-set-buffer-number 1))
-            (org-agenda-files (delete (expand-file-name "gtd_common/archive.org" my/gtd-dir) (org-agenda-files)))
 	    (org-agenda-prefix-format "%-10c%?-12t%?-12s")
 	    (org-agenda-skip-scheduled-if-done t)
 	    (org-agenda-skip-deadline-if-done  t)
+            (org-agenda-archives-mode t)
 	    (org-deadline-warning-days 2)
 	    (org-agenda-sorting-strategy '(time-up todo-state-up scheduled-up deadline-up priority-up))))
 	  ("n" "Next Step"
@@ -272,13 +272,35 @@
 (with-eval-after-load 'org-agenda
   (defun transient/org-agenda/archive ()
     (interactive)
-    ;; 1. close clock if in this item TODONOW
-    (when (and (org-clock-is-active)
-               (string= (my/org-agenda-get-property nil "ITEM") org-clock-current-task))
-      (org-agenda-clock-out))
-    ;; 2. move to %project%_archive
-    (org-agenda-archive)
-    ;; 3. revert org-agenda buff
+    (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+		         (org-agenda-error)))
+	   (buffer (marker-buffer hdmarker))
+	   (pos (marker-position hdmarker))
+	   (inhibit-read-only t)
+           (todo-state))
+      ;; goto org buffer
+      (org-with-remote-undo buffer
+        (with-current-buffer buffer
+	  (widen)
+	  (goto-char pos)
+
+          (setq todo-state (org-get-todo-state))
+          
+          ;; 1. check todo-state
+          (while (not (org-entry-is-done-p))
+            (org-todo))
+          ;; 2. close clock if in this item
+          (when (and (org-clock-is-active)
+                     (string= (org-entry-get nil "ITEM") org-clock-current-task))
+            (org-agenda-clock-out))
+          ;; 3. move to %project%_archive or archive.org::
+          (if (string= "task.org" (buffer-name buffer))
+              (let* ((org-archive-location (if (string= todo-state "PROJECT")
+                                               "archive.org::* Project"
+                                             "archive.org::* Todo && Waiting")))
+                (org-archive-subtree))
+            (org-archive-subtree)))))
+    ;; revert org-agenda buff
     (my/org-agenda-redo))
   (transient-define-prefix transient/org-agenda-a()
     [["view"
@@ -294,27 +316,37 @@
   (transient-define-prefix transient/org-agenda-statistics()
     [["clock report"
       ("d" "day" (lambda() (interactive)
-                   (org-agenda nil "a")
-                   (org-agenda-clockreport-mode)))
-      ("w" "week" (lambda() (interactive)
-                    (org-agenda nil "a")
-                    (org-agenda-week-view)
-                    (org-agenda-clockreport-mode)))
-      ("m" "month" (lambda() (interactive)
+                   (kill-buffer org-agenda-buffer)
+                   (let ((display-buffer-alist nil))
                      (org-agenda nil "a")
-                     (org-agenda-month-view)
-                     (org-agenda-clockreport-mode)))]
+                     (org-agenda-clockreport-mode))))
+      ("w" "week" (lambda() (interactive)
+                    (kill-buffer org-agenda-buffer)
+                    (let ((display-buffer-alist nil))
+                      (org-agenda nil "a")
+                      (org-agenda-week-view)
+                      (org-agenda-clockreport-mode))))
+      ("m" "month" (lambda() (interactive)
+                     (kill-buffer org-agenda-buffer)
+                     (let ((display-buffer-alist nil))
+                       (org-agenda nil "a")
+                       (org-agenda-month-view)
+                       (org-agenda-clockreport-mode))))]
      ["log"
       ("l" "!log" (lambda() (interactive) (org-agenda-log-mode 'clockcheck)))]
      ["project"
       ("p" "project" (lambda() (interactive)
-                       (org-agenda nil "p")
-                       (org-agenda-columns)
-                       (org-agenda-next-item 1)))
+                       (kill-buffer org-agenda-buffer)
+                       (let ((display-buffer-alist nil))
+                         (org-agenda nil "p")
+                         (org-agenda-columns)
+                         (org-agenda-next-item 1))))
       ("a" "archive" (lambda() (interactive)
-                       (org-agenda nil "r")
-                       (org-agenda-columns)
-                       (org-agenda-next-item 1)))]])
+                       (kill-buffer org-agenda-buffer)
+                       (let ((display-buffer-alist nil))
+                         (org-agenda nil "r")
+                         (org-agenda-columns)
+                         (org-agenda-next-item 1))))]])
   (transient-define-prefix transient/org-filter()
     [["filter"
       ("t" "tags" org-search-view)
@@ -364,6 +396,7 @@
       ("g" "clock go" org-agenda-clock-goto)]])
 
   (define-key org-agenda-mode-map (kbd "C-j") 'transient/org-agenda-mode)
+  (define-key org-agenda-mode-map (kbd "l") 'transient/org-agenda-statistics)
 
   ;; previous && next
   (define-key org-agenda-mode-map (kbd "p") 'org-agenda-previous-item)
@@ -376,6 +409,9 @@
   (define-key org-agenda-mode-map (kbd "TAB") 'my/org-agenda-show)
   (define-key org-agenda-mode-map (kbd "RET") 'my/org-agenda-enter)
   (define-key org-agenda-mode-map (kbd "a") 'my/org-agenda-entry-text-show)
+
+  ;; entry done
+  (define-key org-agenda-mode-map (kbd "d") 'transient/org-agenda/archive)
 
   ;; quit && refresh
   (define-key org-agenda-mode-map (kbd "q") #'(lambda() (interactive)

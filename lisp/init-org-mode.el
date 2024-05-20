@@ -17,12 +17,21 @@
   :config
   (defun transient/org-mode/archive ()
     (interactive)
-    ;; 1. close clock if in this item TODONOW
-    (when (and (org-clock-is-active)
-               (string= (my/org-agenda-get-property nil "ITEM") org-clock-current-task))
-      (org-agenda-clock-out))
-    ;; 2. move to %project%_archive
-    (org-archive-subtree))
+    (let* ((todo-state (org-get-todo-state)))
+      ;; 1. check todo-state
+      (while (not (org-entry-is-done-p))
+        (org-todo))
+      ;; 2. close clock if in this item
+      (when (and (org-clock-is-active)
+                 (string= (org-entry-get nil "ITEM") org-clock-current-task))
+        (org-agenda-clock-out))
+      ;; 3. move to %project%_archive or archive.org::
+      (if (string= "task.org" (buffer-name buffer))
+          (let* ((org-archive-location (if (string= todo-state "PROJECT")
+                                           "archive.org::* Project"
+                                         "archive.org::* Todo && Waiting")))
+            (org-archive-subtree))
+        (org-archive-subtree))))
   (defun transient/org-mode/org-indent-subtree ()
     "Indent current heading && childs heading"
     (interactive)

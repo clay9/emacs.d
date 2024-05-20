@@ -247,9 +247,7 @@ Fucntion: enter the item org-file"
   (kill-buffer org-agenda-buffer))
 
 
-;;; 按r 刷新
-
-(require 'org-archive)
+;;; 按r refresh buffer
 
 (defun my/org-agenda-redo ()
   "Used in agenda-buffer by user;
@@ -257,8 +255,6 @@ Function: refresh agenda bufffer"
   (interactive)
   ;;file: inbox.org => task.org, gtd/xxx.org
   (my/org-refile-file-inbox)
-  ;;file: task.org  => archive.org
-  (no-message 'no-confirm 'my/org-archive-file-task)  
   ;;save
   (no-message 'org-save-all-org-buffers)
   ;;call origin redo
@@ -299,22 +295,6 @@ Function: refresh agenda bufffer"
 		  ;; rm tags && refile
 		  (org-toggle-tag tag 'off)
 		  (org-refile nil nil (list nil file nil pos)))))))))))
-(defun my/org-archive-file-task()
-  (with-current-buffer  (find-buffer-visiting my/file-task)
-    ;; show level 1 headings
-    (widen)
-    (org-fold-show-all '(headings))
-    (no-message 'org-shifttab 1)
-    (goto-char (point-min))
-
-    ;;archive
-    (org-archive-all-matches
-     (lambda (_beg end)
-       (let ((case-fold-search nil))
-         (or (string= "DONE" (org-get-todo-state))
-             (string= "CANCEL" (org-get-todo-state))
-             (org-in-archived-heading-p t))))
-     nil)))
 
 
 ;;; org-agenda-day|week|month|year-view 切换上一个与下一个
