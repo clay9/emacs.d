@@ -37,11 +37,15 @@
 
 ;; org-mode
 (global-set-key (kbd "C-\\") #'(lambda() (interactive)
-                                 (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
-                                 (org-agenda nil "a")))
+                                 (if (buffer-live-p (get-buffer "*Org Agenda*"))
+                                     (kill-buffer org-agenda-buffer-name)
+                                   (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
+                                   (org-agenda nil "a"))))
 (global-set-key (kbd "C-、") #'(lambda() (interactive)
-                                 (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
-                                 (org-agenda nil "a"))) ;;make it work when in 中文输入法
+                                 (if (buffer-live-p (get-buffer "*Org Agenda*"))
+                                     (kill-buffer org-agenda-buffer-name)
+                                   (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
+                                   (org-agenda nil "a")))) ;;make it work when in 中文输入法
 
 
 ;; C-s:

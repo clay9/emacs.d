@@ -181,6 +181,7 @@ Function: return time_duration since capture_time"
     (when (string= todo-state "WAITING")
       (setq v2 "wait"))
     (format "%-6s%-9s" v1 v2)))
+
 
 ;;; 快速切换agenda buffer
 
@@ -233,11 +234,11 @@ Fucntion: toggle the item show|hide"
         (if (string-equal my/last-show-entry current-show-entry)
 	    (funcall (lambda ()
 		     (setq my/last-show-entry "")
-		     (org-agenda-goto t)
+		     (org-agenda-goto)
                      (previous-buffer)
                      (select-window win)))
 	  (setq my/last-show-entry current-show-entry)
-	  (org-agenda-goto t)
+	  (org-agenda-goto)
 	  (org-show-entry)
 	  (org-narrow-to-subtree)
 	  (select-window win))))))
@@ -245,16 +246,10 @@ Fucntion: toggle the item show|hide"
   "Used in agenda-buffer by user;
 Fucntion: enter the item org-file"
   (interactive)
-  ;; switch-to org-file
-  (org-agenda-switch-to)
-
-  (let ((pos (point)))
-    ;; show contents, shift-tab
-    (org-content)
-    ;; narrow
-    (org-narrow-to-subtree)
-    ;;
-    (goto-char pos)))
+  (org-agenda-goto)
+  (org-show-entry)
+  (org-narrow-to-subtree)
+  (kill-buffer org-agenda-buffer))
 
 
 ;;; 按r 刷新
