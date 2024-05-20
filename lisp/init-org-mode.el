@@ -203,7 +203,7 @@
           ("hbb" . "blocktag")
           ("hbi" . "inlinetag")
           ;; src
-          ("sc" . "c++")
+          ("sc" . "C++")
           ("ss" . "shell")
 	  ("se" . "emacs-lisp")
 	  ("sp" . "plantuml :exports results :eval no-export :file xxx.png")))
