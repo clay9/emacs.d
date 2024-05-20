@@ -165,6 +165,7 @@
         '(("a" "agenda"
 	   ((agenda ""))
 	   ((_ (my/org-agenda-set-buffer-number 1))
+            (org-agenda-files (delete (expand-file-name "gtd_common/archive.org" my/gtd-dir) (org-agenda-files)))
 	    (org-agenda-prefix-format "%-10c%?-12t%?-12s")
 	    (org-agenda-skip-scheduled-if-done t)
 	    (org-agenda-skip-deadline-if-done  t)
