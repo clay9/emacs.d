@@ -333,7 +333,13 @@
                        (org-agenda-month-view)
                        (org-agenda-clockreport-mode))))]
      ["log"
-      ("l" "!log" (lambda() (interactive) (org-agenda-log-mode 'clockcheck)))]
+      ("l" "!log" (lambda() (interactive)
+                    (if (org-agenda-check-type nil 'agenda)
+                        (org-agenda-log-mode 'clockcheck)
+                      (kill-buffer org-agenda-buffer)
+                      (let ((display-buffer-alist nil))
+                        (org-agenda nil "a")
+                        (org-agenda-log-mode 'clockcheck)))))]
      ["project"
       ("p" "project" (lambda() (interactive)
                        (kill-buffer org-agenda-buffer)
