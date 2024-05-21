@@ -94,6 +94,19 @@ Call a second time to restore the original window configuration."
              (if was-dedicated "no longer " "")
              (buffer-name))))
 
+
+;;; save | restore window configure
+
+(setq window-list nil)
+(defun transient/c-s/save-window()
+  (interactive)
+  (push (current-window-configuration) window-list))
+(defun transient/c-s/restore-window()
+  (interactive)
+  (let ((win-config (pop window-list)))
+    (if win-config
+        (set-window-configuration win-config)
+      (message "window configuration empty"))))
 
 (provide 'init-windows)
 ;;; init-windows.el ends here

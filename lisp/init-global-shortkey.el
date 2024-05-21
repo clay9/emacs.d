@@ -64,9 +64,7 @@
    [:class transient-column "sexp"
            ("i" "put" embark-toggle-highlight :transient t)
            ("p" "previous" embark-previous-symbol :transient t)
-           ("n" "next" embark-next-symbol :transient t)]
-
-   [:class transient-column "comment"
+           ("n" "next" embark-next-symbol :transient t)
            ("c" "!comment" comment-or-uncomment-region)]
 
    [:class transient-column "org"
@@ -76,6 +74,10 @@
 			        (org-agenda-clock-out)
 			        (my/org-agenda-redo)))]
 
+   [:class transient-column "window"
+           ("r" "save" transient/c-s/save-window)
+           ("C-r" "restore" transient/c-s/restore-window)]
+   
    [:class transient-column "file"
            ("C-d" "delete current" my/delete-current-file)]])
 (global-set-key (kbd "C-s") 'transient/c-s)
