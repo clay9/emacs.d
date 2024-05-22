@@ -26,7 +26,7 @@
                  (string= (org-entry-get nil "ITEM") org-clock-current-task))
         (org-agenda-clock-out))
       ;; 3. move to %project%_archive or archive.org::
-      (if (string= "task.org" (buffer-name buffer))
+      (if (string= "task.org" (buffer-name (current-buffer)))
           (let* ((org-archive-location (if (string= todo-state "PROJECT")
                                            "archive.org::* Project"
                                          "archive.org::* Todo && Waiting")))
