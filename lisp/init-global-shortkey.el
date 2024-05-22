@@ -162,7 +162,6 @@
 (global-set-key (kbd "s-k") 'nil)
 
 (global-set-key (kbd "C-j") 'nil) ;;for major-mode
-(global-set-key (kbd "C-o") 'nil)
 (global-set-key (kbd "C-t") 'nil)
 (global-set-key (kbd "C-z") 'nil)
 
