@@ -168,7 +168,9 @@
         '(("a" "agenda"
 	   ((agenda ""))
 	   ((_ (my/org-agenda-set-buffer-number 1))
-	    (org-agenda-prefix-format "%-10c%?-12t%?-12s")
+	    (org-agenda-prefix-format "%-10c%?-12t%?-19s")
+            (org-agenda-todo-keyword-format "")
+            (org-agenda-remove-tags t)
 	    (org-agenda-skip-scheduled-if-done t)
 	    (org-agenda-skip-deadline-if-done  t)
             (org-agenda-archives-mode t)
