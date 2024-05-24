@@ -46,7 +46,7 @@
 (require 'init-flymake)
 (require 'init-eglot)
 (require 'init-compile)
-;;(require 'init-gdb) ;; TODO re-write
+(require 'init-gdb)
 (require 'init-ai)
 
 ;; project
