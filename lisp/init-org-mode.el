@@ -209,7 +209,7 @@
 
   ;; structure template
   (setq org-structure-template-alist
-        '(("e" . "example") ;;int block 不受标记影响
+        '(("e" . "example") ;;int block 不受标记影响          
           ("c" . "center") ;;居中显示
           ("d" . "details-summary")
           ("q" . "quote")
@@ -220,6 +220,7 @@
           ("hbb" . "blocktag")
           ("hbi" . "inlinetag")
           ;; src
+          ("sa" . "artist")
           ("sc" . "C++")
           ("ss" . "shell")
 	  ("se" . "emacs-lisp")
