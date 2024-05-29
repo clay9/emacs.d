@@ -1,5 +1,5 @@
 # key: post
-# name: hugo post
+# name: hugo post (key: post)
 # --
 #+title: $1
 #+date: `(format-time-string "%Y-%m-%d %T")`

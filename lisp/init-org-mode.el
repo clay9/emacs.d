@@ -209,16 +209,17 @@
 
   ;; structure template
   (setq org-structure-template-alist
-        '(("e" . "example") ;;int block 不受标记影响          
-          ("c" . "center") ;;居中显示
-          ("d" . "details-summary")
+        '(;; org normal
+          ("e" . "example") ;;in block 不受标记(粗体,斜体等)影响
+          ("c" . "center")
           ("q" . "quote")
           ;; html5
-          ("ha" . "aside") ;;侧边显示
+          ("hd" . "details-summary")
+          ("ha" . "aside")
           ("hm" . "mark")
-          ("hs" . "description")
-          ("hbb" . "blocktag")
-          ("hbi" . "inlinetag")
+          ;;("hs" . "description") work, but nothing
+          ;;("hbb" . "blocktag") not work
+          ;;("hbi" . "inlinetag") not work
           ;; src
           ("sa" . "artist")
           ("sc" . "C++")
