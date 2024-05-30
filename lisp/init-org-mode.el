@@ -65,7 +65,7 @@
                              (t nil)))
          (followed_begin (let* ((ori (substring type (+ 1 (length key)))))
                           (cond ((eql 0 (string-match "sp" key)) ;src plantuml
-                                 (concat "src " ori " -n"))
+                                 (concat "src " ori))
                                 ((eql 0 (string-match "s" key)) ;src
                                  (concat "src " ori " -n"))
                                 (t ori))))
