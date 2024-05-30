@@ -52,21 +52,28 @@
            ;; if \t, then read input
            (`("\t" . ,_) (read-string "Structure type: "))
            ;; get key && val
-           ;; key is tring; val is list
+           ;; key is string; val is list
            (`(,key ,val . ,_) (concat key " " val)))))
 
   (let* ((column (current-indentation))
          ;; get really val
          (key (format "%s" (car (split-string type))))
-         (is_src (eql 0 (string-match "s" key)))
-         (is_summary_details (eql 0 (string-match "d" key)))
-         (val (let* ((ori (substring type (+ 1 (length key))))
-                     (real ori))
-                (when is_src (setq real (concat "src " ori " -n")))
-                (when is_summary_details (setq real "details"))
-                real))
+         (before_begin (cond ((eql 0 (string-match "he" key)) ;expand
+                              "#+attr_shortcode: expand-name \"...\"")
+                             ((eql 0 (string-match "hh" key)) ;hint 
+                              "#+attr_shortcode: info | warning | danger")
+                             (t nil)))
+         (followed_begin (let* ((ori (substring type (+ 1 (length key)))))
+                          (cond ((eql 0 (string-match "sp" key)) ;src plantuml
+                                 (concat "src " ori " -n"))
+                                ((eql 0 (string-match "s" key)) ;src
+                                 (concat "src " ori " -n"))
+                                (t ori))))
+         (after_begin (cond ((eql 0 (string-match "hc" key)) ;columns
+                             "@@hugo:<--->@@")
+                             (t nil)))
          (pos))
-    (message "key:%s val:%s" key val)
+    (message "key:%s; before_begin:%s; followed_begin:%s" key before_begin followed_begin)
 
     ;; get #+begin line
     (if (save-excursion (skip-chars-backward " \t") (bolp))
@@ -74,20 +81,34 @@
       (insert "\n"))
 
     (save-excursion
+      ;; insert before_begin
+      (when before_begin
+        (indent-to column)
+        (insert before_begin)
+        (insert "\n"))
+      
       ;; insert #+begin
       (indent-to column)
-      (insert (format "#+begin_%s\n" val))
+      (insert (format "#+begin_%s\n" followed_begin))
 
       ;; line between #+begin and #+end
       (unless (bolp) (insert "\n"))
       (setq pos (point))
+
+      ;; insert after_begin
+      (when after_begin
+        (indent-to column)
+        (insert "\n")
+        (indent-to column)
+        (insert after_begin)
+        (indent-to column))
 
       ;; #+end line
       (insert "\n")
 
       ;; insert #+end
       (indent-to column)
-      (insert (format "#+end_%s"  (car (split-string val))))
+      (insert (format "#+end_%s"  (car (split-string followed_begin))))
 
       ;; insert \n after #+end-line
       (if (looking-at "[ \t]*$") (replace-match "")
@@ -96,10 +117,7 @@
 
     ;;
     (goto-char pos)
-    (indent-to column)
-
-    ;; insert summary key:+ 保留为不使用
-    (when is_summary_details (org-insert-structure-template "summary"))))
+    (indent-to column)))
   (transient-define-prefix transient/org-statistics()
     ["columns"
      ("1" "view" org-columns)
@@ -153,7 +171,7 @@
       ("C-e" "export" transient/org-export)]])
 
   :config
-  
+
 ;;; show type
 
   (use-package org-bullets :init (with-eval-after-load 'org (org-bullets-mode)))
@@ -210,21 +228,19 @@
   ;; structure template
   (setq org-structure-template-alist
         '(;; org normal
-          ("e" . "example") ;;in block 不受标记(粗体,斜体等)影响
+          ("e" . "example")
           ("c" . "center")
           ("q" . "quote")
           ;; html5
-          ("hd" . "details-summary")
-          ("ha" . "aside")
-          ("hm" . "mark")
-          ;;("hs" . "description") work, but nothing
-          ;;("hbb" . "blocktag") not work
-          ;;("hbi" . "inlinetag") not work
+          ;;("ha" . "aside") ;; not work. need css
+          ("hc" . "columns")
+          ("he" . "expand")
+          ("hh" . "hint")          
           ;; src
           ("sa" . "artist")
           ("sc" . "C++")
+          ("se" . "emacs-lisp")
           ("ss" . "shell")
-	  ("se" . "emacs-lisp")
 	  ("sp" . "plantuml :exports results :eval no-export :file xxx.png")))
 
   ;; active Babel languages
