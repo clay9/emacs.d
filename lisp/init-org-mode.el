@@ -295,5 +295,9 @@
 (with-eval-after-load 'org-persist
   (setq org-persist-directory (concat my/ecfg-dir "org-persist/")))
 
+
+;; fix org-ctags bug: https://emacs.stackexchange.com/questions/76351/how-to-follow-an-internal-link-in-recent-org-mode
+(with-eval-after-load 'org-ctags (setq org-open-link-functions nil))
+
 (provide 'init-org-mode)
 ;;; init-org-mode.el ends here
