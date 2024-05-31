@@ -15,6 +15,24 @@
           :map org-src-mode-map
           ("C-c C-c" . org-edit-src-exit))
   :config
+  (defun transient/org-mode/toggle-block()
+    (interactive)
+    (let* ((pos (point))
+           (times 4)
+           (continue t)
+           (found nil))
+      (while (and continue
+                  (> times 0))
+        (setq continue nil)
+        (setq times (- times 1))
+        (setq found t)
+        (condition-case nil
+            (org-fold-hide-block-toggle)
+          (error (setq continue t)
+                 (setq found nil)
+                 (org-up-element))))
+      (when (not found)
+        (goto-char pos))))
   (defun transient/org-mode/archive ()
     (interactive)
     (let* ((todo-state (org-get-todo-state)))
@@ -131,7 +149,7 @@
      ("a" "ascill" org-ascii-export-to-ascii)
      ("m" "md" org-md-export-to-markdown)
      ("h" "html" org-html-export-to-html)
-     ("t" "texinfo" org-texinfo-export-to-texinfo)])
+     ("t" "texinfo" org-texinfo-export-to-texinfo)])  
 
   (transient-define-prefix transient/org-mode()
     [["subtree"
@@ -141,7 +159,7 @@
       ("r" "refile" org-refile)
       ("w" "copy" org-copy-subtree)
       ("y" "paste" org-paste-subtree)
-      ("a" "archive" org-archive-subtree)]
+      ("d" "archive done" transient/org-mode/archive)]
 
      ["statistics"
       ("l" "statistics" transient/org-statistics :transient t)]
@@ -149,11 +167,8 @@
      ["add info"
       ("t" "todo" org-todo)
       (":" "tag" org-set-tags-command)
-      ("-" "property-" org-priority-down)
-      ("=" "property+" org-priority-up)
       ("p" "property" org-set-property)
-      ("e" "effort" org-set-effort)
-      ("d" "archive done" transient/org-mode/archive)]
+      ("e" "effort" org-set-effort)]
 
      ["timestamp"
       ("s" "timestamp" transient/org-timestamp)]
@@ -163,7 +178,8 @@
       ("o" "open" org-open-at-point)
       ("b" "goback" org-mark-ring-goto)]
 
-     ["src"
+     ["block"
+      ("TAB" "!hs" transient/org-mode/toggle-block)
       ("s" "add" transient/org-mode/org-insert-structure-template)
       ("C-j" "exit" org-edit-special)]
 
