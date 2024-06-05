@@ -13,10 +13,6 @@
         '(("clay9/emacs.d"           "~/.emacs.d")
           ("clay9/blog"              "~/my/blog")
           ("clay9/gtd"               "~/my/gtd")))
-  (setq magit-repolist-my-repos-company
-        '(("clay9/blog_company"      "~/yy/blog_company")
-          ;; ("clay9/blog_company"      "~/yy/nginx" ("--branch=gh-pages"))
-          ))
   (setq magit-repolist-my-repos-qy
         '(("qygame/build_publish"    "~/qy/ops/build_publish")
           ("qygame/compiler"         "~/qy/ops/compiler")
@@ -37,8 +33,7 @@
   (defun magit-repos/get-repos()
     (cl-case magit-repolist-index
       (0 magit-repolist-my-repos-my)
-      (1 magit-repolist-my-repos-company)
-      (2 magit-repolist-my-repos-qy)))
+      (1 magit-repolist-my-repos-qy)))
   (defun reset-magit-repository-directories()
     (let* ((new-list ))
       (dolist (v (magit-repos/get-repos))
@@ -57,9 +52,8 @@
   (defun magit-repos/switch ()
     (interactive)
     (cl-case magit-repolist-index
-      (0 (setq magit-repolist-index 1) (rename-buffer "repos company"))
-      (1 (setq magit-repolist-index 2) (rename-buffer "repos qy"))
-      (2 (setq magit-repolist-index 0) (rename-buffer "repos my")))
+      (0 (setq magit-repolist-index 1) (rename-buffer "repos qy"))
+      (1 (setq magit-repolist-index 0) (rename-buffer "repos my")))
     (setq magit-repository-directories (reset-magit-repository-directories))
     (revert-buffer))
   (defun magit-repolist/magit-repolist-fetch()
