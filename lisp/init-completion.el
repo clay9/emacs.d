@@ -27,7 +27,7 @@
           (add-to-list 'result (buffer-name buf) t)))
       result))
   (defun consult/nerver-show-buffers ()
-    '("repos my" "repos company" "repos qy" ".DS_Store" "*Messages*" "*Org Agenda*" "*Magit Repositories*"))
+    '("repos my" "repos qy" ".DS_Store" "*Messages*" "*Org Agenda*" "*Magit Repositories*"))
       
   (defvar consult--source-buffer
     `( :name     "Buffer"

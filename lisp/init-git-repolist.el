@@ -108,7 +108,7 @@
     ;;    TODO: also set index=0 && rename-buffer "repos my"
     (interactive)
     (let ((buff_already_exist nil))
-      (dolist (buf '("repos my" "repos company" "repos qy"))
+      (dolist (buf '("repos my" "repos qy"))
         (when (and (get-buffer buf) (not buff_already_exist))
           (setq buff_already_exist t)
           (switch-to-buffer buf)))
