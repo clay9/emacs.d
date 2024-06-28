@@ -9,23 +9,22 @@
              '(c-or-c++-mode . c-or-c++-ts-mode))
 
 
-;;; k&r style
+;;; google style
 (with-eval-after-load 'c-ts-mode
-  (setq c-ts-mode-indent-offset 4)
-  
-  ;; (defun kr-indent-style()
-  ;;   "Override the built-in BSD indentation style with some additional rules."
-  ;;   `(;; Here are your custom rules
-  ;;     ((node-is ")") parent-bol 0)
-  ;;     ((match nil "argument_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
-  ;;     ((parent-is "argument_list") prev-sibling 0)
-  ;;     ((match nil "parameter_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
-  ;;     ((parent-is "parameter_list") prev-sibling 0)
+  (defun google-c-style()
+    "Override the built-in `gnu' indentation style with some additional rules."
+    `(;; Here are your custom rules
+      ((node-is ")") parent-bol 0)
+      ((match nil "argument_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
+      ((parent-is "argument_list") prev-sibling 0)
+      ((match nil "parameter_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
+      ((parent-is "parameter_list") prev-sibling 0)
+      ((n-p-gp nil nil "namespace_definition") grand-parent 0)
+      ((node-is "access_specifier") parent-bol 1)
 
-  ;;     ;; Append here the indent style you want as base
-  ;;     ,@(alist-get 'bsd (c-ts-mode--indent-styles 'cpp))))
-  ;; (setq c-ts-mode-indent-style #'my-indent-style)
-  )
+      ;; Append here the indent style you want as base
+      ,@(alist-get 'gnu (c-ts-mode--indent-styles 'cpp))))
+  (setq c-ts-mode-indent-style #'google-c-style))
 
 
 ;;; key
