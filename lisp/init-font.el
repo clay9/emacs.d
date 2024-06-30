@@ -6,14 +6,14 @@
 ;; mac os
 (when (eq system-type 'darwin)
   ;; set English Font
-  (set-face-attribute 'default nil :font "Monaco 14")
+  (set-face-attribute 'default nil :font "Monaco 18")
 
   ;; set Chinese Font
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
     (when window-system
       (set-fontset-font (frame-parameter nil 'font)
 			charset
-			(font-spec :family "冬青黑体简体中文 W3" :size 16)))))
+			(font-spec :family "冬青黑体简体中文 W3" :size 22)))))
 
 
 ;; linux
