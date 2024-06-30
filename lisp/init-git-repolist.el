@@ -44,7 +44,7 @@
   (transient-define-prefix transient/magit-repolist()
     [["fetch"
       ("f" "pull" magit-repolist/magit-repolist-fetch)
-      ("F" "fetch all" magit-repolist/magit-repolist-fetch-all)]
+      ("F" "Pull all" magit-repolist/magit-repolist-fetch-all)]
      ["push"
       ("p" "push" magit-repolist/magit-repolist-push)]
      ["clone"
@@ -74,10 +74,10 @@
            (i 0))
       (dolist (repo repolist)
         (let* ((default-directory (file-name-as-directory repo))
-               (msg (format "(%s/%s) Fetch in %s..."
+               (msg (format "(%s/%s) Pull in %s..."
                             (cl-incf i) l default-directory)))
           (message msg)
-          (magit-call-git "remote" "update")
+          (magit-call-git "pull")
           (message (concat msg "  done")))))
     (magit-refresh-buffer))
   (defun magit-repolist/magit-repolist-push()
