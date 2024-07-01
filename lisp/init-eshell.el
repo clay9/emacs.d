@@ -4,16 +4,17 @@
 
 
 (use-package eshell
-  ;; :bind ( :map eshell-prompt-mode-map
-  ;;         ("C-c C-p" . eshell-previous-prompt))
   :config
+  (setq eshell-directory-name (concat my/ecfg-dir "eshell/")))
+
+(with-eval-after-load 'esh-mode
   (fmakunbound 'eshell/clear-scrollback)
+  
   (defun eshell/clear ()
     "Override => use eshell/clear-scrollback"
     (let ((inhibit-read-only t))
-      (erase-buffer)))
-  :config
-  (setq eshell-directory-name (concat my/ecfg-dir "eshell/")))
+      (erase-buffer))))
+
 
 (provide 'init-eshell)
 ;;; init-eshell.el ends here
