@@ -44,6 +44,7 @@
 
 ;; progn editor
 (require 'init-flymake)
+(require 'init-style-format)
 (require 'init-eglot)
 (require 'init-compile)
 (require 'init-gdb)

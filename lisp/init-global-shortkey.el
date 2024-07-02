@@ -77,10 +77,13 @@
    [:class transient-column "window"
            ("r" "save" transient/c-s/save-window)
            ("C-r" "restore" transient/c-s/restore-window)]
-   
+
    [:class transient-column "file"
-           ("C-d" "delete current" my/delete-current-file)]])
+           ("C-d" "delete current" my/delete-current-file)
+           ("TAB" "indent file" (lambda() (interactive)
+                                  (indent-region (point-min) (point-max))))]])
 (global-set-key (kbd "C-s") 'transient/c-s)
+
 
 
 ;; C-d: project
