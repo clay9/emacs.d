@@ -144,6 +144,7 @@
            ("e" "eshell" project-eshell)]
 
    [:class transient-column "snippet"
+           ("s" "show all" yas-describe-tables)
            ("v" "visit" yas-visit-snippet-file)
            ("i" "insert" yas-new-snippet)]
 
