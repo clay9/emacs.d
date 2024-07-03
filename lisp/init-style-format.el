@@ -6,10 +6,9 @@
 
 (require 'flymake-google-cpplint)
 
-(custom-set-variables
- '(flymake-google-cpplint-command "/home/clay/.local/bin/cpplint")
- '(flymake-google-cpplint-verbose "--verbose=0")
- '(flymake-google-cpplint-filter "--filter=-legal/copyright"))
+(setq flymake-google-cpplint-command "/home/clay/.local/bin/cpplint")
+(setq flymake-google-cpplint-verbose "--verbose=0")
+(setq flymake-google-cpplint-filter "--filter=-legal/copyright,-build/header_guard")
 
 (add-hook 'c++-ts-mode-hook 'flymake-google-cpplint-load)
 
