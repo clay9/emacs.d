@@ -138,9 +138,9 @@
 ;; C-r: tools
 (transient-define-prefix transient/c-r()
   "Common comands."
-  [[:class transient-column "tanslate"
-           ("j" "point & region" my/translate-at-point)
-           ("b" "buffer" my/translate-buffer)]
+  [;; [:class transient-column "tanslate"
+   ;;         ("j" "point & region" my/translate-at-point)
+   ;;         ("b" "buffer" my/translate-buffer)]
 
    [:class transient-column "shell"
            ("r" "term" ansi-term)

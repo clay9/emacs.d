@@ -16,11 +16,14 @@
     `(;; Here are your custom rules
       ((node-is ")") parent-bol 0)
       ((match nil "argument_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
-      ((parent-is "argument_list") prev-sibling 0)
+      ((parent-is "argument_list") first-sibling 1)
+      ((match "parameter_declaration" "parameter_list" nil nil nil) first-sibling 1)
       ((match nil "parameter_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
       ((parent-is "parameter_list") prev-sibling 0)
       ((n-p-gp nil nil "namespace_definition") grand-parent 0)
       ((node-is "access_specifier") parent-bol 1)
+      ((node-is "field_initializer_list") parent-bol 4)
+      ((match nil "field_initializer_list" nil 2 nil) parent-bol 2)
 
       ;; Append here the indent style you want as base
       ,@(alist-get 'gnu (c-ts-mode--indent-styles 'cpp))))
@@ -35,7 +38,7 @@
 	     ("k" "references" xref-find-references)
 	     ("f" "go-forward" xref-go-forward)
 	     ("b" "go-back" xref-go-back)]
-     
+
      [:class transient-column "rename"
 	     ("r" "rename" eglot-rename)]])
   (define-key c++-ts-mode-map (kbd "C-j") 'my/transient/c++-ts-mode))

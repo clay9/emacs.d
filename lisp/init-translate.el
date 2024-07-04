@@ -2,11 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
+;;; TODO(wcq) when call `C-r', this not work!
 (use-package go-translate
   :commands (my/translate-at-point my/translate-buffer)
   :config
   (use-package posframe)
-  
+
   (setq gts-translate-list '(("en" "zh")))
   (setq gts-cache-enable nil)
 
