@@ -24,6 +24,7 @@
       ((node-is "access_specifier") parent-bol 1)
       ((node-is "field_initializer_list") parent-bol 4)
       ((match nil "field_initializer_list" nil 2 nil) parent-bol 2)
+      ;;((node-is "<<") great-grand-parent 4)
 
       ;; Append here the indent style you want as base
       ,@(alist-get 'gnu (c-ts-mode--indent-styles 'cpp))))
@@ -33,14 +34,9 @@
 ;;; key
 (with-eval-after-load 'c-ts-mode
   (transient-define-prefix my/transient/c++-ts-mode()
-    [[:class transient-column "nav"
-	     ("j" "definition" xref-find-definitions)
-	     ("k" "references" xref-find-references)
-	     ("f" "go-forward" xref-go-forward)
-	     ("b" "go-back" xref-go-back)]
-
-     [:class transient-column "rename"
-	     ("r" "rename" eglot-rename)]])
+    [:class transient-column "nav"
+	    ("f" "go-forward" xref-go-forward)
+	    ("b" "go-back" xref-go-back)])
   (define-key c++-ts-mode-map (kbd "C-j") 'my/transient/c++-ts-mode))
 
 

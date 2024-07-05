@@ -17,5 +17,9 @@
 
   (add-hook 'after-init-hook 'reapply-themes))
 
+;; set face
+(with-eval-after-load 'hi-lock
+  (set-face-attribute 'hi-yellow nil :background "color-29"))
+
 (provide 'init-themes)
 ;;; init-themes.el ends here

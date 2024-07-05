@@ -17,7 +17,7 @@
   (add-to-list 'consult-buffer-filter "\\`\\*Backtrace\\*\\'")
   (add-to-list 'consult-buffer-filter "\\*EGLOT*")
   (add-to-list 'consult-buffer-filter "magit-process:*")
-  
+
   :init
   (defun consult/gtd-buffers()
     (let* ((buf-list (mapcar 'get-file-buffer (directory-files-recursively "~/my/gtd" ".org")))
@@ -28,13 +28,13 @@
       result))
   (defun consult/nerver-show-buffers ()
     '("repos my" "repos qy" ".DS_Store" "*Messages*" "*Org Agenda*" "*Magit Repositories*"))
-      
+
   (defvar consult--source-buffer
     `( :name     "Buffer"
        :narrow   ?b
        :category buffer
        :face     consult-buffer
-       :history  buffer-name-history    
+       :history  buffer-name-history
        :state    ,#'consult--buffer-state
        :default  t
        :items
@@ -103,7 +103,7 @@
        :history  buffer-name-history
        :state    ,#'consult--buffer-state
        :items    ,#'consult/gtd-buffers))
-  
+
   :config
   (add-to-list 'consult-buffer-sources 'consult--source-gtd-source 'append))
 
@@ -157,11 +157,25 @@
 
 
 ;;; actions for minibuffer && buffer
-(use-package embark)
+(use-package embark
+  :config
+  ;;; id keymap
+  (setcdr embark-identifier-map nil)
+  (define-keymap
+    :keymap embark-identifier-map
+    "R" #'eglot-rename
+    "r" #'xref-find-references
+    "d" #'xref-find-definitions
+    "w" #'embark-copy-as-kill
+    "p" #'embark-previous-symbol
+    "n" #'embark-next-symbol
+    "s" #'consult-line
+    "h" #'embark-toggle-highlight))
 
 (use-package embark-consult
-  :after (embark consult)
-  :hook (embark-collect-mode . embark-consult-preview-minor-mode))
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here

@@ -52,7 +52,7 @@
 (transient-define-prefix transient/c-s()
   "Common comands."
   [[:class transient-column "search"
-	   ("s" "search" consult-line)
+           ("s" "search" consult-line)
            ("t" "replace" replace-string)]
 
    [:class transient-column "navigate"
@@ -61,18 +61,12 @@
            ("g" "go line" consult-goto-line)
            ("l" "!truncate line" toggle-truncate-lines)]
 
-   [:class transient-column "sexp"
-           ("i" "put" embark-toggle-highlight :transient t)
-           ("p" "previous" embark-previous-symbol :transient t)
-           ("n" "next" embark-next-symbol :transient t)
-           ("c" "!comment" comment-or-uncomment-region)]
-
    [:class transient-column "org"
            ("C-s" "capture" org-capture)
            ("C-l" "store link" org-store-link)
            ("SPC" "clock out" (lambda() (interactive)
-			        (org-agenda-clock-out)
-			        (my/org-agenda-redo)))]
+        		        (org-agenda-clock-out)
+        		        (my/org-agenda-redo)))]
 
    [:class transient-column "window"
            ("r" "save" transient/c-s/save-window)
