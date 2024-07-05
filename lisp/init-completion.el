@@ -159,16 +159,21 @@
 ;;; actions for minibuffer && buffer
 (use-package embark
   :config
+  (defun embark-eglot-rename(a)
+    "Rename by eglot"
+    (call-interactively 'eglot-rename))
+  :config
   ;;; id keymap
   (setcdr embark-identifier-map nil)
   (define-keymap
     :keymap embark-identifier-map
-    "R" #'eglot-rename
+    "R" #'embark-eglot-rename
     "r" #'xref-find-references
     "d" #'xref-find-definitions
     "w" #'embark-copy-as-kill
     "p" #'embark-previous-symbol
     "n" #'embark-next-symbol
+    "t" #'replace-string
     "s" #'consult-line
     "h" #'embark-toggle-highlight))
 
