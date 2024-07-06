@@ -6,7 +6,7 @@
 
 (require 'flymake-google-cpplint)
 
-(setq flymake-google-cpplint-command "/home/clay/.local/bin/cpplint")
+(setq flymake-google-cpplint-command "cpplint")
 (setq flymake-google-cpplint-verbose "--verbose=0")
 (setq flymake-google-cpplint-filter "--filter=-legal/copyright,-build/header_guard")
 
