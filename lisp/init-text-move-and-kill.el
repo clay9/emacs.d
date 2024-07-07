@@ -22,8 +22,13 @@
   (interactive)
   (if (bolp)
       (my/delete/thing-at-point 'line)
-    (unless (my/delete/thing-at-point 'word)
-      (my/delete/thing-at-point 'sexp))))
+    (if (bounds-of-thing-at-point 'whitespace)
+        (progn (delete-all-space) (insert " "))
+      (if (bounds-of-thing-at-point 'word)
+          (my/delete/thing-at-point 'word)
+        (if (bounds-of-thing-at-point 'sexp)
+            (my/delete/thing-at-point 'sexp)
+          nil)))))
 
 
 ;;; kill regeion
