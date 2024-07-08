@@ -54,28 +54,14 @@
   [[:class transient-column "search"
            ("s" "search" consult-line)
            ("t" "replace" replace-string)]
-
+   [:class transient-column "buffer"
+           ("TAB" "indent" (lambda() (interactive)
+                             (indent-region (point-min) (point-max))))
+           ("C-d" "del file" my/delete-current-file)]
    [:class transient-column "navigate"
            ("m" "imenu" consult-imenu)
            ("o" "outline" consult-outline)
-           ("g" "go line" consult-goto-line)
-           ("l" "!truncate line" toggle-truncate-lines)]
-
-   [:class transient-column "org"
-           ("C-s" "capture" org-capture)
-           ("C-l" "store link" org-store-link)
-           ("SPC" "clock out" (lambda() (interactive)
-        		        (org-agenda-clock-out)
-        		        (my/org-agenda-redo)))]
-
-   [:class transient-column "window"
-           ("r" "save" transient/c-s/save-window)
-           ("C-r" "restore" transient/c-s/restore-window)]
-
-   [:class transient-column "file"
-           ("C-d" "delete current" my/delete-current-file)
-           ("TAB" "indent file" (lambda() (interactive)
-                                  (indent-region (point-min) (point-max))))]])
+           ("g" "go line" consult-goto-line)]])
 (global-set-key (kbd "C-s") 'transient/c-s)
 
 
@@ -84,30 +70,17 @@
 (transient-define-prefix transient/c-d()
   "Project comands."
   [[:class transient-column "search"
-           ("s" "grep" project-find-regexp)
+           ("s" "search" project-find-regexp)
            ("t" "replace" project-query-replace-regexp)
            ("f" "find-grep" find-grep)]
-
-   [:class transient-column "status"
-           ("a" "view all" transient/magit-list-repos)
-           ("m" "status" magit-status)]
-
-   [:class transient-column "file & buffer"
-           ("d" "dired" project-dired)
-           ("v" "switch project" (lambda()
-                                   (interactive)
-                                   (project-forget-zombie-projects)
-                                   (call-interactively 'project-switch-project)))
-           ("k" "kill project buffers" project-kill-buffers)]
-
-   [:class transient-column "lsp &compile"
-           ("g" "eglot" eglot)
+   [:class transient-column "buffer"
+           ("k" "kill" project-kill-buffers)]
+   [:class transient-column "compile"
            ("c" "compile" project-compile)]
-
    [:class transient-column "flymake"
-           ("C-p" "previous" flymake-goto-prev-error)
-           ("C-n" "next" flymake-goto-next-error)
-           ("e" "show line err" (lambda()
+           ("p" "previous" flymake-goto-prev-error :transient t)
+           ("n" "next" flymake-goto-next-error :transient t)
+           ("l" "show line err" (lambda()
                                   (interactive)
                                   (consult--forbid-minibuffer)
                                   (consult--read
@@ -125,28 +98,37 @@
            ;;flymake-show-buffer-diagnostics
            ("b" "show buff err" consult-flymake)
            ;;flymake-show-project-diagnostics
-           ("p" "show project err" (lambda() (interactive )(consult-flymake t)))]])
+           ("e" "show project err" (lambda() (interactive )(consult-flymake t)))]
+   [:class transient-column "status"
+           ("a" "view all" transient/magit-list-repos)
+           ("m" "status" magit-status)]])
 (global-set-key (kbd "C-d") 'transient/c-d)
 
 
 ;; C-r: tools
 (transient-define-prefix transient/c-r()
   "Common comands."
-  [;; [:class transient-column "tanslate"
-   ;;         ("j" "point & region" my/translate-at-point)
-   ;;         ("b" "buffer" my/translate-buffer)]
-
-   [:class transient-column "shell"
-           ("r" "term" ansi-term)
-           ("e" "eshell" project-eshell)]
-
+  [[:class transient-column "org"
+           ("r" "capture" org-capture)
+           ("w" "store link" org-store-link)
+           ("SPC" "clock out" (lambda() (interactive)
+        		        (org-agenda-clock-out)
+        		        (my/org-agenda-redo))
+            :if (lambda() (interactive) (marker-buffer org-clock-marker)))]
+   [:class transient-column "window"
+           ("m" "save" transient/c-s/save-window)
+           ("C-m" "restore" transient/c-s/restore-window
+            :if transient/c-r/is-window-empty)]
    [:class transient-column "snippet"
-           ("s" "show all" yas-describe-tables)
+           ("s" "show all" (lambda() (interactive)
+                             (let ((buff (get-buffer "*YASnippet Tables*")))
+                               (if (buffer-live-p buff)
+                                   (kill-buffer buff)
+                                 (yas-describe-tables)))))
            ("v" "visit" yas-visit-snippet-file)
            ("i" "insert" yas-new-snippet)]
-
    [:class transient-column "api document"
-	   ("k" "lookup" devdocs-lookup)]])
+	   ("l" "lookup" devdocs-lookup)]])
 (global-set-key (kbd "C-r") 'transient/c-r)
 
 
