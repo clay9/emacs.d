@@ -10,13 +10,13 @@
           ("<backtab>" . my/hs-shift-tab))
   :config
   (defun my/hs-shift-tab ()
-    "功能:
-1. 函数外, 隐藏|显示全部.
-2. 函数内, 隐藏sub, 没有则隐藏自己; 已经隐藏则显示自己和sub"
+    "
+1. out block, toggle all.
+2. in block, 隐藏sub, 没有则隐藏自己; 已经隐藏则显示自己和sub"
     (interactive)
-    (if (my/hs-is-in-block)
-        (my/hs-toggle-block)
-      (my/hs-toggle-all)))
+    (cond ((hs-inside-comment-p) (hs-toggle-hiding))
+          ((my/hs-inside-block-p) (my/hs-toggle-block))
+          (t (my/hs-toggle-all))))
 
   (defvar my/hs-hide-all nil)
   (defun my/hs-toggle-all ()
@@ -58,15 +58,12 @@
     (goto-char here)
     (if have-level t nil))
 
-  (defun my/hs-is-in-block ()
+  (defun my/hs-inside-block-p ()
     "check is in block"
-    (setq here (point))
-    (setq in-block nil)
-    (if (or (hs-looking-at-block-start-p)
-	    (hs-find-block-beginning))
-        (setq in-block t))
-    (goto-char here)
-    (if in-block t nil)))
+    (save-excursion
+      (or (hs-looking-at-block-start-p)
+	  (hs-find-block-beginning)
+          (hs-inside-comment-p)))))
 
 
 (provide 'init-text-hs)
