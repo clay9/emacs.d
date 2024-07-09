@@ -110,15 +110,15 @@
 (transient-define-prefix transient/c-r()
   "Common comands."
   [[:class transient-column "org"
-           ("r" "capture" org-capture)
+           ("t" "capture" org-capture)
            ("w" "store link" org-store-link)
            ("SPC" "clock out" (lambda() (interactive)
         		        (org-agenda-clock-out)
         		        (my/org-agenda-redo))
             :if (lambda() (interactive) (marker-buffer org-clock-marker)))]
    [:class transient-column "window"
-           ("m" "save" transient/c-s/save-window)
-           ("C-m" "restore" transient/c-s/restore-window
+           ("m" "save" transient/c-r/save-window)
+           ("C-m" "restore" transient/c-r/restore-window
             :if transient/c-r/is-window-empty)]
    [:class transient-column "snippet"
            ("s" "show all" (lambda() (interactive)
