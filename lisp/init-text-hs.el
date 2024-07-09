@@ -3,11 +3,9 @@
 ;;; Code:
 
 
+;;; by regular
 (use-package hideshow
-  :hook (prog-mode . hs-minor-mode)
   :diminish hs-minor-mode
-  :bind ( :map hs-minor-mode-map
-          ("<backtab>" . my/hs-shift-tab))
   :config
   (defun my/hs-shift-tab ()
     "
@@ -53,7 +51,7 @@
 	  (setq pmax (1- (point))))
         (goto-char pmin)
         (unless (or (hs-already-hidden-p)
-	        (<= (count-lines pmin pmax) 1))
+	            (<= (count-lines pmin pmax) 1))
 	  (setq have-level t))))
     (goto-char here)
     (if have-level t nil))
@@ -65,6 +63,65 @@
 	  (hs-find-block-beginning)
           (hs-inside-comment-p)))))
 
+
+;;; by treesit
+(require 'treesit-fold)
+(require 'treesit-fold-indicators)
+(global-treesit-fold-mode)
+
+(defun my/ts-shift-tab()
+  (interactive)
+  (let ((node (treesit-fold--foldable-node-at-pos)))
+    (if node
+        (my/ts-toggle)
+      (my/ts-toggle-all))))
+
+(defun my/ts-hide()
+  (interactive)
+  (let ((node (treesit-fold--foldable-node-at-pos))
+        (pos (point))
+        (act nil))
+    (dolist (son (treesit-node-children node))
+      (dolist (grandson (treesit-node-children son))
+        (let* ((ov (treesit-fold-overlay-at grandson))
+              (range (treesit-fold--get-fold-range grandson))
+              (ov2 (treesit-fold--create-overlay range)))
+          (when (not (equal ov ov2))
+            (run-hooks 'treesit-fold-on-fold-hook)
+            (setq act t)))))
+    (goto-char pos)
+    (unless act (treesit-fold-close node))))
+
+(defun my/ts-toggle()
+  (interactive)
+  (let* ((node (treesit-fold--foldable-node-at-pos))
+         (ov (treesit-fold-overlay-at node)))
+    (if ov
+        (treesit-fold-open-recursively)
+      (my/ts-hide))))
+
+(defvar my/ts-hide-all nil)
+(defun my/ts-toggle-all()
+  (interactive)
+  (setq my/ts-hide-all (not my/ts-hide-all))
+  (if my/ts-hide-all (treesit-fold-close-all)
+    (treesit-fold-open-all)))
+
+;;; hook
+;; if treesit-fold available, use treesit-fold. otherwise, hs minor
+(add-hook 'prog-mode-hook
+          (lambda()
+            (unless (treesit-parser-list)
+              (hs-minor-mode))))
+
+
+;;; key
+(defun my/shift-tab()
+  (interactive)
+  (cond ((bound-and-true-p treesit-fold-mode)
+         (my/ts-shift-tab))
+        ((bound-and-true-p hs-minor-mode)
+         (my/hs-shift-tab))))
 
 (provide 'init-text-hs)
 ;;; init-text-hs.el ends here

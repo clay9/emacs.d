@@ -22,7 +22,7 @@
 (global-set-key (kbd "C-x f") 'find-file)
 (global-set-key (kbd "C-x C-f") 'project-find-file)
 
-;; delete | kill | yank | select
+;; delete | kill | yank | select | hide,show
 (global-set-key (kbd "C-<backspace>") 'my/delete)
 (global-set-key (kbd "C-k") 'my/delete)
 (global-set-key (kbd "C-w") 'my/kill)
@@ -30,6 +30,7 @@
 (global-set-key (kbd "C-y") 'my/yank-pop)
 (global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key (kbd "C--") 'er/contract-region)
+(global-set-key (kbd "<backtab>") 'my/shift-tab)
 
 ;; action
 ;;(global-set-key (kbd "C-SPC") 'embark-act)

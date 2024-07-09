@@ -16,3 +16,6 @@
 [submodule "flymake-google-cpplint"]
 	path = site-lisp/flymake-google-cpplint
 	url = https://github.com/flymake/flymake-google-cpplint.git
+[submodule "site-lisp/treesit-fold"]
+	path = site-lisp/treesit-fold
+	url = https://github.com/emacs-tree-sitter/treesit-fold.git
