@@ -2,7 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-
 (use-package compile
   :commands compile
   :bind ( :map compilation-mode-map

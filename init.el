@@ -43,8 +43,8 @@
 (require 'init-global-shortkey)
 
 ;; progn editor
+(require 'init-outline)
 (require 'init-flymake)
-(require 'init-style-format)
 (require 'init-eglot)
 (require 'init-compile)
 (require 'init-gdb)

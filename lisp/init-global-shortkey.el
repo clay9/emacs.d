@@ -60,8 +60,12 @@
                              (indent-region (point-min) (point-max))))
            ("C-d" "del file" my/delete-current-file)]
    [:class transient-column "navigate"
+           ("o" "outline" symbols-outline-show
+            :if (lambda()
+                  (if (fboundp 'eglot-current-server)
+                      (eglot-current-server)
+                    nil)))
            ("m" "imenu" consult-imenu)
-           ("o" "outline" consult-outline)
            ("g" "go line" consult-goto-line)]])
 (global-set-key (kbd "C-s") 'transient/c-s)
 
