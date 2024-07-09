@@ -20,15 +20,17 @@
 ;; 优先级: 行首 => word => sexp
 (defun my/delete()
   (interactive)
+  (let* ((is-whitespace (and (equal 32 (char-after))
+                             (equal 32 (char-before)))))
   (if (bolp)
       (my/delete/thing-at-point 'line)
-    (if (bounds-of-thing-at-point 'whitespace)
+    (if is-whitespace
         (progn (delete-all-space) (insert " "))
       (if (bounds-of-thing-at-point 'word)
           (my/delete/thing-at-point 'word)
         (if (bounds-of-thing-at-point 'sexp)
             (my/delete/thing-at-point 'sexp)
-          nil)))))
+          nil))))))
 
 
 ;;; kill regeion
