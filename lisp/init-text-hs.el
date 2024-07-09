@@ -11,7 +11,6 @@
     "
 1. out block, toggle all.
 2. in block, 隐藏sub, 没有则隐藏自己; 已经隐藏则显示自己和sub"
-    (interactive)
     (cond ((hs-inside-comment-p) (hs-toggle-hiding))
           ((my/hs-inside-block-p) (my/hs-toggle-block))
           (t (my/hs-toggle-all))))
@@ -70,14 +69,15 @@
 (global-treesit-fold-mode)
 
 (defun my/ts-shift-tab()
-  (interactive)
-  (let ((node (treesit-fold--foldable-node-at-pos)))
-    (if node
-        (my/ts-toggle)
-      (my/ts-toggle-all))))
+  (let* ((in-multi-comment (my/ts-in-multi-comment))
+        (node2 (treesit-fold--foldable-node-at-pos)))
+    (if in-multi-comment
+        (my/ts-toggle-comment)
+      (if node2
+          (my/ts-toggle)
+        (my/ts-toggle-all)))))
 
 (defun my/ts-hide()
-  (interactive)
   (let ((node (treesit-fold--foldable-node-at-pos))
         (pos (point))
         (act nil))
@@ -91,9 +91,7 @@
             (setq act t)))))
     (goto-char pos)
     (unless act (treesit-fold-close node))))
-
 (defun my/ts-toggle()
-  (interactive)
   (let* ((node (treesit-fold--foldable-node-at-pos))
          (ov (treesit-fold-overlay-at node)))
     (if ov
@@ -102,10 +100,77 @@
 
 (defvar my/ts-hide-all nil)
 (defun my/ts-toggle-all()
-  (interactive)
   (setq my/ts-hide-all (not my/ts-hide-all))
   (if my/ts-hide-all (treesit-fold-close-all)
     (treesit-fold-open-all)))
+
+(defun my/ts-node-range-continue(node)
+  (let* ((get-node (lambda(node next)
+                     (let* ((cnode node) result)
+                       (while (and cnode
+                                   (equal (treesit-node-type node)
+                                          (treesit-node-type cnode)))
+                         (setq result cnode)
+                         (setq cnode (if next (treesit-node-next-sibling cnode)
+                                       (treesit-node-prev-sibling cnode))))
+                       result)))
+         (first-node (funcall get-node node nil))
+         (last-node (funcall get-node node t))
+         (beg (treesit-node-start first-node))
+         (end (treesit-node-end last-node))
+         (range (cons beg end)))
+    range))
+(defun my/ts-toggle-comment()
+  (treesit-fold-line-comment-mode)
+  (let* ((node (treesit-node-at (point)))
+         (prefix "//")
+         (prefix-len (length prefix))
+         (node-range (my/ts-node-range-continue node))
+         (range (cons (+ (car node-range) prefix-len) (cdr node-range)))
+         (ov (thread-last (overlays-in (car range) (cdr range))
+                          (seq-filter (lambda (ov)
+                                        (and (eq (overlay-get ov 'invisible) 'treesit-fold)
+                                             (= (overlay-start ov) (car range))
+                                             (= (overlay-end ov) (cdr range)))))
+                          car))
+         (ov2 (treesit-fold--create-overlay range)))
+    (when (equal ov ov2)
+      (let* ((nodes (treesit-fold--overlays-in 'invisible 'treesit-fold (car range) (cdr range))))
+        (mapc #'delete-overlay nodes)))
+    (run-hooks 'treesit-fold-on-fold-hook)))
+(defun my/ts-in-multi-comment()
+  (let* ((node (treesit-node-at (point)))
+        (result nil))
+    (when (equal (treesit-node-type node) "comment")
+      (let* ((range-node (my/ts-node-range-continue node))
+             (node-start (treesit-node-start node))
+             (node-end (treesit-node-end node)))
+        (when (or (not (equal node-start (car range-node)))
+                  (not(equal node-end (cdr range-node))))
+          (setq result t))))
+    result))
+
+;; for treesit fold close all
+(defun treesit-fold-range-c-like-comment (node offset)
+  "Define fold range for C-like comemnt.
+
+For arguments NODE and OFFSET, see function `treesit-fold-range-seq' for
+more information."
+  (let ((text (treesit-node-text node)))
+    (if (and (string-match-p "\n" text) (string-prefix-p "/*" text))
+        (treesit-fold-range-block-comment node offset)
+      (if (string-prefix-p "///" text)
+          (my/treesit-fold-range-line-comment node offset "///")
+        (my/treesit-fold-range-line-comment node offset "//")))))
+
+(defun my/treesit-fold-range-line-comment (node offset prefix)
+  (save-excursion
+    (when-let* ((treesit-fold-line-comment-mode)  ; XXX: Check enabled!?
+                (prefix-len (length prefix))
+                (range-node (my/ts-node-range-continue node))
+                (beg (+ (car range-node) prefix-len))
+                (end (cdr range-node)))
+      (treesit-fold--cons-add (cons beg end) offset))))
 
 ;;; hook
 ;; if treesit-fold available, use treesit-fold. otherwise, hs minor
