@@ -16,6 +16,7 @@
   (add-to-list 'consult-buffer-filter "\\`\\*Disabled Command\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*Backtrace\\*\\'")
   (add-to-list 'consult-buffer-filter "\\*EGLOT*")
+  (add-to-list 'consult-buffer-filter "\\*Outline*")
   (add-to-list 'consult-buffer-filter "magit-process:*")
 
   :init
