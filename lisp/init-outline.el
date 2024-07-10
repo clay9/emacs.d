@@ -136,7 +136,7 @@
 
       ;; Chevrons
       ("chevron-down"  . "")
-      ("chevron-right" . "⋯")
+      ("chevron-right" . "⋮")
       ))
 
 (provide 'init-outline)
