@@ -14,7 +14,7 @@
   :config
   (setq flymake-google-cpplint-command "cpplint"
         flymake-google-cpplint-verbose "--verbose=0"
-        flymake-google-cpplint-filter "--filter=-legal/copyright,-build/header_guard"))
+        flymake-google-cpplint-filter "--filter=-legal/copyright,-build/header_guard,-build/include_subdir"))
 
 (provide 'init-flymake)
 ;;; init-flymake.el ends here
