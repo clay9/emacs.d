@@ -20,8 +20,11 @@
 ;; 优先级: 行首 => word => sexp
 (defun my/delete()
   (interactive)
-  (let* ((is-whitespace (and (equal 32 (char-after))
-                             (equal 32 (char-before)))))
+  (let* ((is-char-empty (or (equal 32 (char-after))
+                            (equal 9 (char-after))))
+         (is-char-before-empty (or (equal 32 (char-before))
+                                   (equal 9 (char-before))))
+         (is-whitespace (and is-char-empty is-char-before-empty)))
   (if (bolp)
       (my/delete/thing-at-point 'line)
     (if is-whitespace

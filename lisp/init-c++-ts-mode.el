@@ -27,6 +27,8 @@
       ((node-is "field_initializer_list") parent-bol 4)
       ((match nil "field_initializer_list" nil 2 nil) parent-bol 2)
       ;;((node-is "<<") great-grand-parent 4)
+      ((node-is "case_statement") parent-bol 2)
+      ((node-is "field_identifier") prev-sibling 0)
 
       ;; Append here the indent style you want as base
       ,@(alist-get 'gnu (c-ts-mode--indent-styles 'cpp))))
