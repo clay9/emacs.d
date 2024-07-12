@@ -22,6 +22,15 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
+;; delete "\r"
+(defun delete-carrage-returns ()
+  (save-excursion
+    (goto-char 0)
+    (while (search-forward "\r" nil :noerror)
+      (replace-match ""))))
+(add-hook 'before-save-hook 'delete-carrage-returns)
+
+
 ;; show line-number
 (when (fboundp 'display-line-numbers-mode)
   (setq-default display-line-numbers-width 3)
