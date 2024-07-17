@@ -20,6 +20,7 @@
           ("qygame/k8s"              "~/qy/ops/k8s")
           ("qygame/svr-kernel"       "~/qy/server-kernel")
           ("qygame/svr-client"       "~/qy/server-client")
+          ("qygame/protocol"         "~/qy/server/proto")
           ("qygame/svr-db"           "~/qy/server/db")
           ("qygame/svr-gate"         "~/qy/server/gate")
           ("qygame/svr-room"         "~/qy/server/room")
@@ -163,7 +164,7 @@
 
   ;; (add-hook 'after-init-hook #'(lambda ()
   ;;                                (let* ((default-directory (file-name-as-directory "~/my/gtd")))
-  ;;                                  (when default-directory                                     
+  ;;                                  (when default-directory
   ;;                                    (when (magit-anything-modified-p)
   ;;                                      (magit-call-git "commit" "-am auto-commit"))
   ;;                                    (magit-call-git "fetch")
