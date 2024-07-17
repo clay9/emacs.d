@@ -176,7 +176,8 @@
     "n" #'embark-next-symbol
     "t" #'replace-string
     "s" #'consult-line
-    "h" #'embark-toggle-highlight))
+    "h" #'embark-toggle-highlight
+    ";" #'comment-dwim))
 
 (use-package embark-consult
   :ensure t ; only need to install it, embark loads it after consult if found
