@@ -6,7 +6,7 @@
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-;;(set-scroll-bar-mode nil)
+(set-scroll-bar-mode nil)
 ;;(setq default-frame-alist '((undecorated . t)))
 
 (setq-default
@@ -28,7 +28,7 @@
  tramp-persistency-file-name (concat my/ecfg-dir "tramp")
  tramp-verbose 1
  initial-scratch-message ";; Emacs is just editor, not system !!!\n\n"
- 
+
  speedbar-use-images nil
  ring-bell-function 'ignore
  case-fold-search t
