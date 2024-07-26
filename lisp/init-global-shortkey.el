@@ -54,7 +54,7 @@
   "Common comands."
   [[:class transient-column "search"
            ("s" "search" consult-line)
-           ("t" "replace" replace-string)]
+           ("t" "replace" replace-regexp)]
    [:class transient-column "buffer"
            ("TAB" "indent" (lambda() (interactive)
                              (indent-region (point-min) (point-max))))
