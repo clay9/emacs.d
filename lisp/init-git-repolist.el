@@ -14,7 +14,8 @@
           ("clay9/blog"              "~/my/blog")
           ("clay9/gtd"               "~/my/gtd")))
   (setq magit-repolist-my-repos-qy
-        '(("qygame/build_publish"    "~/qy/ops/build_publish")
+        '(("qygame/blog"             "~/qy/blog")
+          ("qygame/build_publish"    "~/qy/ops/build_publish")
           ("qygame/compiler"         "~/qy/ops/compiler")
           ("qygame/docker_compose"   "~/qy/ops/docker_compose")
           ;; ("qygame/k8s"              "~/qy/ops/k8s")
