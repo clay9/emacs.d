@@ -108,13 +108,14 @@
 
 ;;; capture hook
   (defun my/org-capture-prepare-finalize-hook()
-    (let ((todo_key (org-get-todo-state)))
-      (goto-char (point-min))
-      (org-set-property "CAPTURE_TIME" (my/org-timestamp-string 0 t))
-      (when (or (string= todo_key "TODO")
-	        (string= todo_key "WAITING")
-                (string= todo_key "PROJECT"))
-        (org-set-effort))))
+    (unless (equal "CAPTURE-diary.org" (buffer-name))
+      (let ((todo_key (org-get-todo-state)))
+        (goto-char (point-min))
+        (org-set-property "CAPTURE_TIME" (my/org-timestamp-string 0 t))
+        (when (or (string= todo_key "TODO")
+	          (string= todo_key "WAITING")
+                  (string= todo_key "PROJECT"))
+          (org-set-effort)))))
   (add-hook 'org-capture-prepare-finalize-hook 'my/org-capture-prepare-finalize-hook))
 
 
@@ -182,7 +183,7 @@
                    (org-agenda-files (delete (expand-file-name "gtd/emacs.org" my/gtd-dir)
                                              (delete (expand-file-name "gtd/qygame.org" my/gtd-dir)
                                                      (delete (expand-file-name "gtd/yygame.org" my/gtd-dir) (org-agenda-files)))))
-                   (org-agenda-skip-function `(my/org-agenda-skip-entry))                   
+                   (org-agenda-skip-function `(my/org-agenda-skip-entry))
                    (org-agenda-prefix-format "%(my/org-agenda-pf-next)")))
 	    (todo "WAITING"
 		  ((org-agenda-overriding-header "WAITING")
@@ -209,7 +210,7 @@
 	          ((org-agenda-overriding-header "STUCK PROJECT")
                    (org-agenda-files (delete (expand-file-name "gtd/emacs.org" my/gtd-dir)
                                              (delete (expand-file-name "gtd/qygame.org" my/gtd-dir)
-                                                     (delete (expand-file-name "gtd/yygame.org" my/gtd-dir) (org-agenda-files)))))         
+                                                     (delete (expand-file-name "gtd/yygame.org" my/gtd-dir) (org-agenda-files)))))
 	           (org-agenda-prefix-format "%(my/org-agenda-pf-next-p)")
 	           (org-agenda-skip-function `(org-agenda-skip-subtree-if 'todo '("TODO" "WAITING"))))))
 	   ((_ (my/org-agenda-set-buffer-number 2))
@@ -324,7 +325,7 @@
 	  (goto-char pos)
 
           (setq todo-state (org-get-todo-state))
-          
+
           ;; 1. check todo-state
           (while (not (org-entry-is-done-p))
             (org-todo))
