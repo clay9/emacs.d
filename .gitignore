@@ -24,3 +24,4 @@ config
 .elpa-29.1
 server/tree-sitter
 server/
+/eln-cache/
