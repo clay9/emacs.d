@@ -45,13 +45,8 @@
       ("p" "push" magit-repolist/magit-repolist-push)]
      ["clone"
       ("c" "clone all" magit-repolist/magit-repolist-clone)]])
-  (defun magit-repos/switch ()
-    (interactive)
-    (cl-case magit-repolist-index
-      (0 (setq magit-repolist-index 1) (rename-buffer "repos qy"))
-      (1 (setq magit-repolist-index 0) (rename-buffer "repos my")))
-    (setq magit-repository-directories (reset-magit-repository-directories))
-    (revert-buffer))
+
+  ;; function: git fetch, push, clone
   (defun magit-repolist/magit-repolist-fetch()
     (interactive)
     (run-hooks 'magit-credential-hook)
@@ -98,6 +93,16 @@
             (magit-run-git-async "clone" args "--" url
                                  (magit-convert-filename-for-git path)))))))
 
+  ;; switch magit-repository
+  (defun magit-repos/switch ()
+    (interactive)
+    (cl-case magit-repolist-index
+      (0 (setq magit-repolist-index 1) (rename-buffer "repos qy"))
+      (1 (setq magit-repolist-index 0) (rename-buffer "repos my")))
+    (setq magit-repository-directories (reset-magit-repository-directories))
+    (revert-buffer))
+
+  ;; bind to 'C-d a'
   (defun transient/magit-list-repos ()
     ;; 1. if buffer "repos *" exist, reuse it
     ;; 2. or call magit-list-repositories
