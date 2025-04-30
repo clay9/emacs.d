@@ -14,7 +14,7 @@
   ;; treesit language
   (add-to-list 'treesit-language-source-alist
                '(dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile"))
-  
+
   ;; install language gramar
   (dolist (lang treesit-language-source-alist)
     (unless (treesit-language-available-p (car lang))

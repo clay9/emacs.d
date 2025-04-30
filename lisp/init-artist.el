@@ -16,7 +16,7 @@
 	     ("p" "custom line" my-artist-mode-draw-custom-line)
 	     ("r" "rectangle" my-artist-mode-draw-rectangle)
 	     ("e" "ellipse" my-artist-mode-draw-ellipse)]
-     
+
      [:class transient-column "action"
 	     ("w" "cut rectangle" my-artist-mode-cut-rectangle)
 	     ("k" "kill rectangle" my-artist-mode-erase-rectangle)
@@ -27,7 +27,7 @@
         tab-width 4
         indent-tabs-mode nil)
 
-  
+
   (defun artist/split-string-by-length (string max-length)
     (let* ((ss (string-split string))
            inc_temp
@@ -51,7 +51,7 @@
            (text-align (if text-align text-align 0))
            (ss (artist/split-string-by-length text (- (car size) text-align)))
            (index 0))
-      ;; insert text      
+      ;; insert text
       (while (< index (min (length ss) (1- (cdr size))))
         (artist-move-to-xy (+ (car pos) 1 text-align) (+ (cdr pos) 1 index))
         (insert (nth index ss))

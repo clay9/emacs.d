@@ -9,7 +9,7 @@
 
 (with-eval-after-load 'esh-mode
   (fmakunbound 'eshell/clear-scrollback)
-  
+
   (defun eshell/clear ()
     "Override => use eshell/clear-scrollback"
     (let ((inhibit-read-only t))

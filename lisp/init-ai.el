@@ -43,7 +43,7 @@
   ;; (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
   :config
   (setq use-dialog-box nil) ;; do not use popup boxes
-  
+
   ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
   (setq codeium-api-enabled
         (lambda (api)

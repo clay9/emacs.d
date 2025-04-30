@@ -78,7 +78,7 @@
          (key (format "%s" (car (split-string type))))
          (before_begin (cond ((eql 0 (string-match "he" key)) ;expand
                               "#+attr_shortcode: expand-name \"...\"")
-                             ((eql 0 (string-match "hh" key)) ;hint 
+                             ((eql 0 (string-match "hh" key)) ;hint
                               "#+attr_shortcode: info | warning | danger")
                              (t nil)))
          (followed_begin (let* ((ori (substring type (+ 1 (length key)))))
@@ -104,7 +104,7 @@
         (indent-to column)
         (insert before_begin)
         (insert "\n"))
-      
+
       ;; insert #+begin
       (indent-to column)
       (insert (format "#+begin_%s\n" followed_begin))
@@ -149,7 +149,7 @@
      ("a" "ascill" org-ascii-export-to-ascii)
      ("m" "md" org-md-export-to-markdown)
      ("h" "html" org-html-export-to-html)
-     ("t" "texinfo" org-texinfo-export-to-texinfo)])  
+     ("t" "texinfo" org-texinfo-export-to-texinfo)])
 
   (transient-define-prefix transient/org-mode()
     [["subtree"
@@ -251,7 +251,7 @@
           ;;("ha" . "aside") ;; not work. need css
           ("hc" . "columns")
           ("he" . "expand")
-          ("hh" . "hint")          
+          ("hh" . "hint")
           ;; src
           ("sa" . "artist")
           ("sc" . "C++")

@@ -10,22 +10,22 @@
 ;; Standard package repositories
 (add-to-list 'package-archives '( "melpa" . "https://melpa.org/packages/") t)
 
+;;; Fire up package.el
+
 (setq package-enable-at-startup nil)
+(setq package-native-compile t)
 (package-initialize)
 
 
-;;; use package
-
+;; use package
 (require 'use-package)
 (require 'use-package-ensure)
 
-;; always ensure
 (setq use-package-always-ensure t)
 
-;; ensure system package
-(use-package use-package-ensure-system-package)
+;; transient
+(require 'transient)
 
-
 ;; diminish mode-line
 (use-package diminish)
 
