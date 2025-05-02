@@ -21,7 +21,7 @@
   (setq plantuml-default-exec-mode 'server
         plantuml-output-type "png"
         plantuml-indent-level 4
-        tab-width 4
+        tab-width 8
         indent-tabs-mode nil))
 
 (provide 'init-plantuml)

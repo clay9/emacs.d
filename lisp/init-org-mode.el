@@ -218,11 +218,10 @@
   (setq org-adapt-indentation t)
   ;; show same index in org-mode|org-src-mode
   (defun my/org-mode-hook()
-    (setq tab-width 4
-	  indent-tabs-mode nil) )
+    (setq tab-width 8
+          indent-tabs-mode nil) )
   (add-hook 'org-mode-hook 'my/org-mode-hook)
   (add-hook 'org-src-mode-hook 'my/org-mode-hook)
-
 
 
 ;;; Subscripts and Superscripts ::  a_b not, a_{b} is

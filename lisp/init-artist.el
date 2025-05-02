@@ -24,7 +24,7 @@
 
   :config
   (setq artist-aspect-ratio  2.5
-        tab-width 4
+        tab-width 8
         indent-tabs-mode nil)
 
 
