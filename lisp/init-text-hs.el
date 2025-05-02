@@ -64,9 +64,11 @@
 
 
 ;;; by treesit
-(require 'treesit-fold)
-(require 'treesit-fold-indicators)
-(global-treesit-fold-mode)
+(use-package treesit-fold
+  :vc (:url "https://github.com/emacs-tree-sitter/treesit-fold.git" :rev :newest)
+  :config
+  (require 'treesit-fold-indicators)
+  (global-treesit-fold-mode))
 
 (defun my/ts-shift-tab()
   (let* ((in-multi-comment (my/ts-in-multi-comment))

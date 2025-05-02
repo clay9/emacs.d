@@ -9,7 +9,7 @@
 
 (use-package flymake-easy)
 (use-package flymake-google-cpplint
-  :load-path "site-lisp/flymake-google-cpplint"
+  :vc (:url "https://github.com/flymake/flymake-google-cpplint.git" :rev :newest)
   :hook (c++-ts-mode . flymake-google-cpplint-load)
   :config
   (setq flymake-google-cpplint-command "cpplint"

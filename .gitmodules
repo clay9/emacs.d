@@ -6,16 +6,7 @@
 	path = tree-sitter/macos
 	url = https://github.com/clay9/tree-sitter-module.git
 	branch = macos
-[submodule "site-lisp/copilot"]
-	path = site-lisp/copilot
-	url = git@github.com:zerolfx/copilot.el.git
 [submodule "tree-sitter/linux"]
 	path = tree-sitter/linux
 	url = https://github.com/clay9/tree-sitter-module.git
 	branch = linux
-[submodule "flymake-google-cpplint"]
-	path = site-lisp/flymake-google-cpplint
-	url = https://github.com/flymake/flymake-google-cpplint.git
-[submodule "site-lisp/treesit-fold"]
-	path = site-lisp/treesit-fold
-	url = https://github.com/emacs-tree-sitter/treesit-fold.git
