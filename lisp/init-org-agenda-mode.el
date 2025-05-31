@@ -128,7 +128,10 @@
                                    (push (concat my/gtd-dir file) rlist))
                                  rlist)))
   (setq my/org-agenda-common-files (list my/file-inbox my/file-task my/file-archive))
-
+  (setq my/org-agenda-no-common-files (let ((temp (org-agenda-files)))
+                                        (dolist (var my/org-agenda-common-files)
+                                          (setq temp (delete var temp)))
+                                        temp))
   ;; ignore tags in agenda buffer
   (setq org-agenda-hide-tags-regexp
         "emacs\\|org\\|ccIDE\\|qygame\\|habit"))
@@ -189,12 +192,12 @@
                    (org-agenda-files my/org-agenda-common-files)
                    (org-agenda-prefix-format "%(my/org-agenda-pf-next)")))
             (todo "TODO|WAITING"
-		  ((org-agenda-overriding-header "PROJECT emacs")
+		  ((org-agenda-overriding-header "emacs")
                    (org-agenda-files (list (expand-file-name "gtd/emacs.org" my/gtd-dir)))
 		   (org-agenda-skip-function `(my/org-agenda-skip-entry))
                    (org-agenda-prefix-format "%(my/org-agenda-pf-project)")))
             (todo "TODO|WAITING"
-		  ((org-agenda-overriding-header "PROJECT qygame")
+		  ((org-agenda-overriding-header "qygame")
                    (org-agenda-files (list (expand-file-name "gtd/qygame.org" my/gtd-dir)))
 		   (org-agenda-skip-function `(my/org-agenda-skip-entry))
                    (org-agenda-prefix-format "%(my/org-agenda-pf-project)")))
@@ -224,14 +227,12 @@
 	    (org-agenda-sorting-strategy '(priority-down alpha-up effort-up))))
 	  ("p" "project"
 	   ((tags "LEVEL=1/PROJECT"
-		  ((org-agenda-overriding-header "PROJECT")))
-	    (tags "LEVEL=1/DONE"
-		  ((org-agenda-overriding-header "PROJECT - DONE")))
-	    (tags "LEVEL=1/CANCEL"
-		  ((org-agenda-overriding-header "PROJECT - CANCEL"))))
+                  ((org-agenda-files (list my/file-task))))
+            (tags "LEVEL=1"
+	          ((org-agenda-files my/org-agenda-no-common-files))))
 	   ((_ (my/org-agenda-set-buffer-number 4))
+            (org-agenda-overriding-header "PROJECT")
 	    (org-agenda-prefix-format "%-10c")
-            (org-agenda-files (delete my/file-archive (org-agenda-files)))
 	    (org-agenda-todo-keyword-format "")
 	    (org-overriding-columns-format "%24ITEM %10CATEGORY %1PRIORITY %Effort %10CLOCKSUM")
 	    (org-agenda-sorting-strategy '(category-keep))))
