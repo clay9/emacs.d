@@ -12,6 +12,25 @@
 (defvar my/file-diary   (expand-file-name "diary.org"              my/gtd-dir))
 (defvar my/file-life    (expand-file-name "life.org"               my/gtd-dir))
 
+
+;;; agenda files
+
+(with-eval-after-load 'org-agenda
+  (setq org-agenda-files (let ((rlist))
+                               (when (file-directory-p my/gtd-dir)
+                                 (dolist (file (directory-files my/gtd-dir nil "^gtd"))
+                                   (push (concat my/gtd-dir file) rlist))
+                                 rlist)))
+  (setq my/org-agenda-common-files (list my/file-inbox my/file-task my/file-archive))
+  (setq my/org-agenda-no-common-files (let ((temp (org-agenda-files)))
+                                        (dolist (var my/org-agenda-common-files)
+                                          (setq temp (delete var temp)))
+                                        temp))
+  ;; ignore tags in agenda buffer
+  (setq org-agenda-hide-tags-regexp
+        "emacs\\|org\\|ccIDE\\|qygame\\|habit"))
+
+
 (require 'init-org-agenda-fun)
 
 
@@ -119,24 +138,6 @@
   (add-hook 'org-capture-prepare-finalize-hook 'my/org-capture-prepare-finalize-hook))
 
 
-;;; agenda files
-
-(with-eval-after-load 'org-agenda
-  (setq org-agenda-files (let ((rlist))
-                               (when (file-directory-p my/gtd-dir)
-                                 (dolist (file (directory-files my/gtd-dir nil "^gtd"))
-                                   (push (concat my/gtd-dir file) rlist))
-                                 rlist)))
-  (setq my/org-agenda-common-files (list my/file-inbox my/file-task my/file-archive))
-  (setq my/org-agenda-no-common-files (let ((temp (org-agenda-files)))
-                                        (dolist (var my/org-agenda-common-files)
-                                          (setq temp (delete var temp)))
-                                        temp))
-  ;; ignore tags in agenda buffer
-  (setq org-agenda-hide-tags-regexp
-        "emacs\\|org\\|ccIDE\\|qygame\\|habit"))
-
-
 ;;; agenda-view
 
 (with-eval-after-load 'org-agenda
@@ -184,12 +185,12 @@
 	  ("n" "Next Step"
 	   ((todo "TODO"
 		  ((org-agenda-overriding-header "TODO")
-                   (org-agenda-files my/org-agenda-common-files)
+                   (org-agenda-files (list my/file-task))
                    (org-agenda-skip-function `(my/org-agenda-skip-entry))
                    (org-agenda-prefix-format "%(my/org-agenda-pf-next)")))
 	    (todo "WAITING"
 		  ((org-agenda-overriding-header "WAITING")
-                   (org-agenda-files my/org-agenda-common-files)
+                   (org-agenda-files (list my/file-task))
                    (org-agenda-prefix-format "%(my/org-agenda-pf-next)")))
             (todo "TODO|WAITING"
 		  ((org-agenda-overriding-header "emacs")
@@ -219,7 +220,7 @@
 	    (org-agenda-todo-ignore-timestamp 'all)
 	    (org-agenda-sorting-strategy '(priority-down effort-up))))
 	  ("i" "inbox"
-	   ((search "* "))
+	   ((tags "LEVEL=1"))
 	   ((_ (my/org-agenda-set-buffer-number 3))
 	    (org-agenda-overriding-header "Inbox")
 	    (org-agenda-prefix-format "%(my/org-agenda-pf-next)")

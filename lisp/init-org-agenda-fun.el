@@ -213,6 +213,7 @@ Function: Move next buffer;"
         (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
         (org-agenda nil "a")))
      ((= my/org-agenda-buffer-number 3)
+      (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
       (org-agenda nil "a")))))
 
 
@@ -271,20 +272,20 @@ Function: refresh agenda bufffer"
     (goto-char (point-min))
 
     ;; loop: next todo-state heading
-    (while (and (not (org-next-visible-heading 1))
+    (while (and (= 0 (org-next-visible-heading 1))
                 (org-get-todo-state))
       ;; refile: heading with tags => heading;  others => task.org
       (let* ((tags (org-get-tags)))
 	(if (not tags) (org-refile nil nil (list nil my/file-task nil nil))
 	  (dolist (tag tags)
-	    (dolist (file (org-agenda-files))
+	    (dolist (file my/org-agenda-no-common-files)
               (let ((pos (with-current-buffer (find-buffer-visiting file)
                            (widen)
                            (org-fold-show-all '(headings))
                            (no-message 'org-shifttab 1)
                            (goto-char (point-min))
                            (let ((p nil))
-                             (while (not (org-next-visible-heading 1))
+                             (while (= 0 (org-next-visible-heading 1))
                                (when (and (string= "PROJECT" (org-get-todo-state))
                                           (string= tag (org-entry-get nil "ITEM")))
                                  (setq p (point))))
