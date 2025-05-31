@@ -2,14 +2,15 @@
 ;;; Commentary:
 ;;; Code:
 
-;;(add-hook 'prog-mode-hook 'flymake-mode)
+(add-hook 'prog-mode-hook 'flymake-mode)
 
 
 ;;; backend: c,c++ format
 
-(use-package flymake-easy)
 (use-package flymake-google-cpplint
   :vc (:url "https://github.com/flymake/flymake-google-cpplint.git" :rev :newest)
+  :after flymake-easy
+  :init (use-package flymake-easy)
   :hook (c++-ts-mode . flymake-google-cpplint-load)
   :config
   (setq flymake-google-cpplint-command "cpplint"

@@ -25,3 +25,4 @@ config
 server/tree-sitter
 server/
 /eln-cache/
+/tree-sitter/*.dylib
