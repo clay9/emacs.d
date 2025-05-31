@@ -127,6 +127,7 @@
                                  (dolist (file (directory-files my/gtd-dir nil "^gtd"))
                                    (push (concat my/gtd-dir file) rlist))
                                  rlist)))
+  (setq my/org-agenda-common-files (list my/file-inbox my/file-task my/file-archive))
 
   ;; ignore tags in agenda buffer
   (setq org-agenda-hide-tags-regexp
@@ -180,16 +181,12 @@
 	  ("n" "Next Step"
 	   ((todo "TODO"
 		  ((org-agenda-overriding-header "TODO")
-                   (org-agenda-files (delete (expand-file-name "gtd/emacs.org" my/gtd-dir)
-                                             (delete (expand-file-name "gtd/qygame.org" my/gtd-dir)
-                                                     (delete (expand-file-name "gtd/yygame.org" my/gtd-dir) (org-agenda-files)))))
+                   (org-agenda-files my/org-agenda-common-files)
                    (org-agenda-skip-function `(my/org-agenda-skip-entry))
                    (org-agenda-prefix-format "%(my/org-agenda-pf-next)")))
 	    (todo "WAITING"
 		  ((org-agenda-overriding-header "WAITING")
-                   (org-agenda-files (delete (expand-file-name "gtd/emacs.org" my/gtd-dir)
-                                             (delete (expand-file-name "gtd/qygame.org" my/gtd-dir)
-                                                     (delete (expand-file-name "gtd/yygame.org" my/gtd-dir) (org-agenda-files)))))
+                   (org-agenda-files my/org-agenda-common-files)
                    (org-agenda-prefix-format "%(my/org-agenda-pf-next)")))
             (todo "TODO|WAITING"
 		  ((org-agenda-overriding-header "PROJECT emacs")
@@ -201,16 +198,14 @@
                    (org-agenda-files (list (expand-file-name "gtd/qygame.org" my/gtd-dir)))
 		   (org-agenda-skip-function `(my/org-agenda-skip-entry))
                    (org-agenda-prefix-format "%(my/org-agenda-pf-project)")))
-            (todo "TODO|WAITING"
-		  ((org-agenda-overriding-header "PROJECT yygame")
-                   (org-agenda-files (list (expand-file-name "gtd/yygame.org" my/gtd-dir)))
-		   (org-agenda-skip-function `(my/org-agenda-skip-entry))
-                   (org-agenda-prefix-format "%(my/org-agenda-pf-project)")))
+            ;; (todo "TODO|WAITING"
+	    ;;       ((org-agenda-overriding-header "PROJECT yygame")
+            ;;        (org-agenda-files (list (expand-file-name "gtd/yygame.org" my/gtd-dir)))
+	    ;;        (org-agenda-skip-function `(my/org-agenda-skip-entry))
+            ;;        (org-agenda-prefix-format "%(my/org-agenda-pf-project)")))
 	    (todo "PROJECT"
 	          ((org-agenda-overriding-header "STUCK PROJECT")
-                   (org-agenda-files (delete (expand-file-name "gtd/emacs.org" my/gtd-dir)
-                                             (delete (expand-file-name "gtd/qygame.org" my/gtd-dir)
-                                                     (delete (expand-file-name "gtd/yygame.org" my/gtd-dir) (org-agenda-files)))))
+                   (org-agenda-files my/org-agenda-common-files)
 	           (org-agenda-prefix-format "%(my/org-agenda-pf-next-p)")
 	           (org-agenda-skip-function `(org-agenda-skip-subtree-if 'todo '("TODO" "WAITING"))))))
 	   ((_ (my/org-agenda-set-buffer-number 2))
