@@ -63,7 +63,7 @@
 (require 'init-term)
 (require 'init-eshell)
 (require 'init-api)
-(require 'init-translate)
+;(require 'init-translate)
 ;;(require 'init-gnus)
 
 
