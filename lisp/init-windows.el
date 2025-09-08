@@ -8,8 +8,7 @@
 ;;; Code:
 
 ;; Navigate window layouts with "C-c <left>" and "C-c <right>"
-
-(add-hook 'after-init-hook 'winner-mode)
+(winner-mode 1)
 
 
 ;; Make "C-x o" prompt for a target window when there are more than 2
@@ -23,7 +22,7 @@
 In the mean time, ask user for the window where move to"
   (interactive)
   (switch-window--then
-   "[i-j-k-l, b] Move to: "
+   "[Move: i-j-k-l, Reset: b] Move to: "
    #'switch-window--other-window-or-frame)))
 
 
@@ -97,19 +96,20 @@ Call a second time to restore the original window configuration."
 
 ;;; save | restore window configure
 
-(setq window-list nil)
+(defvar transient/c-r/window-list nil
+  "Stack of saved window configurations.")
 (defun transient/c-r/save-window()
   (interactive)
-  (push (current-window-configuration) window-list))
+  (push (current-window-configuration) transient/c-r/window-list))
 (defun transient/c-r/restore-window()
   (interactive)
-  (let ((win-config (pop window-list)))
+  (let ((win-config (pop transient/c-r/window-list)))
     (if win-config
         (set-window-configuration win-config)
-      (message "window configuration empty"))))
+      (message "No Saved window configuration."))))
 (defun transient/c-r/is-window-empty()
   (interactive)
-  window-list)
+  transient/c-r/window-list)
 
 (provide 'init-windows)
 ;;; init-windows.el ends here

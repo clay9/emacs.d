@@ -64,6 +64,5 @@
   :config
   (global-disable-mouse-mode 1))
 
-
 (provide 'init-gui-frames)
 ;;; init-gui-frames.el ends here

@@ -30,19 +30,25 @@
 ;; Nicer naming of buffers for files with identical names
 (require 'uniquify)
 
-(setq uniquify-buffer-name-style 'reverse)
-(setq uniquify-separator " • ")
-(setq uniquify-after-kill-buffer-p t)
-(setq uniquify-ignore-buffers-re "^\\*")
+(with-eval-after-load 'uniquify
+  (setq uniquify-buffer-name-style 'reverse
+        uniquify-separator " • "
+        uniquify-after-kill-buffer-p t
+        uniquify-ignore-buffers-re "^\\*"))
 
 
 ;; file && buffer
 (defun my/delete-current-file ()
+  "Delete the file associated with the current buffer and kill the buffer."
   (interactive)
-  (let ((delete-by-moving-to-trash t))
-    (delete-file (buffer-file-name)))
-  (kill-current-buffer))
-
+  (let ((file (buffer-file-name)))
+    (if (not file)
+        (message "Buffer is not visiting a file!")
+      (when (yes-or-no-p (format "Really delete file %s? " file))
+        (let ((delete-by-moving-to-trash t))
+          (delete-file file))
+        (kill-current-buffer)
+        (message "Deleted file %s" file)))))
 
 (provide 'init-buffers)
 ;;; init-buffers.el ends here

@@ -1,7 +1,6 @@
-;;; init-text-show.el --- Load the full configuration -*- lexical-binding: t -*-
+;;; init-text-style.el --- Load the full configuration -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
-
 
 (setq-default
  truncate-lines nil
@@ -49,5 +48,5 @@
 ;;   (setq-default display-fill-column-indicator-character ?\u254e)
 ;;   (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode))
 
-(provide 'init-text-show)
-;;; init-text-show.el ends here
+(provide 'init-text-style)
+;;; init-text-style.el ends here

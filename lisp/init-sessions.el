@@ -2,29 +2,15 @@
 ;;; Commentary:
 ;;; Code:
 
-;; save a list of open files in ~/.emacs.d/.emacs.desktop
+;; -----------------------------
+;; Desktop: Save open buffers & layout
+;; -----------------------------
 (setq desktop-path (list my/ecfg-dir)
       desktop-base-file-name "emacs.desktop"
       desktop-base-lock-name "emacs.desktop.lock"
-      desktop-auto-save-timeout 600)
-(desktop-save-mode 1)
+      desktop-auto-save-timeout 600
 
-
-;; Restore histories and registers after saving
-
-(setq-default history-length 200)
-(add-hook 'after-init-hook 'savehist-mode)
-
-(use-package session
-  :hook (after-init . session-initialize)
-  :config
-  (setq session-save-file (concat my/ecfg-dir "session"))
-  (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
-  (setq session-save-file-coding-system 'utf-8))
-
-;; save a bunch of variables to the desktop file
-;; for lists specify the len of the maximal saved data also
-(setq desktop-globals-to-save
+      desktop-globals-to-save
       '((comint-input-ring        . 50)
         (compile-history          . 30)
         desktop-missing-file-warning
@@ -49,7 +35,43 @@
         (shell-command-history    . 50)
         tags-file-name
         tags-table-list))
+(desktop-save-mode 1)
 
+;; -----------------------------
+;; Session: Save minibuffer history, variables, etc.
+;; -----------------------------
+(use-package session
+  :hook (after-init . session-initialize)
+  :config
+  (setq session-save-file (concat my/ecfg-dir "session"))
+  (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
+  (setq session-save-file-coding-system 'utf-8)
+  (setq history-length 200)
+  (savehist-mode 1))
+
+;; -----------------------------
+;; Recentf: Keep track of recently opened files
+;; -----------------------------
+(use-package recentf
+  :hook (after-init . recentf-mode)
+  :config
+  (setq recentf-save-file (concat my/ecfg-dir "recentf")
+        recentf-max-saved-items 20
+        recentf-exclude `("/tmp/"
+                          "~/my/"
+                          "~/.emacs.d/"
+                          "/ssh:"
+                          ,(concat package-user-dir "/.*-autoloads\\.el\\'"))))
+
+;; -----------------------------
+;; Auto-save sessions on exit
+;; -----------------------------
+(defun my/save-session-on-exit ()
+  "Save desktop, session, and recentf before Emacs exits."
+  (desktop-save-in-desktop-dir)
+  (session-save-session)
+  (recentf-save-list))
+(add-hook 'kill-emacs-hook #'my/save-session-on-exit)
 
 (provide 'init-sessions)
 ;;; init-sessions.el ends here

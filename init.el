@@ -5,13 +5,12 @@
 ;;(setq debug-on-error t)
 
 (defconst my/ecfg-dir (concat user-emacs-directory ".config/"))
-
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(setq custom-file (concat my/ecfg-dir "custom.el"))
 
 
 ;;; Bootstrap config
 
-(setq custom-file (concat my/ecfg-dir "custom.el"))
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (require 'init-site-lisp)
 (require 'init-package)
 
@@ -21,12 +20,11 @@
 (require 'init-font)
 (require 'init-windows)
 (require 'init-buffers)
-(require 'init-recentf)
 (require 'init-sessions)
 (require 'init-tty-keys)
 
 ;; text editor
-(require 'init-text-show)
+(require 'init-text-style)
 (require 'init-text-move-and-kill)
 (require 'init-text-hs)
 (require 'init-text-snippet)

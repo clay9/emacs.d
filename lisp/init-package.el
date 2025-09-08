@@ -5,16 +5,21 @@
 (require 'package)
 
 ;; package dir
-(setq package-user-dir (expand-file-name (format ".elpa-%s.%s" emacs-major-version emacs-minor-version)
-                                         user-emacs-directory))
+(setq package-user-dir
+      (expand-file-name
+       (format ".elpa-%s.%s" emacs-major-version emacs-minor-version)
+       user-emacs-directory))
+
 ;; Standard package repositories
 (add-to-list 'package-archives '( "melpa" . "https://melpa.org/packages/") t)
 
-;;; Fire up package.el
-
+;; Fire up package.el
 (setq package-enable-at-startup nil)
 (setq package-native-compile t)
 (package-initialize)
+
+(unless (file-exists-p (expand-file-name "archives" package-user-dir))
+  (package-refresh-contents))
 
 
 ;; use package
