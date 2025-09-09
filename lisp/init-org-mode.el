@@ -64,7 +64,7 @@
         (org-indent-region begin end)
         (goto-char point) )))
 
-  ;; structure template
+  ;; structure template. key 'y'保留, 供函数transient/org-mode/org-insert-structure-template使用
   (setq org-structure-template-alist
         '(;; org normal
           ("c" . "center")
@@ -82,12 +82,12 @@
           ("hy" . "youtube")
           ;; hugo book
           ("bb" . "badge")
-          ("bc" . "columns")  ;; TODO 需要重写逻辑
+          ("bc" . "columns")
           ("bd" . "details")
           ("bh" . "hint")
           ("bm" . "mermaid")
           ("bs" . "steps")
-          ("bt" . "tabs"))) ;; TODO 需要重写逻辑
+          ("bt" . "tabs")))
   (defun transient/org-mode/org-insert-structure-template (type)
     "Insert org shortcode"
     (interactive
@@ -101,22 +101,31 @@
     (let* ((column (current-indentation))
            (key (format "%s" (car (split-string type)))) ;; get really val
            (before_begin (pcase key
-                           ("hv" "#+attr_shortcode: ")
-                           ("hy" "#+attr_shortcode: ")
-                           ("bb" "#+attr_shortcode: :style info|success|warning|danger :title :value ")
                            ("bd" "#+attr_shortcode: :open false :title ")
                            ("bh" "#+attr_shortcode: info|success|warning|danger")
+                           ("y1" "#+attr_shortcode: # ") ;; #在此处为markdown中的标题字体
                            (_ nil)))
            (followed_begin (let* ((shortcode (substring type (+ 1 (length key))))
                                   (is-src (eql 0 (string-match "s" key)))) ;; is babel
                              (if is-src
                                  (concat "src " shortcode)
-                               shortcode)))
+                               (pcase key
+                                 ("hv" "export hugo")
+                                 ("hy" "export hugo")
+                                 ("bb" "export hugo")
+                                 (_ shortcode)))))
            (after_begin (pcase key
+                          ("hv" "{{< vimeo >}}")
+                          ("hy" "{{< youtube >}}")
+                          ("bb" "{{< badge style=\"info|success|warning|danger\" title=\"\" value=\"\" >}}")
                           (_ nil)))
+           ;; ("key shortcode", repeate times)
+           (insert_another_shortcode (pcase key
+                                       ("bt" (list "y1 tab" 3))
+                                       (_ nil)))
            (pos))
-      (message "key:%s; before_begin:%s; followed_begin:%s; after_begin:%s"
-               key before_begin followed_begin after_begin)
+      (message "key:%s; before_begin:%s; followed_begin:%s; after_begin:%s; insert_another_shorkey:%s"
+               key before_begin followed_begin after_begin insert_another_shortcode)
 
       ;; get #+begin line
       (if (save-excursion (skip-chars-backward " \t") (bolp))
@@ -134,15 +143,13 @@
         (indent-to column)
         (insert (format "#+begin_%s\n" followed_begin))
 
-        ;; line between #+begin and #+end
+        ;; move to #+begin next line
         (unless (bolp) (insert "\n"))
+        (indent-to column)
         (setq pos (point))
 
         ;; insert after_begin
         (when after_begin
-          (indent-to column)
-          (insert "\n")
-          (indent-to column)
           (insert after_begin)
           (indent-to column))
         (insert "\n")
@@ -156,9 +163,23 @@
 	  (insert "\n"))
         (when (and (eobp) (not (bolp))) (insert "\n")))
 
-      ;;
+      ;; goback to pos
       (goto-char pos)
-      (indent-to column)))
+      (indent-to column)
+
+      ;; insert another shortcode
+      (when insert_another_shortcode
+        (let* ((key_shortcode (car insert_another_shortcode))
+               (times (cadr insert_another_shortcode)))
+          (dotimes (i times)
+            (goto-char pos)
+            ;; insert new line
+            (when (> (- times i) 1)
+              (insert "\n")
+              (insert "\n")
+              (indent-to column))
+            ;; insert shortcode
+          (transient/org-mode/org-insert-structure-template key_shortcode))))))
   (transient-define-prefix transient/org-statistics()
     ["columns"
      ("1" "view" org-columns)

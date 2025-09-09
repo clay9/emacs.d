@@ -33,12 +33,6 @@
 (setq org-list-two-spaces-after-bullet-regexp nil)
 
 
-;;; ox-hugo
-;; use org-mode-generate-toc
-(setq org-hugo-export-with-to t)
-(setq org-hugo-paired-shortcodes "columns expand hint")
-
-
 ;; fun: ox-hugo (所有org文件) ==> md文件
 (defun my/hugo-export-all (root_dir)
   (interactive)
