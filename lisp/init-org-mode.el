@@ -64,36 +64,59 @@
         (org-indent-region begin end)
         (goto-char point) )))
 
+  ;; structure template
+  (setq org-structure-template-alist
+        '(;; org normal
+          ("c" . "center")
+          ("e" . "example")
+          ("q" . "quote")
+          ;; s
+          ("sa" . "artist -n")
+          ("sc" . "C++ -n")
+          ("se" . "emacs-lisp -n")
+          ("ss" . "shell -n")
+	  ("sp" . "plantuml :exports results :eval no-export :file xxx.png")
+          ;; hugo
+          ("hq" . "qr")
+          ("hv" . "vimeo")
+          ("hy" . "youtube")
+          ;; hugo book
+          ("bb" . "badge")
+          ("bc" . "columns")  ;; TODO 需要重写逻辑
+          ("bd" . "details")
+          ("bh" . "hint")
+          ("bm" . "mermaid")
+          ("bs" . "steps")
+          ("bt" . "tabs"))) ;; TODO 需要重写逻辑
   (defun transient/org-mode/org-insert-structure-template (type)
-    "Insert org block"
+    "Insert org shortcode"
     (interactive
      ;; read key && val
      (list (pcase (org--insert-structure-template-mks)
-             ;; if \t, then read input
-             (`("\t" . ,_) (read-string "Structure type: "))
+             (`("\t" . ,_) (read-string "Structure type: ")) ;; if \t, then read input
              ;; get key && val
              ;; key is string; val is list
              (`(,key ,val . ,_) (concat key " " val)))))
 
     (let* ((column (current-indentation))
-           ;; get really val
-           (key (format "%s" (car (split-string type))))
-           (before_begin (cond ;; ((eql 0 (string-match "he" key)) ;expand
-                               ;;  "#+attr_shortcode: expand-name \"...\"")
-                               ((eql 0 (string-match "hh" key)) ;hint
-                                "#+attr_shortcode: info | warning | danger")
-                               (t nil)))
-           (followed_begin (let* ((ori (substring type (+ 1 (length key)))))
-                             (cond ((eql 0 (string-match "sp" key)) ;src plantuml
-                                    (concat "src " ori))
-                                   ((eql 0 (string-match "s" key)) ;src
-                                    (concat "src " ori " -n"))
-                                   (t ori))))
-           (after_begin (cond ((eql 0 (string-match "hc" key)) ;columns
-                               "@@hugo:<--->@@")
-                              (t nil)))
+           (key (format "%s" (car (split-string type)))) ;; get really val
+           (before_begin (pcase key
+                           ("hv" "#+attr_shortcode: ")
+                           ("hy" "#+attr_shortcode: ")
+                           ("bb" "#+attr_shortcode: :style info|success|warning|danger :title :value ")
+                           ("bd" "#+attr_shortcode: :open false :title ")
+                           ("bh" "#+attr_shortcode: info|success|warning|danger")
+                           (_ nil)))
+           (followed_begin (let* ((shortcode (substring type (+ 1 (length key))))
+                                  (is-src (eql 0 (string-match "s" key)))) ;; is babel
+                             (if is-src
+                                 (concat "src " shortcode)
+                               shortcode)))
+           (after_begin (pcase key
+                          (_ nil)))
            (pos))
-      (message "key:%s; before_begin:%s; followed_begin:%s" key before_begin followed_begin)
+      (message "key:%s; before_begin:%s; followed_begin:%s; after_begin:%s"
+               key before_begin followed_begin after_begin)
 
       ;; get #+begin line
       (if (save-excursion (skip-chars-backward " \t") (bolp))
@@ -239,25 +262,6 @@
   (defun my/show-image()
     (org-display-inline-images t t))
   (add-hook 'org-babel-after-execute-hook 'my/show-image)
-
-  ;; structure template
-  (setq org-structure-template-alist
-        '(;; org normal
-          ("c" . "center")
-          ("e" . "example")
-          ("q" . "quote")
-          ;; html5
-          ;;("ha" . "aside") ;; not work. need css
-          ("hc" . "columns")
-          ("hd" . "details")
-          ("hh" . "hint")
-          ("hs" . "summary")
-          ;; src
-          ("sa" . "artist")
-          ("sc" . "C++")
-          ("se" . "emacs-lisp")
-          ("ss" . "shell")
-	  ("sp" . "plantuml :exports results :eval no-export :file xxx.png")))
 
   ;; active Babel languages
   (org-babel-do-load-languages

@@ -24,7 +24,7 @@
 ;; line breaks when exporting
 (setq org-export-preserve-breaks t)
 ;; support html5
-(setq org-html-html5-fancy t)
+(setq org-html-html5-fancy nil)
 ;; Subscripts and Superscripts ::  a_b not, a_{b} is
 (setq org-export-with-sub-superscripts '{})
 ;; rm blank-lines
