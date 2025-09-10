@@ -26,3 +26,4 @@ server/tree-sitter
 server/
 /eln-cache/
 /tree-sitter/*.dylib
+/.org-id-locations

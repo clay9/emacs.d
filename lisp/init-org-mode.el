@@ -101,7 +101,7 @@
     (let* ((column (current-indentation))
            (key (format "%s" (car (split-string type)))) ;; get really val
            (before_begin (pcase key
-                           ("bd" "#+attr_shortcode: :open false :title ")
+                           ("bd" "#+attr_shortcode: :title ")
                            ("bh" "#+attr_shortcode: info|success|warning|danger")
                            ("y1" "#+attr_shortcode: # ") ;; #在此处为markdown中的标题字体
                            (_ nil)))
@@ -215,7 +215,7 @@
       ("e" "effort" org-set-effort)]
 
      ["timestamp"
-      ("s" "timestamp" transient/org-timestamp)]
+      ("m" "timestamp" transient/org-timestamp)]
 
      ["link"
       ("i" "i&e" (lambda() (interactive) (call-interactively 'org-insert-link)))
