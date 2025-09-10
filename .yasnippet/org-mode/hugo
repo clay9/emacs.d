@@ -11,8 +11,8 @@
 #+hugo_draft: false
 #+hugo_auto_set_lastmod: t
 #+hugo_custom_front_matter: :bookCollapseSection `(yas/hugo-get-collapse-section)`
+#+hugo_paired_shortcodes: qr %columns %details %hint mermaid %steps tabs tab
 
  $3
 
 #+hugo: more
-
