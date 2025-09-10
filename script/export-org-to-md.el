@@ -8,11 +8,11 @@
 (require 'org)
 ;; when export, do not raise an error on broken links. not work to publish
 (setq org-export-with-broken-links t)
-;; set org-babel exports both
+;; set org-babel exports only code
 (setq org-babel-default-header-args
       '((:session . "none")
 	(:results . "replace")
-	(:exports . "both")
+	(:exports . "code")
 	(:cache . "no")
 	(:noweb . "no")
 	(:hlines . "no")

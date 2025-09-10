@@ -71,10 +71,10 @@
           ("e" . "example")
           ("q" . "quote")
           ;; s
-          ("sa" . "artist -n")
-          ("sc" . "C++ -n")
-          ("se" . "emacs-lisp -n")
-          ("ss" . "shell -n")
+          ("sa" . "artist")
+          ("sc" . "C++ :hl_lines")
+          ("se" . "emacs-lisp")
+          ("ss" . "shell")
 	  ("sp" . "plantuml :exports results :eval no-export :file xxx.png")
           ;; hugo
           ("hq" . "qr")
