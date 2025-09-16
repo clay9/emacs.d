@@ -461,7 +461,7 @@
                                                 (let ((win (selected-window)))
                                                   (org-agenda-quit)
                                                   (delete-window win))))
-  (define-key org-agenda-mode-map (kbd "r") 'my/org-agenda-redo))
+  (define-key org-agenda-mode-map (kbd "g") 'my/org-agenda-redo))
 
 (with-eval-after-load 'org-colview
   ;; previous && next

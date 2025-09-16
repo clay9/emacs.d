@@ -262,7 +262,7 @@ Function: refresh agenda bufffer"
   (no-message 'org-agenda-redo t))
 (defun my/org-refile-file-inbox()
   "Refile todo-state heading in inbox.org.
-1. Has tags => gtd/xxx.org.
+1. Has tags => gtd/xxx.org. when enty with todo-state 'PROJECT && enty's 'ITEM = tag
 2. No  tags => task.org"
   (with-current-buffer  (find-buffer-visiting my/file-inbox)
     ;; show level 1 headings
