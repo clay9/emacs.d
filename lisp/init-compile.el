@@ -5,7 +5,7 @@
 (use-package compile
   :commands compile
   :bind ( :map compilation-mode-map
-          ("r" . recompile)
+          ("g" . recompile)  ;; default
           ("n" . compilation-next-error)
           ("p" . compilation-previous-error)
           ("TAB" . compilation-display-error)
