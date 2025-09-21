@@ -10,7 +10,8 @@
 (use-package flymake-easy)
 (use-package flymake-google-cpplint
   :vc (:url "https://github.com/flymake/flymake-google-cpplint.git" :rev :newest)
-  :hook (c++-ts-mode . flymake-google-cpplint-load)
+  ;; TODO 无效, 导致很多错乱显示 暂时隐藏
+  ;; :hook (c++-ts-mode . flymake-google-cpplint-load)
   :config
   (setq flymake-google-cpplint-command "/usr/local/bin/cpplint.py"
         flymake-google-cpplint-verbose "--verbose=0"
