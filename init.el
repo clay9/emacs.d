@@ -1,38 +1,40 @@
 ;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
-;;; Commentary:
-;;; Code:
 
 ;;(setq debug-on-error t)
 
-(defconst my/ecfg-dir (concat user-emacs-directory ".config/"))
+;;; Constants
+(defconst my/ecfg-dir
+  (expand-file-name ".config/" user-emacs-directory)
+  "Directory for custom Emacs configuration files.")
+
 (setq custom-file (concat my/ecfg-dir "custom.el"))
 
-
 ;;; Bootstrap config
-
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+
 (require 'init-site-lisp)
 (require 'init-package)
 
-;; emacs-progn basic
+;;; Emacs core setup
 (require 'init-themes)
-(require 'init-gui-frames)
 (require 'init-font)
-(require 'init-windows)
-(require 'init-buffers)
-(require 'init-sessions)
-(require 'init-tty-keys)
+(require 'init-gui-frame)
 
-;; text editor
-(require 'init-text-style)
-(require 'init-text-move-and-kill)
-(require 'init-text-hs)
+(require 'init-window)  ;; TODO 从这里开始, 优化了注释修改. 之前的文件需要同步
+(require 'init-buffer)
+(require 'init-session)
+(require 'init-terminal-keys)
+
+;;; Text editor enhancements
+(require 'init-text-display)
+(require 'init-text-commands)
+(require 'init-text-fold)  ;; TODO 整理到这里了
 (require 'init-text-snippet)
 (require 'init-completion)
 
 (require 'init-global-shortkey)
 
-;; progn editor
+;;; Programming editor features
 (require 'init-outline)
 (require 'init-flymake)
 (require 'init-eglot)
@@ -40,11 +42,11 @@
 (require 'init-gdb)
 (require 'init-ai)
 
-;; project
+;;; Project management
 (require 'init-git)
 (require 'init-project)
 
-;; major mode
+;;; Major modes
 (require 'init-tree-sitter)
 (require 'init-artist)
 (require 'init-c++-ts-mode)
@@ -57,17 +59,16 @@
 (require 'init-org-mode)
 (require 'init-org-agenda-mode)
 
-;; tools
+;;; Tools
 (require 'init-term)
 (require 'init-eshell)
 (require 'init-api)
-;(require 'init-translate)
-;;(require 'init-gnus)
 
-
-;; Variables configured via the interactive 'customize' interface
-(when (file-exists-p custom-file) (load custom-file))
-;; Locales (setting them earlier in this file doesn't work in X)
+;;; Load custom variables if present
+(when (file-exists-p custom-file)
+  (load custom-file))
+
+;;; Locales (must be set after loading custom-file)
 (require 'init-locales)
 
 (provide 'init)

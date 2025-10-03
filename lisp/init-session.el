@@ -1,15 +1,20 @@
-;;; init-sessions.el --- Save and restore editor sessions between restarts -*- lexical-binding: t -*-
+;;; init-session.el --- Save and restore editor sessions between restarts -*- lexical-binding: t -*-
 ;;; Commentary:
+;;; This file manages saving and restoring Emacs sessions between restarts:
+;;;   - Desktop: buffers & window layout
+;;;   - Session: minibuffer history and variables
+;;;   - Recentf: recently opened files
+;;;   - Auto-save session on exit
 ;;; Code:
 
-;; -----------------------------
-;; Desktop: Save open buffers & layout
-;; -----------------------------
+;; ----------------------
+;;; Desktop: Save open buffers & layout
+;; ----------------------
+;; Keep track of open buffers and window layouts.
 (setq desktop-path (list my/ecfg-dir)
       desktop-base-file-name "emacs.desktop"
       desktop-base-lock-name "emacs.desktop.lock"
       desktop-auto-save-timeout 600
-
       desktop-globals-to-save
       '((comint-input-ring        . 50)
         (compile-history          . 30)
@@ -37,22 +42,25 @@
         tags-table-list))
 (desktop-save-mode 1)
 
-;; -----------------------------
-;; Session: Save minibuffer history, variables, etc.
-;; -----------------------------
+;; ----------------------
+;;; Session: Save minibuffer history, variables, etc.
+;; ----------------------
+;; Session package manages minibuffer history, etc.
 (use-package session
+  :defer t
   :hook (after-init . session-initialize)
   :config
-  (setq session-save-file (concat my/ecfg-dir "session"))
-  (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
-  (setq session-save-file-coding-system 'utf-8)
-  (setq history-length 200)
+  (setq session-save-file (concat my/ecfg-dir "session")
+        session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)"
+        session-save-file-coding-system 'utf-8
+        history-length 200)
   (savehist-mode 1))
 
-;; -----------------------------
-;; Recentf: Keep track of recently opened files
-;; -----------------------------
+;; ----------------------
+;;; Recentf: Keep track of recently opened files
+;; ----------------------
 (use-package recentf
+  :defer t
   :hook (after-init . recentf-mode)
   :config
   (setq recentf-save-file (concat my/ecfg-dir "recentf")
@@ -63,15 +71,15 @@
                           "/ssh:"
                           ,(concat package-user-dir "/.*-autoloads\\.el\\'"))))
 
-;; -----------------------------
-;; Auto-save sessions on exit
-;; -----------------------------
-(defun my/save-session-on-exit ()
-  "Save desktop, session, and recentf before Emacs exits."
-  (desktop-save-in-desktop-dir)
-  (session-save-session)
-  (recentf-save-list))
-(add-hook 'kill-emacs-hook #'my/save-session-on-exit)
+;; ----------------------
+;;; Auto-save sessions on exit
+;; ----------------------
+;; Save desktop, session, and recentf before Emacs exits.
+(add-hook 'kill-emacs-hook
+          (lambda ()
+            (desktop-save-in-desktop-dir)
+            (session-save-session)
+            (recentf-save-list)))
 
-(provide 'init-sessions)
-;;; init-sessions.el ends here
+(provide 'init-session)
+;;; init-session.el ends here

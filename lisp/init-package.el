@@ -1,38 +1,40 @@
-;;; init-package.el --- Crontrol Packages -*- lexical-binding: t -*-
+;;; init-package.el --- Control Packages -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; Code:
+;;; Setup package management and use-package
 
 (require 'package)
 
-;; package dir
+;; Package directory
 (setq package-user-dir
       (expand-file-name
        (format ".elpa-%s.%s" emacs-major-version emacs-minor-version)
        user-emacs-directory))
 
 ;; Standard package repositories
-(add-to-list 'package-archives '( "melpa" . "https://melpa.org/packages/") t)
+(setq package-archives
+      '(("gnu"   . "https://elpa.gnu.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")))
 
-;; Fire up package.el
-(setq package-enable-at-startup nil)
-(setq package-native-compile t)
+;; Initialize package system
+(setq package-enable-at-startup nil
+      package-native-compile t)
 (package-initialize)
 
-(unless (file-exists-p (expand-file-name "archives" package-user-dir))
+;; Refresh package contents if not yet available
+(unless package-archive-contents
   (package-refresh-contents))
 
-
-;; use package
+;; Ensure use-package is installed
 (require 'use-package)
-(require 'use-package-ensure)
-
 (setq use-package-always-ensure t)
 
-;; transient
-(require 'transient)
+;; Optional: manage transient with use-package
+(use-package transient
+  :ensure t)
 
-;; diminish mode-line
-(use-package diminish)
+;; Diminish mode-line clutter
+(use-package diminish
+  :ensure t)
 
 (provide 'init-package)
 ;;; init-package.el ends here

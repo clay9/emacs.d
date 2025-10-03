@@ -1,29 +1,31 @@
-;;; init-font.el --- font  -*- lexical-binding: t -*-
+;;; init-font.el --- Font settings -*- lexical-binding: t -*-
 ;;; Commentary:
+;;; Set default font and CJK font according to system
 ;;; Code:
 
-(defun my/set-chinese-font (font size)
-  "Set FONT with SIZE for common CJK characters."
-  (when window-system
-    (dolist (charset '(kana han symbol cjk-misc bopomofo))
-      (set-fontset-font (frame-parameter nil 'font)
-                        charset
-                        (font-spec :family font :size size)))))
+(when (display-graphic-p)
+  (let ((set-chinese-font
+         (lambda (font size)
+           "Set FONT with SIZE for common CJK characters."
+           (dolist (charset '(kana han symbol cjk-misc bopomofo))
+             (set-fontset-font (frame-parameter nil 'font)
+                               charset
+                               (font-spec :family font :size size))))))
+    (cond
+     ((eq system-type 'darwin)
+      (set-face-attribute 'default nil :font "Monaco 18")
+      (funcall set-chinese-font "冬青黑体简体中文 W3" 22)
+      (message "Fonts loaded: Monaco + 冬青黑体"))
 
-
+     ((eq system-type 'gnu/linux)
+      (set-face-attribute 'default nil :font "DejaVu Sans Mono 12")
+      (funcall set-chinese-font "楷体" 20)
+      (message "Fonts loaded: DejaVu Sans Mono + 楷体"))
 
-(cond
- ((eq system-type 'darwin)
-  (set-face-attribute 'default nil :font "Monaco 18")
-  (my/set-chinese-font "冬青黑体简体中文 W3" 22))
-
- ((eq system-type 'gnu/linux)
-  (set-face-attribute 'default nil :font "DejaVu Sans Mono 12")
-  (my/set-chinese-font "楷体" 20))
-
- ((eq system-type 'windows-nt)
-  (set-face-attribute 'default nil :font "Monaco 10")
-  (my/set-chinese-font "Microsoft Yahei" 20)))
+     ((eq system-type 'windows-nt)
+      (set-face-attribute 'default nil :font "Monaco 10")
+      (funcall set-chinese-font "Microsoft Yahei" 20)
+      (message "Fonts loaded: Monaco + Microsoft Yahei")))))
 
 (provide 'init-font)
 ;;; init-font.el ends here

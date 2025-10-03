@@ -2,13 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
-
 ;; window
-(global-set-key (kbd "C-x o") 'my/switch-window)
-(global-set-key (kbd "C-x 1") 'sanityinc/toggle-delete-other-windows)
-(global-set-key (kbd "C-x 2") (split-window-func-with-other-buffer 'split-window-vertically))
-(global-set-key (kbd "C-x 3") (split-window-func-with-other-buffer 'split-window-horizontally))
-(global-set-key (kbd "C-x t") 'sanityinc/toggle-current-window-dedication)
+(global-set-key (kbd "C-x o") 'win/switch-window)
+(global-set-key (kbd "C-x 1") 'win/toggle-delete-other-windows)
+(global-set-key (kbd "C-x 2") (win/split-window-with-other-buffer 'split-window-vertically))
+(global-set-key (kbd "C-x 3") (win/split-window-with-other-buffer 'split-window-horizontally))
+(global-set-key (kbd "C-x t") 'win/toggle-current-window-dedication)
 
 ;; buffer
 (global-set-key (kbd "C-x b") 'consult-buffer)
@@ -23,14 +22,14 @@
 (global-set-key (kbd "C-x C-f") 'project-find-file)
 
 ;; delete | kill | yank | select | hide,show
-(global-set-key (kbd "C-<backspace>") 'my/delete)
-(global-set-key (kbd "C-k") 'my/delete)
-(global-set-key (kbd "C-w") 'my/kill)
-(global-set-key (kbd "M-w") 'my/kill-save)
-(global-set-key (kbd "C-y") 'my/yank-pop)
+(global-set-key (kbd "C-<backspace>") 'text/delete)
+(global-set-key (kbd "C-k") 'text/delete)
+(global-set-key (kbd "C-w") 'text/kill)
+(global-set-key (kbd "M-w") 'text/kill-save)
+(global-set-key (kbd "C-y") 'text/yank-pop)
 (global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key (kbd "C--") 'er/contract-region)
-(global-set-key (kbd "<backtab>") 'my/shift-tab)
+(global-set-key (kbd "<backtab>") 'text/shift-tab)
 
 ;; action
 ;;(global-set-key (kbd "C-SPC") 'embark-act)
@@ -48,7 +47,6 @@
                                    (add-hook 'org-agenda-finalize-hook 'my/org-agenda-empty-p)
                                    (org-agenda nil "a")))) ;;make it work when in 中文输入法
 
-
 ;; C-s:
 (transient-define-prefix transient/c-s()
   "Common comands."
@@ -58,19 +56,26 @@
    [:class transient-column "buffer"
            ("TAB" "indent" (lambda() (interactive)
                              (indent-region (point-min) (point-max))))
-           ("C-d" "del file" my/delete-current-file)]
-   [:class transient-column "navigate"
-           ("o" "outline" symbols-outline-show
+           ("C-d" "delete file" my/delete-current-file)]
+   [:class transient-column "navigate consule"
+           ("i" "outline" symbols-outline-show
             :if (lambda()
                   (if (fboundp 'eglot-current-server)
                       (eglot-current-server)
                     nil)))
+           ("o" "outline" (lambda ()
+                            (interactive)
+                            (if (derived-mode-p 'org-mode)
+                                (consult-org-heading)
+                              (consult-outline))))
            ("m" "imenu" consult-imenu)
-           ("g" "go line" consult-goto-line)]])
+           ("g" "go line" consult-goto-line)]
+   [:class transient-column "navigate outline"
+           ("n" "outline" transient/outline-minor-mode
+             :if (lambda () (bound-and-true-p outline-minor-mode)))]])
 (global-set-key (kbd "C-s") 'transient/c-s)
 
 
-
 ;; C-d: project
 (transient-define-prefix transient/c-d()
   "Project comands."
@@ -121,9 +126,9 @@
         		        (my/org-agenda-redo))
             :if (lambda() (interactive) (marker-buffer org-clock-marker)))]
    [:class transient-column "window"
-           ("m" "save" transient/c-r/save-window)
-           ("C-m" "restore" transient/c-r/restore-window
-            :if transient/c-r/is-window-empty)]
+           ("m" "save" win/save-window-configuration)
+           ("C-m" "restore" win/restore-window-configuration
+            :if win/window-configuration-stack)]
    [:class transient-column "snippet"
            ("s" "show all" (lambda() (interactive)
                              (let ((buff (get-buffer "*YASnippet Tables*")))
@@ -136,7 +141,7 @@
 	   ("l" "lookup" devdocs-lookup)]])
 (global-set-key (kbd "C-r") 'transient/c-r)
 
-
+
 ;; unset
 (global-set-key (kbd "M-<backspace>") 'nil)
 (global-set-key (kbd "M-DEL") 'nil)
