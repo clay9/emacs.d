@@ -18,6 +18,7 @@
 ;;; Corfu in terminal
 ;; ------------------------------------------------------------
 (use-package corfu-terminal
+  :ensure nil
   :if (not (display-graphic-p))
   :config
   ;; 启用corfu-terminal

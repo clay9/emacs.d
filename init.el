@@ -2,12 +2,13 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq debug-on-error t)
+;;(setq debug-on-error t)
 
 ;;; Constants
-(defconst my/ecfg-dir
-  (expand-file-name ".config/" user-emacs-directory)
+(defconst my/ecfg-dir (expand-file-name ".config/" user-emacs-directory)
   "Directory for custom Emacs configuration files.")
+
+(unless (file-directory-p my/ecfg-dir) (make-directory my/ecfg-dir))
 
 (setq custom-file (concat my/ecfg-dir "custom.el"))
 
