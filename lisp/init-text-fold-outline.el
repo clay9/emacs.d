@@ -8,22 +8,6 @@
   :ensure nil
   :config
   ;; ----------------------
-  ;;; Transient menus
-  ;; ----------------------
-  (transient-define-prefix transient/outline-minor-mode ()
-    "Common outline commands."
-    [[:class transient-column "hide"
-             ("TAB" "toggle" text/outline-cycle)
-             ("a" "toggle all" text/outline-toggle-all)
-             ("o" "hide other" outline-hide-other)]
-     [:class transient-column "navigate"
-             ("p" "previous visible heading" outline-previous-visible-heading)
-             ("n" "next visible heading" outline-next-visible-heading)
-             ("f" "forward same heading" outline-forward-same-level)
-             ("b" "backward same heading" outline-backward-same-level)
-             ("u" "up heading" outline-up-heading)]])
-
-  ;; ----------------------
   ;;; Outline minor mode toggles
   ;; ----------------------
   (defun text/outline-toggle-all ()

@@ -18,6 +18,11 @@
 (add-hook 'emacs-lisp-mode-hook #'emacs-lisp/setup-init-outline)
 (add-hook 'lisp-interaction-mode-hook #'emacs-lisp/setup-init-outline)
 
+;; 每次保存Emacs lisp文件前自动缩进
+(add-hook 'before-save-hook
+          (lambda()
+            (when (eq major-mode 'emacs-lisp-mode)
+              (indent-region (point-min) (point-max)))))
 
 ;; -----------------------------
 ;;; 快捷键

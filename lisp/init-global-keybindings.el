@@ -63,25 +63,31 @@
 ;;; C-s: Common Commands
 ;; =====================
 (transient-define-prefix transient/c-s ()
-  [[:class transient-column "search"
+  [[:class transient-column "Search & Replace"
            ("s" "search" consult-line)
            ("t" "replace" replace-regexp)]
-   [:class transient-column "buffer"
-           ("TAB" "indent" (lambda () (interactive)
-                             (indent-region (point-min) (point-max))))
+   [:class transient-column "Buffer & File"
            ("C-d" "delete file" my/delete-current-file)]
-   [:class transient-column "navigate consult"
-           ("i" "outline" symbols-outline-show)
+   [:class transient-column "Navigation"
            ("o" "outline" (lambda ()
                             (interactive)
                             (if (derived-mode-p 'org-mode)
                                 (consult-org-heading)
                               (consult-outline))))
            ("m" "imenu" consult-imenu)
-           ("g" "go line" consult-goto-line)]
-   [:class transient-column "navigate outline"
-           ("n" "outline" transient/outline-minor-mode
-            :if (lambda () (bound-and-true-p outline-minor-mode)))]])
+           ("g" "goto line" consult-goto-line)]
+   [:class transient-column
+           :if (lambda () (bound-and-true-p outline-minor-mode))
+           "Outline Command"
+           ("TAB" "toggle" text/outline-cycle)
+           ("a" "toggle all" text/outline-toggle-all)
+           ("h" "hide other" outline-hide-other)
+           ("p" "previous visible heading" outline-previous-visible-heading)
+           ("n" "next visible heading" outline-next-visible-heading)
+           ;;("f" "forward same heading" outline-forward-same-level)
+           ;;("b" "backward same heading" outline-backward-same-level)
+           ("u" "up heading" outline-up-heading)]])
+
 (global-set-key (kbd "C-s") 'transient/c-s)
 
 
