@@ -144,6 +144,7 @@
           (when (and (org-clock-is-active)
                      (string= (org-entry-get nil "ITEM") org-clock-current-task))
             (org-agenda-clock-out))
+          ;; TODONOW 最好在file中设置location, 不要写死
           ;; 3. move to %project%_archive or archive.org::
           (if (string= "task.org" (buffer-name buffer))
               (let* ((org-archive-location (if (string= todo-state "PROJECT")
@@ -216,78 +217,80 @@
 ;;----------------------------------------
 ;;; Capture Hook: Auto Refile
 ;;----------------------------------------
-(defun org-agenda/auto-refile()
-  "Refile todo-state heading in inbox.org.
-1. Has tags => gtd/xxx.org. when enty with todo-state 'PROJECT && enty's 'ITEM = tag
-2. No  tags => task.org"
-  (with-current-buffer  (find-buffer-visiting my/file-inbox)
-    ;; show level 1 headings
-    (widen)
-    (org-fold-show-all '(headings))
-    (no-message 'org-shifttab 1)
-    (goto-char (point-min))
+(defun org-agenda/auto-refile ()
+  "Automatically refile TODO headings from inbox.org.
 
-    ;; loop: next todo-state heading
-    (while (and (= 0 (org-next-visible-heading 1))
-                (org-get-todo-state))
-      ;; refile: heading with tags => heading;  others => task.org
-      (let* ((tags (org-get-tags)))
-	(if (not tags) (org-refile nil nil (list nil my/file-task nil nil))
-	  (dolist (tag tags)
-	    (dolist (file gtd/no-common-files)
-              (let ((pos (with-current-buffer (find-buffer-visiting file)
-                           (widen)
-                           (org-fold-show-all '(headings))
-                           (no-message 'org-shifttab 1)
-                           (goto-char (point-min))
-                           (let ((p nil))
-                             (while (= 0 (org-next-visible-heading 1))
-                               (when (and (string= "PROJECT" (org-get-todo-state))
-                                          (string= tag (org-entry-get nil "ITEM")))
-                                 (setq p (point))))
-                             p))))
-		(when pos
-                  ;; TODONOW break loop
-
-		  ;; rm tags && refile
-		  (org-toggle-tag tag 'off)
-		  (org-refile nil nil (list nil file nil pos)))))))))))
+Rules:
+1. If heading has no tags → refile to `my/file-task`.
+2. If heading has tags → find PROJECT entry in GTD files
+   where ITEM matches any tag, then refile under that project."
+  (with-current-buffer (find-buffer-visiting my/file-inbox)
+    (org-with-wide-buffer
+     (org-map-entries
+      (lambda ()
+        (let ((tags (org-get-tags))
+              (todo (org-get-todo-state))
+              (pos nil))
+          (when todo
+            (if (not tags)
+                (org-refile nil nil (list nil my/file-task nil nil))
+              (catch 'done
+                (dolist (tag tags)
+                  (dolist (file gtd/no-common-files)
+                    (message "-----------------%s" file)
+                    ;; find pos in file
+                    (with-current-buffer (find-file-noselect file)
+                      (org-with-wide-buffer
+                       (catch 'found
+                         (org-map-entries
+                          (lambda ()
+                            (when (and (string= "PROJECT" (org-get-todo-state))
+                                       (string= tag (org-entry-get nil "ITEM")))
+                              (setq pos (point))
+                              (throw 'found t)))
+                          nil 'file))))
+                    ;; when found pos, return
+                    (when pos
+                      (org-toggle-tag tag 'off)
+                      (org-refile nil nil (list nil file nil pos))
+                      (throw 'done t)))))))))
+      nil 'file))))
 
 ;;----------------------------------------
-;;; Org Agenda Hook: Auto Refile
+;;; Org Agenda Hook: Delete Empty Blocks
 ;;----------------------------------------
 (defun org-agenda/delete-empty-blocks ()
-    "Remove empty agenda blocks.
+  "Remove empty agenda blocks.
   A block is identified as empty if there are fewer than 2
   non-empty lines in the block (excluding the line with
   `org-agenda-block-separator' characters)."
-    (when org-agenda-compact-blocks
-      (user-error "Cannot delete empty compact blocks"))
-    (setq buffer-read-only nil)
-    (save-excursion
+  (when org-agenda-compact-blocks
+    (user-error "Cannot delete empty compact blocks"))
+  (setq buffer-read-only nil)
+  (save-excursion
+    (goto-char (point-min))
+    (let* ((blank-line-re "^\\s-*$")
+           (content-line-count (if (looking-at-p blank-line-re) 0 1))
+           (start-pos (point))
+           (block-re (format "%c\\{10,\\}" org-agenda-block-separator)))
+      (while (and (not (eobp)) (forward-line))
+        (cond
+         ((looking-at-p block-re)
+          (when (< content-line-count 2)
+            (delete-region start-pos (1+ (point-at-bol))))
+          (setq start-pos (point))
+          (forward-line)
+          (setq content-line-count (if (looking-at-p blank-line-re) 0 1)))
+         ((not (looking-at-p blank-line-re))
+          (setq content-line-count (1+ content-line-count)))))
+      (when (< content-line-count 2)
+        (delete-region start-pos (point-max)))
       (goto-char (point-min))
-      (let* ((blank-line-re "^\\s-*$")
-             (content-line-count (if (looking-at-p blank-line-re) 0 1))
-             (start-pos (point))
-             (block-re (format "%c\\{10,\\}" org-agenda-block-separator)))
-        (while (and (not (eobp)) (forward-line))
-          (cond
-           ((looking-at-p block-re)
-            (when (< content-line-count 2)
-              (delete-region start-pos (1+ (point-at-bol))))
-            (setq start-pos (point))
-            (forward-line)
-            (setq content-line-count (if (looking-at-p blank-line-re) 0 1)))
-           ((not (looking-at-p blank-line-re))
-            (setq content-line-count (1+ content-line-count)))))
-        (when (< content-line-count 2)
-          (delete-region start-pos (point-max)))
-        (goto-char (point-min))
-        ;; The above strategy can leave a separator line at the beginning
-        ;; of the buffer.
-        (when (looking-at-p block-re)
-          (delete-region (point) (1+ (point-at-eol))))))
-    (setq buffer-read-only t))
+      ;; The above strategy can leave a separator line at the beginning
+      ;; of the buffer.
+      (when (looking-at-p block-re)
+        (delete-region (point) (1+ (point-at-eol))))))
+  (setq buffer-read-only t))
 
 ;;----------------------------------------
 ;;; Org Agenda 'a' Hook: goto 'n'

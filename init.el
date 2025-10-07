@@ -43,7 +43,7 @@
 (require 'init-flymake)
 (require 'init-eglot)
 (require 'init-compile)
-(require 'init-gdb)  ;; TODO 改用lap-mode
+(require 'init-gdb)  ;; TODONOW 改用lap-mode
 ;; (require 'init-ai-assistant)
 
 ;;; Project management
@@ -66,7 +66,7 @@
 ;;; Tools
 (require 'init-ansi-term)
 (require 'init-eshell)
-;; (require 'init-devdocs)  ;; TODOLater incompat in Macos
+;; (require 'init-devdocs)  ;; TODONOW incompat in Macos
 
 ;;; Load custom variables if present
 (when (file-exists-p custom-file)

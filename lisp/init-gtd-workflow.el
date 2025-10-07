@@ -27,7 +27,7 @@
         (list my/file-inbox my/file-task my/file-archive))
 
   (setq gtd/no-common-files
-        (cl-set-difference org-agenda-files gtd/common-files :test #'string=)))
+        (cl-set-difference (org-agenda-files) gtd/common-files :test #'string=)))
 
 ;;----------------------------------------
 ;;; TODO keywords and priority
@@ -120,6 +120,6 @@
   ;; capture hook: Set Effort and Timestamp
   (add-hook 'org-capture-prepare-finalize-hook #'org-agenda/set-effort-and-time)
   ;; capture hook: Auto Refile
-  (add-hook 'org-capture-prepare-finalize-hook #'org-agenda/auto-refile))
+  (add-hook 'org-capture-after-finalize-hook #'org-agenda/auto-refile))
 
 (provide 'init-gtd-workflow)

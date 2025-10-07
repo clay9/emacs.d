@@ -29,7 +29,7 @@
                      (kill-buffer org-agenda-buffer)))
           ("a" . org-agenda/show-entry-text)
           ;; entry done
-          ("d" . transient/org-agenda/archive)
+          ("d" . org-agenda/archive)
           ;; quit && refresh
           ("q" . (lambda() (interactive)
                    (let ((win (selected-window)))
@@ -180,7 +180,9 @@
 ;;----------------------------------------
 ;;; Save all Org buffers on exit
 ;;----------------------------------------
-(add-hook 'kill-emacs-hook 'org-save-all-org-buffers)
+;; TODONOW not work
+(with-eval-after-load 'org
+  (add-hook 'kill-emacs-hook 'org-save-all-org-buffers))
 
 (provide 'init-org-agenda-mode)
 ;;; init-org-agenda-mode.el ends here
