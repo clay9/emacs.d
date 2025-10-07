@@ -125,7 +125,7 @@
            ("b" "show buff err" consult-flymake)
            ("e" "show project err" (lambda () (interactive) (consult-flymake t)))]
    [:class transient-column "status"
-           ("a" "view all" transient/magit-list-repos)
+           ("a" "view all" magit-list-repositories)
            ("m" "status" magit-status)]])
 (global-set-key (kbd "C-d") 'transient/c-d)
 

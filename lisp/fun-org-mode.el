@@ -60,7 +60,6 @@
       (when (and (org-clock-is-active)
                  (string= (org-entry-get nil "ITEM") org-clock-current-task))
         (org-agenda-clock-out))
-      ;; TODONOW 这里要修改, 最好是在文件中设置archive location, 不要写死
       ;; set archive target when in task.org
       (let ((org-archive-location
              (if (string= "task.org" (buffer-name))

@@ -4,11 +4,8 @@
 ;; - Auto Push repo: "~/my/gtd"
 ;;; Code:
 
-;;----------------------------------------
-;;; Magit Repo List 基础配置
-;;----------------------------------------
 (use-package magit
-  :commands (transient/magit-list-repos)
+  :commands (magit-list-repositories)
   :bind (:map magit-repolist-mode-map
               ("SPC" . magit-repos/switch)
               ("C" . magit-repolist/magit-repolist-clone))
@@ -34,7 +31,7 @@
           ("qygame/database"         "~/qy/database")))
 
   ;;----------------------------------------
-  ;;; 仓库索引与获取函数
+  ;;; 切换仓库列表
   ;;----------------------------------------
   (setq magit-repolist-index 0)
   (defun magit-repos/get-repos ()
@@ -48,6 +45,14 @@
       (dolist (v (magit-repos/get-repos))
         (add-to-list 'new-list (cons (cadr v) 0)))
       new-list))
+
+  (defun magit-repos/switch ()
+    (interactive)
+    (cl-case magit-repolist-index
+      (0 (setq magit-repolist-index 1))
+      (1 (setq magit-repolist-index 0)))
+    (setq magit-repository-directories (reset-magit-repository-directories))
+    (revert-buffer))
 
   ;;----------------------------------------
   ;;; Clone 仓库
@@ -63,17 +68,6 @@
           (unless (file-exists-p path)
             (magit-run-git-async "clone" args "--" url
                                  (magit-convert-filename-for-git path)))))))
-
-  ;;----------------------------------------
-  ;;; 切换仓库列表
-  ;;----------------------------------------
-  (defun magit-repos/switch ()
-    (interactive)
-    (cl-case magit-repolist-index
-      (0 (setq magit-repolist-index 1))
-      (1 (setq magit-repolist-index 0)))
-    (setq magit-repository-directories (reset-magit-repository-directories))
-    (revert-buffer))
 
   ;;----------------------------------------
   ;;; 列显示设置
@@ -125,16 +119,23 @@
 ;;----------------------------------------
 (use-package magit
   :config
+  (defun magit-repos/auto-push(dir &optional auto-commit)
+    (let ((default-directory dir))
+      (when default-directory
+        (when (and auto-commit
+                   (magit-anything-modified-p))
+          (magit-call-git "commit" "-am auto-push"))
+        (let* ((br (magit-get-upstream-branch))
+               (unpush-count (car (magit-rev-diff-count "HEAD" br))))
+          (when (> unpush-count 0)
+            (magit-call-git "push"))))))
+
   (add-hook 'kill-emacs-hook
             (lambda ()
-              (let ((default-directory (file-name-as-directory "~/my/gtd")))
-                (when default-directory
-                  (when (magit-anything-modified-p)
-                    (magit-call-git "commit" "-am auto-push"))
-                  (let* ((br (magit-get-upstream-branch))
-                         (unpush-count (car (magit-rev-diff-count "HEAD" br))))
-                    (when (> unpush-count 0)
-                      (magit-call-git "push"))))))))
+              (magit-repos/auto-push "~/my/gtd" t)
+              (magit-repos/auto-push "~/my/blog" t)
+              (magit-repos/auto-push "~/.emacs.d")
+              (magit-repos/auto-push "~/qy/blog" t))))
 
 (provide 'init-git-repolist)
 ;;; init-git-repolist.el ends here

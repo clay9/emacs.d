@@ -144,7 +144,6 @@
           (when (and (org-clock-is-active)
                      (string= (org-entry-get nil "ITEM") org-clock-current-task))
             (org-agenda-clock-out))
-          ;; TODONOW 最好在file中设置location, 不要写死
           ;; 3. move to %project%_archive or archive.org::
           (if (string= "task.org" (buffer-name buffer))
               (let* ((org-archive-location (if (string= todo-state "PROJECT")
