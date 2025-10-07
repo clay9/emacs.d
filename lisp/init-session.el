@@ -1,10 +1,10 @@
 ;;; init-session.el --- Save and restore editor sessions between restarts -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; This file manages saving and restoring Emacs sessions between restarts:
-;;;   - Desktop: buffers & window layout
-;;;   - Session: minibuffer history and variables
-;;;   - Recentf: recently opened files
-;;;   - Auto-save session on exit
+;; This file manages saving and restoring Emacs sessions between restarts:
+;;   - Desktop: buffers & window layout
+;;   - Session: minibuffer history and variables
+;;   - Recentf: recently opened files
+;;   - Auto-save session on exit
 ;;; Code:
 
 ;; ----------------------

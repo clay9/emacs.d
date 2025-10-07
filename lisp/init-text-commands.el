@@ -1,10 +1,10 @@
 ;;; init-text-commands.el --- Text editing commands -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; This file provides enhanced text editing operations:
-;;;   - Delete thing at point (char, word, sexp, line)
-;;;   - Kill / kill-save region
-;;;   - Yank and yank-pop enhancements
-;;;   - Expand-region support
+;; This file provides enhanced text editing operations:
+;;   - Delete thing at point (char, word, sexp, line)
+;;   - Kill / kill-save region
+;;   - Yank and yank-pop enhancements
+;;   - Expand-region support
 ;;; Code:
 
 ;; ----------------------

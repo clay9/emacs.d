@@ -66,7 +66,7 @@
 ;;; Tools
 (require 'init-ansi-term)
 (require 'init-eshell)
-(require 'init-devdocs)
+;; (require 'init-devdocs)  ;; TODOLater incompat in Macos
 
 ;;; Load custom variables if present
 (when (file-exists-p custom-file)

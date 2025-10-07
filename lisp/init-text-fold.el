@@ -1,8 +1,8 @@
 ;;; init-text-fold.el --- Text folding and block hiding -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; This file provides commands and keybindings for folding/hiding text:
-;;;   - If 'treesit-fold' is available, use it. Otherwise, fallback to 'hs-minor-mode'
-;;;   - Outline minor modeg
+;; This file provides commands and keybindings for folding/hiding text:
+;;   - If 'treesit-fold' is available, use it. Otherwise, fallback to 'hs-minor-mode'
+;;   - Outline minor modeg
 ;;; Code:
 
 ;; ----------------------

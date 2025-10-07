@@ -13,9 +13,9 @@
                                (font-spec :family font :size size))))))
     (cond
      ((eq system-type 'darwin)
-      (set-face-attribute 'default nil :font "Monaco 18")
-      (funcall set-chinese-font "冬青黑体简体中文 W3" 22)
-      (message "Fonts loaded: Monaco + 冬青黑体"))
+      (set-face-attribute 'default nil :font "Fira Code 18")
+      (funcall set-chinese-font "思源黑体" 22)
+      (message "Fonts loaded: Fire Code + 思源黑体"))
 
      ((eq system-type 'gnu/linux)
       (set-face-attribute 'default nil :font "DejaVu Sans Mono 12")

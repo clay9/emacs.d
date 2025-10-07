@@ -1,9 +1,9 @@
 ;;; init-buffer.el --- Control buffer display and naming -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; This file provides:
-;;;   - Display rules for special buffers (Help, Messages, Org Agenda, Shell)
-;;;   - Uniquify buffer names for files with identical names
-;;;   - File & buffer management utilities
+;; This file provides:
+;;   - Display rules for special buffers (Help, Messages, Org Agenda, Shell)
+;;   - Uniquify buffer names for files with identical names
+;;   - File & buffer management utilities
 ;;; Code:
 
 ;; ----------------------
@@ -32,7 +32,6 @@
                (slot . -1)
                (window-parameters . ((no-other-window . t)
                                      (no-delete-other-windows . t)))))
-
 
 ;; ----------------------
 ;;; Uniquify buffer names

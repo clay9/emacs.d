@@ -1,7 +1,7 @@
 ;;; init-git-repolist.el --- Manage Git repositories -*- lexical-binding: t -*-
 ;;; Commentary:
-;; - Magit Repo List配置
-;; - 自动推送仓库 "~/my/gtd"
+;; - Magit Repo List Configure
+;; - Auto Push repo: "~/my/gtd"
 ;;; Code:
 
 ;;----------------------------------------
@@ -10,8 +10,8 @@
 (use-package magit
   :commands (transient/magit-list-repos)
   :bind (:map magit-repolist-mode-map
-          ("SPC" . magit-repos/switch)
-          ("C" . magit-repolist/magit-repolist-clone))
+              ("SPC" . magit-repos/switch)
+              ("C" . magit-repolist/magit-repolist-clone))
   :config
   ;;----------------------------------------
   ;;; 我的仓库列表

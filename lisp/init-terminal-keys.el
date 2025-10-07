@@ -1,7 +1,7 @@
 ;;; init-terminal-keys.el --- Keybindings for terminal (non-graphical) Emacs -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; This file defines keybindings for TTY (non-graphical) Emacs.
-;;; It maps certain escape sequences to Emacs key events.
+;; This file defines keybindings for TTY (non-graphical) Emacs.
+;; It maps certain escape sequences to Emacs key events.
 ;;; Code:
 
 ;; 流程说明:

@@ -1,11 +1,11 @@
 ;;; init-text-display.el --- Text display enhancements -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; This file configures general text display and visual enhancements:
-;;;   - line wrapping
-;;;   - transient mark, electric pair, show-paren
-;;;   - delete selection, electric indent, eldoc
-;;;   - whitespace and carriage return cleanup
-;;;   - line numbers
+;; This file configures general text display and visual enhancements:
+;;   - line wrapping
+;;   - transient mark, electric pair, show-paren
+;;   - delete selection, electric indent, eldoc
+;;   - whitespace and carriage return cleanup
+;;   - line numbers
 ;;; Code:
 
 ;; ----------------------
@@ -31,9 +31,14 @@
 ;; ----------------------
 ;;; Whitespace management
 ;; ----------------------
-(setq-default show-trailing-whitespace t)
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(add-hook 'find-file-hook
+          (lambda ()
+            "Show trailing whitespace only in writable file buffers."
+            (when (and buffer-file-name
+                       (not buffer-read-only))
+              (setq show-trailing-whitespace t))))
 
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
 (add-hook 'before-save-hook
           (lambda ()
             (save-excursion

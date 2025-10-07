@@ -1,13 +1,13 @@
 ;;; init-window.el --- Working with window within frames -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; This file configures Emacs "window" — the panels within a frame that
-;;; display buffers. It provides:
-;;;   - Window layout management (winner-mode)
-;;;   - Window switching enhancements (switch-window)
-;;;   - Split windows with other-buffer behavior
-;;;   - Toggle delete/restore other windows
-;;;   - Toggle window dedication
-;;;   - Save/restore window configurations
+;; This file configures Emacs "window" — the panels within a frame that
+;; display buffers. It provides:
+;;   - Window layout management (winner-mode)
+;;   - Window switching enhancements (switch-window)
+;;   - Split windows with other-buffer behavior
+;;   - Toggle delete/restore other windows
+;;   - Toggle window dedication
+;;   - Save/restore window configurations
 ;;; Code:
 
 ;; ----------------------

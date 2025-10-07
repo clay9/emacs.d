@@ -1,7 +1,7 @@
 ;;; init-text-fold-treesit.el --- Text folding: treesit -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; This file provides commands and keybindings for folding/hiding text:
-;;;   - Tree-sitter based folding for syntax-aware hiding
+;; This file provides commands and keybindings for folding/hiding text:
+;;   - Tree-sitter based folding for syntax-aware hiding
 ;;; Code:
 
 ;; ----------------------
