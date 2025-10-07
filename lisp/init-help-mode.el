@@ -2,10 +2,15 @@
 ;;; Commentary:
 ;;; Code:
 
+;; -----------------------------
+;;; 快捷键
+;; -----------------------------
 (with-eval-after-load 'help-mode
-  (define-key help-mode-map (kbd "<return>") #'(lambda() (interactive)
-					         (windmove-display-same-window)
-					         (push-button)))
+  (define-key help-mode-map (kbd "<return>")
+              (lambda()
+                (interactive)
+		(windmove-display-same-window)
+		(push-button)))
   (define-key help-mode-map (kbd "n") 'forward-button)
   (define-key help-mode-map (kbd "p") 'backward-button)
   (define-key help-mode-map (kbd "b") 'help-go-back)

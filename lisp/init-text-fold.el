@@ -1,21 +1,19 @@
 ;;; init-text-fold.el --- Text folding and block hiding -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; This file provides commands and keybindings for folding/hiding text:
-;;;   - Outline minor mode toggles
-;;;   - hideshow minor mode for code blocks
-;;;   - Tree-sitter based folding for syntax-aware hiding
-;;;   - Shift-TAB key for context-aware folding/unfolding
+;;;   - If 'treesit-fold' is available, use it. Otherwise, fallback to 'hs-minor-mode'
+;;;   - Outline minor modeg
 ;;; Code:
-
-;; ----------------------
-;;; hideshow minor mode
-;; ----------------------
-(require 'init-text-fold-hs)
 
 ;; ----------------------
 ;;; Tree-sitter folding
 ;; ----------------------
 (require 'init-text-fold-treesit)
+
+;; ----------------------
+;;; hideshow minor mode
+;; ----------------------
+(require 'init-text-fold-hs)
 
 ;; ----------------------
 ;;; Outline minor mode toggles
@@ -33,13 +31,13 @@
 ;; ----------------------
 ;;; Keybinding
 ;; ----------------------
-(defun text/shift-tab ()
+(defun text/fold ()
   "Context-aware Shift-TAB for folding."
   (interactive)
   (cond ((bound-and-true-p treesit-fold-mode)
-         (text/ts-shift-tab))
+         (text/treesit-fold-cycle))
         ((bound-and-true-p hs-minor-mode)
-         (text/hs-shift-tab))))
+         (text/hs-cycle))))
 
 (provide 'init-text-fold)
 ;;; init-text-fold.el ends here

@@ -1,68 +1,68 @@
-;;; init-c++-ts-mode.el ---   -*- lexical-binding: t -*-
+;;; init-c++-ts-mode.el --- C/C++ Tree-sitter mode setup -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
-;; TODO 这是emacs临时的解决方案, 等tree sitter在emacs成熟的时候, 应该会改掉
-(add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
-(add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
-(add-to-list 'major-mode-remap-alist
-             '(c-or-c++-mode . c-or-c++-ts-mode))
-
-
-;;; google style
+;; ------------------------------------------------------------
+;;; Google Style 缩进
+;; ------------------------------------------------------------
 (with-eval-after-load 'c-ts-mode
-  (defun google-c-style()
-    "Override the built-in `gnu' indentation style with some additional rules."
-    `(;; Here are your custom rules
-      ((node-is ")") parent-bol 0)
-      ((match nil "argument_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
-      ((parent-is "argument_list") first-sibling 1)
-      ((match "parameter_declaration" "parameter_list" nil nil nil) first-sibling 1)
-      ((match nil "parameter_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
-      ((parent-is "parameter_list") prev-sibling 0)
-      ((n-p-gp nil nil "namespace_definition") grand-parent 0)
-      ((match "access_specifier" "base_class_clause" nil nil nil) parent-bol 0)
-      ((match "access_specifier" "field_declaration_list" nil nil nil) parent-bol 1)
-      ;; ((node-is "access_specifier") parent-bol 1)
-      ((node-is "field_initializer_list") parent-bol 4)
-      ((match nil "field_initializer_list" nil 2 nil) parent-bol 2)
-      ;;((node-is "<<") great-grand-parent 4)
-      ((node-is "case_statement") parent-bol 2)
-      ((node-is "field_identifier") prev-sibling 0)
+  (defvar my/google-c-style-cache nil
+    "缓存 Google C/C++ Tree-sitter 缩进规则。")
 
-      ;; Append here the indent style you want as base
-      ,@(alist-get 'gnu (c-ts-mode--indent-styles 'cpp))))
+  (defun google-c-style ()
+    "Override the built-in `gnu' indentation style with Google C++ rules."
+    (or my/google-c-style-cache
+        (setq my/google-c-style-cache
+              `(((node-is ")") parent-bol 0)
+                ((match nil "argument_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
+                ((parent-is "argument_list") first-sibling 1)
+                ((match "parameter_declaration" "parameter_list" nil nil nil) first-sibling 1)
+                ((match nil "parameter_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
+                ((parent-is "parameter_list") prev-sibling 0)
+                ((n-p-gp nil nil "namespace_definition") grand-parent 0)
+                ((match "access_specifier" "base_class_clause" nil nil nil) parent-bol 0)
+                ((match "access_specifier" "field_declaration_list" nil nil nil) parent-bol 1)
+                ((node-is "field_initializer_list") parent-bol 4)
+                ((match nil "field_initializer_list" nil 2 nil) parent-bol 2)
+                ((node-is "case_statement") parent-bol 2)
+                ((node-is "field_identifier") prev-sibling 0)
+                ;; 继承 GNU 样式
+                ,@(alist-get 'gnu (c-ts-mode--indent-styles 'cpp))))))
+
   (setq c-ts-mode-indent-style #'google-c-style))
 
-
-;;; key
+;; ------------------------------------------------------------
+;;; transient 快捷键
+;; ------------------------------------------------------------
 (with-eval-after-load 'c-ts-mode
-  (transient-define-prefix my/transient/c++-ts-mode()
-    [:class transient-column "nav"
-	    ("f" "go-forward" xref-go-forward)
-	    ("b" "go-back" xref-go-back)])
-  (define-key c++-ts-mode-map (kbd "C-j") 'my/transient/c++-ts-mode))
+  (transient-define-prefix transient/c++-ts-mode ()
+    [:class transient-column "navigation"
+     ("f" "go-forward" xref-go-forward)
+     ("b" "go-back" xref-go-back)])
+  (define-key c++-ts-mode-map (kbd "C-j") 'transient/c++-ts-mode))
 
-
-;;; install
+;; ------------------------------------------------------------
+;;; major-mode remap
+;; ------------------------------------------------------------
+(dolist (pair '((c-mode . c-ts-mode)
+                (c++-mode . c++-ts-mode)
+                (c-or-c++-mode . c-or-c++-ts-mode)))
+  (add-to-list 'major-mode-remap-alist pair))
 
-(require 'treesit)
-(when (not (treesit-ready-p 'cpp))
-  ;; treesit language
-  (add-to-list 'treesit-language-source-alist
-               '(cpp "https://github.com/tree-sitter/tree-sitter-cpp"))
-  (add-to-list 'treesit-language-source-alist
-               '(c "https://github.com/tree-sitter/tree-sitter-c"))
+;; ------------------------------------------------------------
+;;; Tree-sitter 安装与配置
+;; ------------------------------------------------------------
+(require 'fun-treesit)
 
+(defun treesit/setup-cpp-languages ()
+  "确保 C/C++ Tree-sitter 语法可用。"
+  (treesit/setup-language 'c   "https://github.com/tree-sitter/tree-sitter-c")
+  (treesit/setup-language 'cpp "https://github.com/tree-sitter/tree-sitter-cpp"))
 
-  ;; install language gramar
-  (dolist (lang treesit-language-source-alist)
-    (unless (treesit-language-available-p (car lang))
-      (treesit-install-language-grammar (car lang))))
-
-  ;; map tree_sitter_<LANGUAGE1> with libtree-sitter-<LANGUAGE2>.so
-  (add-to-list 'treesit-load-name-override-list
-               '(c++ "libtree-sitter-cpp")))
+;; 加载 Tree-sitter
+(unless (treesit-ready-p 'cpp)
+  (treesit/setup-cpp-languages)
+  (add-to-list 'treesit-load-name-override-list '(c++ "libtree-sitter-cpp")))
 
 (provide 'init-c++-ts-mode)
 ;;; init-c++-ts-mode.el ends here

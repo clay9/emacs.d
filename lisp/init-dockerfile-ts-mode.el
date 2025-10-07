@@ -1,24 +1,26 @@
-;;; init-dockerfile-ts-mode.el ---  -*- lexical-binding: t -*-
+;;; init-dockerfile-ts-mode.el --- Dockerfile Tree-sitter mode setup -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
+;; ------------------------------------------------------------
+;;; 自动识别 Dockerfile 文件
+;; ------------------------------------------------------------
 (add-to-list 'auto-mode-alist
              '("\\(?:Dockerfile\\(?:\\..*\\)?\\|\\.[Dd]ockerfile\\)\\'"
                . dockerfile-ts-mode))
 
-
-;;; install
+;; ------------------------------------------------------------
+;;; Tree-sitter 安装与配置
+;; ------------------------------------------------------------
+(require 'fun-treesit)
 
-(require 'treesit)
-(when (not (treesit-ready-p 'dockerfile))
-  ;; treesit language
-  (add-to-list 'treesit-language-source-alist
-               '(dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile"))
+(defun treesit/setup-dockerfile ()
+  "确保 Dockerfile Tree-sitter 语法可用。"
+  (treesit/setup-language 'dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile"))
 
-  ;; install language gramar
-  (dolist (lang treesit-language-source-alist)
-    (unless (treesit-language-available-p (car lang))
-      (treesit-install-language-grammar (car lang)))))
+;; 加载 Tree-sitter
+(unless (treesit-ready-p 'dockerfile)
+  (treesit/setup-dockerfile))
 
 (provide 'init-dockerfile-ts-mode)
 ;;; init-dockerfile-ts-mode.el ends here

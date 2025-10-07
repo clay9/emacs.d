@@ -16,90 +16,57 @@
 
   (global-treesit-fold-mode t)
   ;; 折叠单行注释 (需要多个单行注释在一起)
-  (treesit-fold-line-comment-mode t))
+  (treesit-fold-line-comment-mode t)
 
-(defun text/ts-shift-tab ()
-  "Context-aware Shift-TAB for tree-sitter folding."
-  (let ((in-multi-comment (text/ts-in-multi-comment))
-        (node (treesit-fold--foldable-node-at-pos)))
-    (cond
-     (in-multi-comment (text/ts-toggle-comment))
-     (node (text/ts-toggle))
-     (t (text/ts-toggle-all)))))
+  (defun text/treesit-fold-cycle()
+    "Org-style cycle for treesit fold.
+- If entry is folded, show its body and subtree(folded).
+- If entry has subtree and subtree is fully folded, expand the whole subtree.
+- Otherwise, fold the entry."
+    (let* (;; 当前pos所在的最小的可折叠node. nil表示没有
+           (node (treesit-fold--foldable-node-at-pos))
+           ;; node的ov标志
+           (ov   (and node (treesit-fold-overlay-at node)))
+           ;; node的一级child
+           (child-list (when node (treesit-node-children node)))
+           ;; treesit-fold--non-foldable-node-p 判断node是否可折叠的规则
+           (mode-ranges (alist-get major-mode treesit-fold-range-alist))
+           ;; 0:没有可折叠subtree; 1:有可折叠subtree 且 subtree都已折叠; -1:有可折叠subtree未折叠
+           (all-fold 0)
+           ;; 获取真实的all-fold值
+           (_ (cl-block text/treesit-block
+                (dolist (child child-list)
+                  (let* ((foldable (not (treesit-fold--non-foldable-node-p child mode-ranges)))
+                         (ov (and foldable (treesit-fold-overlay-at child))))
+                    (when foldable
+                      ;; 第一次遇到可折叠的subtree的时候, set foldable
+                      (when (= all-fold 0) (setq all-fold 1))
+                      ;; 遇到未折叠的subtree (foldable=t and ov=nil)
+                      (when (not ov)
+                        (setq all-fold -1)
+                        (cl-return-from text/treesit-block 0)))))))
+           (root (treesit-buffer-root-node)))
+      (cond
+       ((not node)
+        (cl-labels ((any-folded-p (node)
+                      (or (treesit-fold-overlay-at node)
+                          (cl-some #'any-folded-p (treesit-node-children node)))))
+          (if (any-folded-p root)
+              ;; 0.1 node外. 有任何折叠的node, 则展开所有
+              (treesit-fold-open-all)
+            ;; 0.2 node外. 所有node都已展开, 则关闭所有
+            (treesit-fold-close-all))))
+       ;; 1. 当前 entry 折叠 → 展开 entry body 和 children(folded)
+       (ov
+        (treesit-fold-open)
+        (mapc #'treesit-fold-close child-list))
+       ;; 2. 如果有subtree 且 subtree都已折叠 → 展开整个 subtree
+       ((= all-fold 1)
+        (treesit-fold-open-recursively))
 
-(defun text/ts-node-range-continue (node)
-  "Get continuous node range for folding."
-  (let* ((get-node (lambda (node next)
-                     (let ((cnode node) result)
-                       (while (and cnode (equal (treesit-node-type node)
-                                                (treesit-node-type cnode)))
-                         (setq result cnode)
-                         (setq cnode (if next
-                                         (treesit-node-next-sibling cnode)
-                                       (treesit-node-prev-sibling cnode))))
-                       result)))
-         (first-node (funcall get-node node nil))
-         (last-node (funcall get-node node t)))
-    (cons (treesit-node-start first-node)
-          (treesit-node-end last-node))))
-
-(defun text/ts-in-multi-comment ()
-  "Check if point is in a multi-line comment."
-  (let ((node (treesit-node-at (point)))
-        result)
-    (when (equal (treesit-node-type node) "comment")
-      (let ((range-node (text/ts-node-range-continue node))
-            (node-start (treesit-node-start node))
-            (node-end (treesit-node-end node)))
-        (when (or (not (equal node-start (car range-node)))
-                  (not (equal node-end (cdr range-node))))
-          (setq result t))))
-    result))
-
-(defun text/ts-toggle-comment ()
-  "Toggle folding of multi-line comment."
-  (treesit-fold-line-comment-mode)
-  (let* ((node (treesit-node-at (point)))
-         (prefix "//")
-         (prefix-len (length prefix))
-         (node-range (text/ts-node-range-continue node))
-         (range (cons (+ (car node-range) prefix-len)
-                      (cdr node-range))))
-    (mapc #'delete-overlay (treesit-fold--overlays-in 'invisible 'treesit-fold
-                                                      (car range) (cdr range)))
-    (run-hooks 'treesit-fold-on-fold-hook)))
-
-(defun text/ts-toggle ()
-  "Toggle folding of node at point."
-  (let ((node (treesit-fold--foldable-node-at-pos))
-        (ov (treesit-fold-overlay-at (treesit-fold--foldable-node-at-pos))))
-    (if ov
-        (treesit-fold-open-recursively)
-      (text/ts-hide))))
-
-(defun text/ts-hide ()
-  "Hide child nodes of the current foldable node."
-  (let ((node (treesit-fold--foldable-node-at-pos))
-        (pos (point))
-        act)
-    (dolist (son (treesit-node-children node))
-      (dolist (grandson (treesit-node-children son))
-        (let* ((ov (treesit-fold-overlay-at grandson))
-               (range (treesit-fold--get-fold-range grandson))
-               (ov2 (treesit-fold--create-overlay range)))
-          (unless (equal ov ov2)
-            (run-hooks 'treesit-fold-on-fold-hook)
-            (setq act t)))))
-    (goto-char pos)
-    (unless act (treesit-fold-close node))))
-
-(defvar text/ts-hide-all nil)
-(defun text/ts-toggle-all ()
-  "Toggle hide/show all tree-sitter nodes."
-  (setq text/ts-hide-all (not text/ts-hide-all))
-  (if text/ts-hide-all
-      (treesit-fold-close-all)
-    (treesit-fold-open-all)))
+       ;; 3. 其他情况 → 折叠entry
+       (t
+        (treesit-fold-close))))))
 
 (provide 'init-text-fold-treesit)
 ;;; init-text-fold-treesit.el ends here

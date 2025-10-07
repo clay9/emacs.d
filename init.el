@@ -1,6 +1,8 @@
 ;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
 
-;;(setq debug-on-error t)
+(setq debug-on-error t)
 
 ;;; Constants
 (defconst my/ecfg-dir
@@ -20,7 +22,7 @@
 (require 'init-font)
 (require 'init-gui-frame)
 
-(require 'init-window)  ;; TODO 从这里开始, 优化了注释修改. 之前的文件需要同步
+(require 'init-window)
 (require 'init-buffer)
 (require 'init-session)
 (require 'init-terminal-keys)
@@ -28,41 +30,42 @@
 ;;; Text editor enhancements
 (require 'init-text-display)
 (require 'init-text-commands)
-(require 'init-text-fold)  ;; TODO 整理到这里了
+(require 'init-text-fold)
 (require 'init-text-snippet)
-(require 'init-completion)
 
-(require 'init-global-shortkey)
+(require 'init-vertico-suite)
+(require 'init-corfu)
+
+(require 'init-global-keybindings)
 
 ;;; Programming editor features
-(require 'init-outline)
 (require 'init-flymake)
 (require 'init-eglot)
 (require 'init-compile)
-(require 'init-gdb)
-(require 'init-ai)
+(require 'init-gdb)  ;; TODO 改用lap-mode
+;; (require 'init-ai-assistant)
 
 ;;; Project management
 (require 'init-git)
 (require 'init-project)
 
 ;;; Major modes
-(require 'init-tree-sitter)
-(require 'init-artist)
 (require 'init-c++-ts-mode)
 (require 'init-dockerfile-ts-mode)
-(require 'init-yaml-mode)
+(require 'init-yaml-ts-mode)
 (require 'init-protobuf-mode)
-(require 'init-plantuml)
 (require 'init-emacs-lisp-mode)
 (require 'init-help-mode)
 (require 'init-org-mode)
 (require 'init-org-agenda-mode)
 
+(require 'init-artist-mode)
+(require 'init-mermaid-mode)
+
 ;;; Tools
-(require 'init-term)
+(require 'init-ansi-term)
 (require 'init-eshell)
-(require 'init-api)
+(require 'init-devdocs)
 
 ;;; Load custom variables if present
 (when (file-exists-p custom-file)

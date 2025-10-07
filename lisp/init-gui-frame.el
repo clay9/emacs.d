@@ -21,7 +21,7 @@
 ;; Global editing preferences
 (setq-default
  inhibit-startup-screen t
- initial-scratch-message ";; Emacs is just editor, not system !!!\n\n"
+ initial-scratch-message nil
  use-file-dialog nil
  use-dialog-box nil
  make-backup-files nil
@@ -39,9 +39,9 @@
 ;; File and package related paths
 (setq auth-sources  "~/my/gtd/.emacs_cfg/authinfo"
       bookmark-default-file "~/my/gtd/.emacs_cfg/bookmark"
-      savehist-file (concat my/ecfg-dir "save-history")
-      auto-save-list-file-prefix (concat my/ecfg-dir "auto-save-list/saves-")
-      tramp-persistency-file-name (concat my/ecfg-dir "tramp")
+      savehist-file (expand-file-name "save-history" my/ecfg-dir )
+      auto-save-list-file-prefix (expand-file-name "auto-save-list/saves-" my/ecfg-dir)
+      tramp-persistency-file-name (expand-file-name "tramp" my/ecfg-dir)
       tramp-verbose 1)
 
 ;; Misc
