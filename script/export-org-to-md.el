@@ -23,17 +23,14 @@
 (setq org-confirm-babel-evaluate nil)
 ;; line breaks when exporting
 (setq org-export-preserve-breaks t)
-;; support html5
-(setq org-html-html5-fancy nil)
 ;; Subscripts and Superscripts ::  a_b not, a_{b} is
 (setq org-export-with-sub-superscripts '{})
+;; support html5
+;;(setq org-html-html5-fancy nil)
 ;; rm blank-lines
-(setq org-ascii-headline-spacing nil)
-;; rm blank-lines -- TODO test
-(setq org-list-two-spaces-after-bullet-regexp nil)
+;;(setq org-ascii-headline-spacing nil)
 
-
-;; fun: ox-hugo (所有org文件) ==> md文件
+;;; fun: ox-hugo (所有org文件) ==> md文件
 (defun my/hugo-export-all (root_dir)
   (interactive)
   (setq org-hugo-base-dir root_dir)
