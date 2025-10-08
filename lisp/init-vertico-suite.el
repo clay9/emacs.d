@@ -37,6 +37,7 @@
   (setq consult-buffer-filter
         '("\\` "                  ;; 空格开头的缓冲区
           "\\`\\*[^s][^c]*\\*"    ;; 隐藏 * 开头但不是 *scratch*
+          "\\.jd\\'"              ;; 隐藏.jd 日记文件
           "inbox.org" "task.org" "archive.org"  ;; 隐藏gtd buffers
           "emacs.org" "qygame.org" )))
 
