@@ -300,22 +300,6 @@ Rules:
         (org-agenda nil "n")))))
 
 ;;----------------------------------------
-;;; Utility Functions
-;;----------------------------------------
-;; 输入农历日期, 返回对应的阳历日期
-(defun my/lunar (lunar-month lunar-day)
-  (let* ((current-month (car (calendar-current-date)))
-	 (current-year (cadr (cdr (calendar-current-date))))
-	 (cn-years (calendar-chinese-year ; calendar-chinese-year counts from 12 for last year
-		    (if (and (eq current-month 12) (eq lunar-month 12))
-			(1+ current-year)
-		      current-year)))
-	 (run-yue (assoc lunar-month cn-years))
-	 (date (calendar-gregorian-from-absolute
-		(+ (cadr run-yue) (1- lunar-day)))))
-    date))
-
-;;----------------------------------------
 ;;; Functions For 'org-agenda-custom-commands'
 ;;----------------------------------------
 ;;;; skip entry
