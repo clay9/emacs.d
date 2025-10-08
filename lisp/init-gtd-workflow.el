@@ -16,8 +16,6 @@
   (defvar my/file-inbox   (expand-file-name "gtd_common/inbox.org"   my/gtd-dir))
   (defvar my/file-task    (expand-file-name "gtd_common/task.org"    my/gtd-dir))
   (defvar my/file-archive (expand-file-name "gtd_common/archive.org" my/gtd-dir))
-  (defvar my/file-diary   (expand-file-name "diary.org"              my/gtd-dir))
-  (defvar my/file-life    (expand-file-name "life.org"               my/gtd-dir))
 
   (setq org-agenda-files
         (when (file-directory-p my/gtd-dir)
@@ -93,18 +91,24 @@
 ;;----------------------------------------
 ;;; Capture, refile, archive
 ;;----------------------------------------
-(with-eval-after-load 'org-capture
+(use-package org-capture
+  :ensure nil
+  :init
+  (setq org-capture-templates nil)
+  :config
   ;; capture templates
-  (setq org-capture-templates
-        '(("i" "info" entry (file my/file-inbox)     "* [#D] %?\n  %a\n%i\n")
-          ("t" "todo" entry (file my/file-inbox)     "* TODO [#C] %?")
-          ("w" "waiting" entry (file my/file-inbox)  "* WAITING [#C] %?")
-          ("p" "project" entry (file my/file-inbox)  "* PROJECT [#B] %?")
-          ("s" "schedule" entry (file my/file-inbox) "* TODO [#C] %?\n  SCHEDULED:%T\n")
-          ("d" "deadline" entry (file my/file-inbox) "* TODO [#C] %?\n  DEADLINE:%T\n")
-          ("j" "diary" entry (file+datetree my/file-diary) "* %?\n  %T\n  ")
-          ("r" "interrupt" entry (file+headline my/file-archive "Interrupt")
-           "* DONE %?" :clock-in t :clock-resume t)))
+  (let ((templates
+         '(("i" "info" entry (file my/file-inbox)    "* [#D] %?\n  %a\n%i\n")
+           ("t" "todo" entry (file my/file-inbox)    "* TODO [#C] %?")
+           ("w" "waiting" entry (file my/file-inbox) "* WAITING [#C] %?")
+           ("p" "project" entry (file my/file-inbox) "* PROJECT [#B] %?")
+           ("s" "schedule" entry (file my/file-inbox) "* TODO [#C] %?\n  SCHEDULED:%T\n")
+           ("d" "deadline" entry (file my/file-inbox) "* TODO [#C] %?\n  DEADLINE:%T\n")
+           ("r" "interrupt" entry (file+headline my/file-archive "Interrupt")
+            "* DONE %?" :clock-in t :clock-resume t))))
+    (dolist (tpl templates)
+      (unless (assoc (car tpl) org-capture-templates)
+        (add-to-list 'org-capture-templates tpl t))))
 
   ;; refile targets
   (setq org-refile-targets '((nil . (:maxlevel . 2))))

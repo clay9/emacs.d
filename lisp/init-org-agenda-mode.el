@@ -51,9 +51,9 @@
   (setq org-agenda-window-setup 'current-window
         ;; not show sublevels in agenda
         org-habit-show-habits-only-for-today t
-        ;; diary
+        ;; disable diary
         org-agenda-include-diary nil
-        org-agenda-diary-file my/file-diary)
+        org-agenda-diary-file nil)
 
   ;; ignore certain tags in agenda
   (setq org-agenda-hide-tags-regexp "emacs\\|org\\|ccIDE\\|qygame\\|habit")

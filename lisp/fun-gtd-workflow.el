@@ -203,15 +203,14 @@
 ;;; Capture Hook: Set Effort/timestamp
 ;;----------------------------------------
 (defun org-agenda/set-effort-and-time ()
-  (unless (equal "CAPTURE-diary.org" (buffer-name))
-    (let ((todo-key (org-get-todo-state))
-          (time-string (format-time-string
-                        "<%Y-%m-%d %H:%M>"
-                        (time-add (current-time) (days-to-time 0)))))
-      (goto-char (point-min))
-      (org-set-property "CAPTURE_TIME" time-string)
-      (when (member todo-key '("TODO" "WAITING" "PROJECT"))
-        (org-set-effort)))))
+  (let ((todo-key (org-get-todo-state))
+        (time-string (format-time-string
+                      "<%Y-%m-%d %H:%M>"
+                      (time-add (current-time) (days-to-time 0)))))
+    (goto-char (point-min))
+    (org-set-property "CAPTURE_TIME" time-string)
+    (when (member todo-key '("TODO" "WAITING" "PROJECT"))
+      (org-set-effort))))
 
 ;;----------------------------------------
 ;;; Capture Hook: Auto Refile

@@ -134,26 +134,20 @@
 ;;; C-r: Tools
 ;; =====================
 (transient-define-prefix transient/c-r ()
-  [[:class transient-column "org"
+  [[:class transient-column "Capture"
            ("t" "capture" org-capture)
            ("w" "store link" org-store-link)
-           ("SPC" "clock out" (lambda ()
-                                (interactive)
-                                (org-agenda-clock-out)
-                                (org-agenda-redo t))
-            :if (lambda () (marker-buffer org-clock-marker)))]
-   [:class transient-column "window"
+           ("j" "journal" org-journal-new-entry)]
+   [:class transient-column
+           :if (lambda () (marker-buffer org-clock-marker))
+           "Clock"
+           ("SPC" "clock out" org-agenda-clock-out)]
+   [:class transient-column "Window Configuration"
            ("m" "save" win/save-window-configuration)
            ("C-m" "restore" win/restore-window-configuration
             :if win/window-configuration-stack)]
-   [:class transient-column "snippet"
-           ("s" "show all"
-            (lambda ()
-              (interactive)
-              (let ((buff (get-buffer "*YASnippet Tables*")))
-                (if (buffer-live-p buff)
-                    (kill-buffer buff)
-                  (yas-describe-tables)))))
+   [:class transient-column "Snippet"
+           ("s" "show all" yas-describe-tables)
            ("v" "visit" yas-visit-snippet-file)
            ("i" "insert" yas-new-snippet)]
    ;; [:class transient-column "api document"

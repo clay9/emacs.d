@@ -67,6 +67,7 @@
 (require 'init-ansi-term)
 (require 'init-eshell)
 ;; (require 'init-devdocs)  ;; TODONOW incompat in Macos
+(require 'init-journal)
 
 ;;; Load custom variables if present
 (when (file-exists-p custom-file)
