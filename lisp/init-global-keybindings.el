@@ -131,18 +131,18 @@
 
 
 ;; =====================
-;;; C-r: Tools
+;;; C-q: Tools
 ;; =====================
 (transient-define-prefix transient/c-r ()
   [[:class transient-column "Capture"
-           ("t" "capture" org-capture)
-           ("w" "store link" org-store-link)
-           ("j" "journal" org-journal-new-entry)]
+           ("h" "capture" org-capture)
+           ("j" "journal" org-journal-new-entry)
+           ("w" "store link" org-store-link)]
    [:class transient-column
            :if (lambda () (marker-buffer org-clock-marker))
            "Clock"
            ("SPC" "clock out" org-agenda-clock-out)]
-   [:class transient-column "Window Configuration"
+   [:class transient-column "Window"
            ("m" "save" win/save-window-configuration)
            ("C-m" "restore" win/restore-window-configuration
             :if win/window-configuration-stack)]
@@ -153,7 +153,7 @@
    ;; [:class transient-column "api document"
    ;;         ("l" "lookup" devdocs-lookup)]
    ])
-(global-set-key (kbd "C-r") 'transient/c-r)
+(global-set-key (kbd "C-q") 'transient/c-r)
 
 ;; =====================
 ;; Unset Default Keys
