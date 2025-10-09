@@ -24,7 +24,7 @@
   (transient-define-prefix transient/org-agenda-mode()
     [["filter"
       ("a" "agenda act" transient/org-agenda-a :if (lambda() (org-agenda-check-type nil 'agenda)) :transient t)
-      ("f" "filter" transient/org-filter :transient t)
+      ("f" "filter" transient/org-filter)
       ("j" "quick filter" (lambda() (interactive)
                             (org-agenda-filter-remove-all)
                             (org-agenda-filter)))]
@@ -37,8 +37,8 @@
       ("e" "effort" org-agenda-set-effort)
       ("d" "archive done" org-agenda/archive)]
 
-     ["timestamp"
-      ("s" "timestamp" transient/org-agenda-timestamp)]
+     ["Schedule & Deadline"
+      ("s" "add" transient/org-agenda-timestamp)]
 
      ["clock"
       ("SPC" "clock in" (lambda() (interactive)
