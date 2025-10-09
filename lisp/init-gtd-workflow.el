@@ -12,20 +12,18 @@
   :after org
   :ensure nil
   :config
-  (defvar my/gtd-dir "~/my/gtd/")
-  (defvar my/file-inbox   (expand-file-name "gtd_common/inbox.org"   my/gtd-dir))
-  (defvar my/file-task    (expand-file-name "gtd_common/task.org"    my/gtd-dir))
-  (defvar my/file-archive (expand-file-name "gtd_common/archive.org" my/gtd-dir))
+  (defvar gtd/dir "~/my/gtd/")
+  (defvar gtd/inbox   (expand-file-name "gtd_common/inbox.org"   gtd/dir))
+  (defvar gtd/task    (expand-file-name "gtd_common/task.org"    gtd/dir))
+  (defvar gtd/archive (expand-file-name "gtd_common/archive.org" gtd/dir))
 
   (setq org-agenda-files
-        (when (file-directory-p my/gtd-dir)
-          (directory-files my/gtd-dir t "^gtd")))
+        (when (file-directory-p gtd/dir)
+          (directory-files gtd/dir t "^gtd")))
 
-  (setq gtd/common-files
-        (list my/file-inbox my/file-task my/file-archive))
-
-  (setq gtd/no-common-files
-        (cl-set-difference (org-agenda-files) gtd/common-files :test #'string=)))
+  (setq gtd/projects
+        (when (file-directory-p (expand-file-name "gtd" gtd/dir))
+          (directory-files (expand-file-name "gtd" gtd/dir) t "\\.org$"))))
 
 ;;----------------------------------------
 ;;; TODO keywords and priority
@@ -98,13 +96,13 @@
   :config
   ;; capture templates
   (let ((templates
-         '(("i" "info" entry (file my/file-inbox)    "* [#D] %?\n  %a\n%i\n")
-           ("t" "todo" entry (file my/file-inbox)    "* TODO [#C] %?")
-           ("w" "waiting" entry (file my/file-inbox) "* WAITING [#C] %?")
-           ("p" "project" entry (file my/file-inbox) "* PROJECT [#B] %?")
-           ("s" "schedule" entry (file my/file-inbox) "* TODO [#C] %?\n  SCHEDULED:%T\n")
-           ("d" "deadline" entry (file my/file-inbox) "* TODO [#C] %?\n  DEADLINE:%T\n")
-           ("r" "interrupt" entry (file+headline my/file-archive "Interrupt")
+         '(("i" "info" entry (file gtd/inbox)    "* [#D] %?\n  %a\n%i\n")
+           ("t" "todo" entry (file gtd/inbox)    "* TODO [#C] %?")
+           ("w" "waiting" entry (file gtd/inbox) "* WAITING [#C] %?")
+           ("p" "project" entry (file gtd/inbox) "* PROJECT [#B] %?")
+           ("s" "schedule" entry (file gtd/inbox) "* TODO [#C] %?\n  SCHEDULED:%T\n")
+           ("d" "deadline" entry (file gtd/inbox) "* TODO [#C] %?\n  DEADLINE:%T\n")
+           ("r" "interrupt" entry (file+headline gtd/archive "Interrupt")
             "* DONE %?" :clock-in t :clock-resume t))))
     (dolist (tpl templates)
       (unless (assoc (car tpl) org-capture-templates)

@@ -37,12 +37,12 @@
                      (delete-window win))))
           ("g" . org-agenda-redo)))
 
-(use-package org-columns
-  :after org
-  :ensure nil
-  :bind ( :map org-columns-map
-          ("p" . org-agenda-previous-item)
-          ("n" . org-agenda-next-item)))
+
+(with-eval-after-load 'org-colview
+  (define-key org-columns-map (kbd "n") nil)
+  (define-key org-columns-map (kbd "p") nil)
+  (define-key org-columns-map (kbd "TAB") nil)
+  (define-key org-columns-map (kbd "q") nil))
 
 ;;----------------------------------------
 ;;; Agenda Buffer Display
@@ -56,25 +56,24 @@
         org-agenda-diary-file nil)
 
   ;; ignore certain tags in agenda
-  (setq org-agenda-hide-tags-regexp "emacs\\|org\\|ccIDE\\|qygame\\|habit")
+  (setq org-agenda-hide-tags-regexp "ARCHIVE\\|habit")
 
-  ;; default span
-  (setq org-agenda-span 'day)
-  ;; time grid
-  (setq org-agenda-time-grid
-        '((daily today require-timed)
-          (800 1200 1400 1800 1900 2300)
-          "......" "----------------"))
+  ;;;; 'a' Agenda buffer Display
+  (setq org-agenda-span 'day
+        org-agenda-format-date "%Y-%m-%d %A"
+        org-agenda-time-grid '((daily today)
+                               ()
+                               "" "")
+        org-agenda-scheduled-leaders '("Start" "Start %dd")
+        org-agenda-deadline-leaders  '("Dead" "In %dd" "Dead %dd"))
   ;; today face
   (set-face-attribute 'org-agenda-date-today nil
                       :weight 'bold
                       :italic nil
                       :underline '(:color foreground-color :style line)
                       :inherit '(org-agenda-date))
-  ;; schedule/deadline leader strings
-  (setq org-agenda-scheduled-leaders '("Start" "Start %dd")
-        org-agenda-deadline-leaders  '("Dead" "In %dd" "Dead %dd"))
 
+  ;;;; Hooks
   ;; Clean empty agenda blocks
   (add-hook 'org-agenda-finalize-hook #'org-agenda/delete-empty-blocks)
 
@@ -84,88 +83,97 @@
 ;;----------------------------------------
 ;;; Agenda buffers Template
 ;;----------------------------------------
-(with-eval-after-load 'org-agenda
-  (setq org-agenda-custom-commands
-        '(("a" "Agenda"
-	   ((agenda ""))
-	   ((_ (org-agenda/set-buffer-number 1))
-	    (org-agenda-prefix-format "%-10c%?-12t%?-19s")
-            (org-agenda-todo-keyword-format "")
-            (org-agenda-remove-tags t)
-	    (org-agenda-skip-scheduled-if-done t)
-	    (org-agenda-skip-deadline-if-done  t)
-            (org-agenda-archives-mode t)
-	    (org-deadline-warning-days 2)
-	    (org-agenda-sorting-strategy '(time-up todo-state-up scheduled-up deadline-up priority-up))))
-	  ("n" "Next Step"
-	   ((todo "TODO"
-		  ((org-agenda-overriding-header "TODO")
-                   (org-agenda-files (list my/file-task))
-                   (org-agenda-skip-function `(org-agenda/skip-entry))
-                   (org-agenda-prefix-format "%(my/org-agenda-pf-next)")))
-	    (todo "WAITING"
-		  ((org-agenda-overriding-header "WAITING")
-                   (org-agenda-files (list my/file-task))
-                   (org-agenda-prefix-format "%(my/org-agenda-pf-next)")))
-            (todo "TODO|WAITING"
-		  ((org-agenda-overriding-header "emacs")
-                   (org-agenda-files (list (expand-file-name "gtd/emacs.org" my/gtd-dir)))
-		   (org-agenda-skip-function `(org-agenda/skip-entry))
-                   (org-agenda-prefix-format "%(my/org-agenda-pf-project)")))
-            (todo "TODO|WAITING"
-		  ((org-agenda-overriding-header "qygame")
-                   (org-agenda-files (list (expand-file-name "gtd/qygame.org" my/gtd-dir)))
-		   (org-agenda-skip-function `(org-agenda/skip-entry))
-                   (org-agenda-prefix-format "%(my/org-agenda-pf-project)")))
-            ;; (todo "TODO|WAITING"
-	    ;;       ((org-agenda-overriding-header "PROJECT yygame")
-            ;;        (org-agenda-files (list (expand-file-name "gtd/yygame.org" my/gtd-dir)))
-	    ;;        (org-agenda-skip-function `(org-agenda/skip-entry))
-            ;;        (org-agenda-prefix-format "%(my/org-agenda-pf-project)")))
-	    (todo "PROJECT"
-	          ((org-agenda-overriding-header "STUCK PROJECT")
-                   (org-agenda-files gtd/common-files)
-	           (org-agenda-prefix-format "%(my/org-agenda-pf-next-p)")
-	           (org-agenda-skip-function `(org-agenda-skip-subtree-if 'todo '("TODO" "WAITING"))))))
-	   ((_ (org-agenda/set-buffer-number 2))
-            (org-agenda-todo-keyword-format "")
-	    (org-agenda-tags-todo-honor-ignore-options t)
-	    (org-agenda-todo-ignore-scheduled 'all)
-	    (org-agenda-todo-ignore-deadlines 'all)
-	    (org-agenda-todo-ignore-timestamp 'all)
-	    (org-agenda-sorting-strategy '(priority-down effort-up))))
-	  ("i" "inbox"
-	   ((tags "LEVEL=1"))
-	   ((_ (org-agenda/set-buffer-number 3))
-	    (org-agenda-overriding-header "Inbox")
-	    (org-agenda-prefix-format "%(my/org-agenda-pf-next)")
-	    (org-agenda-files (list my/file-inbox))
-	    (org-agenda-sorting-strategy '(priority-down alpha-up effort-up))))
-	  ("p" "project"
-	   ((tags "LEVEL=1/PROJECT"
-                  ((org-agenda-files (list my/file-task))))
-            (tags "LEVEL=1"
-	          ((org-agenda-files gtd/no-common-files))))
-	   ((_ (org-agenda/set-buffer-number 4))
-            (org-agenda-overriding-header "PROJECT")
-	    (org-agenda-prefix-format "%-10c")
-	    (org-agenda-todo-keyword-format "")
-	    (org-overriding-columns-format "%24ITEM %10CATEGORY %1PRIORITY %Effort %10CLOCKSUM")
-	    (org-agenda-sorting-strategy '(category-keep))))
-	  ("r" "archive"
-	   ((tags "TODO={PROJECT}"
-		  ((org-agenda-overriding-header "Archive PROJECT")))
-            (tags "TODO={TODO}"
-		  ((org-agenda-overriding-header "Archive DONE && CANCEL")))
-	    (tags "TODO={DONE}"
-		  ((org-agenda-overriding-header "Archive Interrupt")
-		   (org-tags-match-list-sublevels nil) )))
-	   ((_ (org-agenda/set-buffer-number 5))
-	    (org-agenda-sorting-strategy '(category-keep))
-	    (org-agenda-files (list my/file-archive))
-	    (org-agenda-prefix-format "")
-	    (org-agenda-todo-keyword-format "")
-	    (org-overriding-columns-format "%24ITEM %1PRIORITY %10TAGS %Effort %10CLOCKSUM %22ARCHIVE_TIME"))))))
+(use-package org-agenda
+  :ensure nil
+  :init
+  (setq org-agenda-custom-commands nil)
+  :config
+  ;; 'a' Agenda buffer
+  (add-to-list 'org-agenda-custom-commands
+               '("a" "Agenda"
+	         ((agenda ""))
+	         ((_ (org-agenda/set-buffer-number 1))
+	          (org-agenda-prefix-format "%-10c%?-12t%?-19s")
+                  (org-agenda-todo-keyword-format "")
+                  (org-agenda-skip-archived-trees nil)
+                  (org-agenda-remove-tags t)
+	          (org-agenda-skip-scheduled-if-done t)
+	          (org-agenda-skip-deadline-if-done  t)
+	          (org-deadline-warning-days 2)
+	          (org-agenda-sorting-strategy '(time-up deadline-up scheduled-up priority-down))))
+               t)
+
+  ;; 'n' Agenda buffer
+  (let* ((project-todos
+          (mapcar (lambda (file)
+                    `(todo "TODO|WAITING"
+                           ((org-agenda-overriding-header ,(file-name-base file))
+                            (org-agenda-files (list ,file))
+                            (org-agenda-skip-function '(org-agenda/skip-entry))
+                            (org-agenda-prefix-format "%(org-agenda/prefix-duration)"))))
+                  gtd/projects)))
+    (add-to-list 'org-agenda-custom-commands
+                 `("n" "Next Step"
+                   ((todo "TODO|WAITING"
+                          ((org-agenda-overriding-header "TODO & WAITING")
+                           (org-agenda-files (list gtd/task))
+                           (org-agenda-prefix-format "%(org-agenda/prefix-duration)")))
+                    ,@project-todos
+                    (todo "PROJECT"
+                          ((org-agenda-overriding-header "STUCK PROJECT")
+                           (org-agenda-files (list gtd/task))
+                           (org-agenda-prefix-format "")
+                           (org-agenda-skip-function
+                            '(org-agenda-skip-subtree-if 'todo '("TODO" "WAITING"))))))
+                   ((_ (org-agenda/set-buffer-number 2))
+                    (org-agenda-todo-keyword-format "")
+                    (org-agenda-tags-todo-honor-ignore-options t)
+                    (org-agenda-todo-ignore-scheduled 'all)
+                    (org-agenda-todo-ignore-deadlines 'all)
+                    (org-agenda-todo-ignore-timestamp 'all)
+                    (org-agenda-sorting-strategy '(todo-state-up priority-down effort-up))))))
+
+  ;; 'i' Agenda buffer
+  (add-to-list 'org-agenda-custom-commands
+               '("i" "inbox"
+	         ((tags "LEVEL=1"))
+	         ((_ (org-agenda/set-buffer-number 3))
+	          (org-agenda-overriding-header "Inbox")
+	          (org-agenda-prefix-format "%(org-agenda/prefix-duration)")
+	          (org-agenda-files (list gtd/inbox))
+	          (org-agenda-sorting-strategy '(priority-down alpha-up effort-up))))
+               t)
+
+  ;; 'p' Agenda buffer
+  (add-to-list 'org-agenda-custom-commands
+               '("p" "project"
+	         ((tags "LEVEL=1/PROJECT"))
+	         ((org-agenda-overriding-header "PROJECT ING")
+	          (org-agenda-prefix-format "%-10c")
+	          (org-agenda-todo-keyword-format "")
+	          (org-overriding-columns-format "%24ITEM %10CATEGORY %1PRIORITY %Effort %10CLOCKSUM")
+	          (org-agenda-sorting-strategy '(category-keep))))
+               t)
+
+  ;; 'r' Agenda buffer
+  (add-to-list 'org-agenda-custom-commands
+               '("r" "archive"
+	         ((tags "LEVEL=2"
+		        ((org-agenda-overriding-header "PROJECT")
+                         (org-agenda-skip-function '(org-agenda/skip-if-not-root-entry "Project"))))
+                  (tags "LEVEL=2"
+		        ((org-agenda-overriding-header "DONE && CANCEL")
+                         (org-agenda-skip-function '(org-agenda/skip-if-not-root-entry "Todo && Waiting"))))
+	          (search "Interrupt"
+		          ((org-agenda-overriding-header "Interrupt")
+                           (org-agenda-skip-archived-trees nil)
+		           (org-tags-match-list-sublevels nil))))
+	         ((org-agenda-sorting-strategy '(category-keep))
+	          (org-agenda-files (list gtd/archive))
+	          (org-agenda-prefix-format "")
+	          (org-agenda-todo-keyword-format "")
+	          (org-overriding-columns-format "%24ITEM %1PRIORITY %10TAGS %Effort %10CLOCKSUM %22ARCHIVE_TIME")))
+               t))
 
 ;;----------------------------------------
 ;;; Org columns

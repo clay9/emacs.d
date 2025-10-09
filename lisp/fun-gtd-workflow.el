@@ -28,10 +28,6 @@
       ("j" "quick filter" (lambda() (interactive)
                             (org-agenda-filter-remove-all)
                             (org-agenda-filter)))]
-
-     ["statistics"
-      ("l" "statistics" transient/org-agenda-statistics :transient t)]
-
      ["add info"
       ("t" "todo" org-agenda-todo)
       (":" "tag" org-agenda-set-tags)
@@ -68,22 +64,16 @@
   (transient-define-prefix transient/org-agenda-statistics()
     [["clock report"
       ("d" "day" (lambda() (interactive)
-                   (kill-buffer org-agenda-buffer)
-                   (let ((display-buffer-alist nil))
-                     (org-agenda nil "a")
-                     (org-agenda-clockreport-mode))))
+                   (org-agenda nil "a")
+                   (org-agenda-clockreport-mode)))
       ("w" "week" (lambda() (interactive)
-                    (kill-buffer org-agenda-buffer)
-                    (let ((display-buffer-alist nil))
-                      (org-agenda nil "a")
-                      (org-agenda-week-view)
-                      (org-agenda-clockreport-mode))))
+                    (org-agenda nil "a")
+                    (org-agenda-week-view)
+                    (org-agenda-clockreport-mode)))
       ("m" "month" (lambda() (interactive)
-                     (kill-buffer org-agenda-buffer)
-                     (let ((display-buffer-alist nil))
-                       (org-agenda nil "a")
-                       (org-agenda-month-view)
-                       (org-agenda-clockreport-mode))))]
+                     (org-agenda nil "a")
+                     (org-agenda-month-view)
+                     (org-agenda-clockreport-mode)))]
      ["log"
       ("l" "!log" (lambda() (interactive)
                     (if (org-agenda-check-type nil 'agenda)
@@ -94,17 +84,13 @@
                         (org-agenda-log-mode 'clockcheck)))))]
      ["project"
       ("p" "project" (lambda() (interactive)
-                       (kill-buffer org-agenda-buffer)
-                       (let ((display-buffer-alist nil))
-                         (org-agenda nil "p")
-                         (org-agenda-columns)
-                         (org-agenda-next-item 1))))
+                       (org-agenda nil "p")
+                       (org-agenda-columns)
+                       (org-agenda-next-item 1)))
       ("a" "archive" (lambda() (interactive)
-                       (kill-buffer org-agenda-buffer)
-                       (let ((display-buffer-alist nil))
-                         (org-agenda nil "r")
-                         (org-agenda-columns)
-                         (org-agenda-next-item 1))))]])
+                       (org-agenda nil "r")
+                       (org-agenda-columns)
+                       (org-agenda-next-item 1)))]])
   (transient-define-prefix transient/org-filter()
     [["filter"
       ("t" "tags" org-search-view)
@@ -191,7 +177,7 @@
     (pcase org-agenda/current-buffer-number
       (1 (org-agenda nil "n"))
       (2 (let ((inbox
-                (with-current-buffer (find-buffer-visiting my/file-inbox)
+                (with-current-buffer (find-buffer-visiting gtd/inbox)
                   (goto-char (point-min))
                   (re-search-forward "* " nil t))))
            (if inbox
@@ -205,7 +191,7 @@
 (defun org-agenda/set-effort-and-time ()
   (let ((todo-key (org-get-todo-state))
         (time-string (format-time-string
-                      "<%Y-%m-%d %H:%M>"
+                      "[%Y-%m-%d %H:%M]"
                       (time-add (current-time) (days-to-time 0)))))
     (goto-char (point-min))
     (org-set-property "CAPTURE_TIME" time-string)
@@ -219,10 +205,10 @@
   "Automatically refile TODO headings from inbox.org.
 
 Rules:
-1. If heading has no tags → refile to `my/file-task`.
+1. If heading has no tags → refile to `gtd/task`.
 2. If heading has tags → find PROJECT entry in GTD files
    where ITEM matches any tag, then refile under that project."
-  (with-current-buffer (find-buffer-visiting my/file-inbox)
+  (with-current-buffer (find-buffer-visiting gtd/inbox)
     (org-with-wide-buffer
      (org-map-entries
       (lambda ()
@@ -231,11 +217,10 @@ Rules:
               (pos nil))
           (when todo
             (if (not tags)
-                (org-refile nil nil (list nil my/file-task nil nil))
+                (org-refile nil nil (list nil gtd/task nil nil))
               (catch 'done
                 (dolist (tag tags)
-                  (dolist (file gtd/no-common-files)
-                    (message "-----------------%s" file)
+                  (dolist (file gtd/projects)
                     ;; find pos in file
                     (with-current-buffer (find-file-noselect file)
                       (org-with-wide-buffer
@@ -303,93 +288,44 @@ Rules:
 ;;; Functions For 'org-agenda-custom-commands'
 ;;----------------------------------------
 ;;;; skip entry
-(defun org-agenda/skip-entry()
-  "Skip entry when its root-parent todo-state is CANCEL or DONE."
+(defun org-agenda/skip-entry ()
+  "Skip entry if its root heading TODO state is DONE or CANCEL."
   (org-back-to-heading t)
-  (let* ((end (org-entry-end-position)))
-    (if (org-entry/root-head-done)
+  (let ((end (org-entry-end-position)))
+    (while (and (org-up-heading-safe) (> (org-outline-level) 1)))
+    (if (org-entry-is-done-p)
         end
       nil)))
-(defun org-entry/root-head-done ()
-  (while (> (org-outline-level) 1)
-    (outline-up-heading 1 t))
-  (org-entry-is-done-p))
-(defun my/org-agenda-skip-future-entry()
-  "Skip entry when its `'org-time-stamp' is futher than today."
-  (org-back-to-heading t)
-  (let* ((end (org-entry-end-position))
-         (dif (org-time-stamp-to-now (org-entry-get nil "ITEM"))))
-    (if (= dif 0)
+
+(defun org-agenda/skip-if-not-root-entry (root)
+  (let* ((end (org-entry-end-position)))
+    (while (and (org-up-heading-safe) (> (org-outline-level) 1)))
+    (message "%s: %s" root (nth 4 (org-heading-components)))
+    (if (string= root (nth 4 (org-heading-components)))
         nil
       end)))
 
-;;;; 返回agenda (n) 中 item的前缀信息
-(defun my/org-agenda-pf-next ()
-  "Used by `org-agenda-custom-commands' (init-org-agenda-mode.el)
-Function: return time_duration since capture_time"
-  (let* ((capture_time (org-entry-get nil "CAPTURE_TIME"))
-	 (v1 "")
-	 (start-level (funcall outline-level))
-	 (v2 ""))
-    ;; capture_time format
-    (when capture_time
-      (let* ((dura_time (org-time-since capture_time))
-	     (h_seconds (car dura_time))
-	     (seconds (cadr dura_time))
-	     (seconds (+ seconds (* h_seconds 65535) ))
-	     (day (/ seconds 86400))
-	     (seconds (- seconds (* day 86400)))
-	     (hour (/ seconds 3600))
-	     (seconds (- seconds (* hour 3600)))
-	     (minute (/ seconds 60)) )
-
-	(when (> minute 0)
-	  (setq v1 (concat (number-to-string minute) "m")))
-	(when (> hour 0)
-	  (setq v1 (concat (number-to-string hour) "h")))
-	(when (> day 0)
-	  (setq v1 (concat (number-to-string day) "d")))))
-    ;; top-parent P_UUID format
-    (when (> start-level 1)
-      (outline-up-heading '16 t)
-      (setq v2 (org-entry-get nil "ITEM")))
-
-    (format "%-6s%-9s" v1 v2 )))
-(defun my/org-agenda-pf-next-p ()
-  "Used by `org-agenda-custom-commands' (init-org-agenda-mode.el)
-Function: return %-10c."
-  (let* ((category (org-get-category)))
-    (format "%-15s" category)))
-(defun my/org-agenda-pf-project ()
-  "Used by `org-agenda-custom-commands' (init-org-agenda-mode.el)
-Function: return time_duration since capture_time"
-  (let* ((capture_time (org-entry-get nil "CAPTURE_TIME"))
-	 (v1 "")
-         (todo-state (org-get-todo-state))
-	 (v2 ""))
-    ;; capture_time format
-    (when capture_time
-      (let* ((dura_time (org-time-since capture_time))
-	     (h_seconds (car dura_time))
-	     (seconds (cadr dura_time))
-	     (seconds (+ seconds (* h_seconds 65535) ))
-	     (day (/ seconds 86400))
-	     (seconds (- seconds (* day 86400)))
-	     (hour (/ seconds 3600))
-	     (seconds (- seconds (* hour 3600)))
-	     (minute (/ seconds 60)) )
-
-	(when (> minute 0)
-	  (setq v1 (concat (number-to-string minute) "m")))
-	(when (> hour 0)
-	  (setq v1 (concat (number-to-string hour) "h")))
-	(when (> day 0)
-	  (setq v1 (concat (number-to-string day) "d")))))
-
-    (when (string= todo-state "WAITING")
+;;;; prefix format
+(defun org-agenda/prefix-duration ()
+  "Return a prefix string for Org Agenda.
+Shows time duration since CAPTURE_TIME and top-level heading title."
+  (let* ((capture-time (org-entry-get nil "CAPTURE_TIME"))
+         (v1 "")
+         (v2 "")
+         (todo (org-get-todo-state)))
+    (when capture-time
+      (let* ((dura (org-time-since capture-time))
+             (days (car dura))
+             (seconds (cadr dura))
+             (hours (/ seconds 3600))
+             (minutes (/ seconds 60)))
+        (cond
+         ((> days 0) (setq v1 (format "%dd" days)))
+         ((> hours 0) (setq v1 (format "%dh" hours)))
+         ((> minutes 0) (setq v1 (format "%dm" minutes))))))
+    (when (string= todo "WAITING")
       (setq v2 "wait"))
     (format "%-6s%-9s" v1 v2)))
-
 
 (provide 'fun-gtd-workflow)
 ;;; fun-gtd-workflow-fun.el ends here
