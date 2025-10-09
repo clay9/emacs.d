@@ -70,7 +70,7 @@
         (org-archive-subtree))))
 
   ;;----------------------------------------
-  ;;; Utility Functions
+  ;;; Structure Insert
   ;;----------------------------------------
   ;; structure template. key 'y'保留, 供函数org-mode/org-insert-structure-template使用
   (defun org-mode/org-insert-structure-template (type)
@@ -155,6 +155,53 @@
               (indent-to column))
             ;; insert shortcode
             (transient/org-mode/org-insert-structure-template key_shortcode)))))))
+
+
+;;----------------------------------------
+;;; Utility Functions
+;;----------------------------------------
+;; 插入default-directory的 ascii-tree
+(defun ascii-dir-tree (&optional dir expand-list)
+  "Generate ASCII tree of DIR with |-- style.
+If EXPAND-LIST is a list of file or directory names (strings),
+only those entries (not their children) will be recursively expanded."
+  (interactive
+   (list
+    default-directory
+    (let ((input (read-string "Expand only these (comma-separated, empty for nil): ")))
+      (if (string-empty-p input)
+          nil
+        (mapcar #'string-trim (split-string input ","))))))
+  (cl-labels
+      ((build-tree (dir prefix)
+         (let* ((files (directory-files dir t "^[^.]" t))
+                (files (sort files
+                             (lambda (a b)
+                               (cond
+                                ((and (file-directory-p a) (not (file-directory-p b))) t)
+                                ((and (not (file-directory-p a)) (file-directory-p b)) nil)
+                                (t (string-lessp
+                                    (upcase (file-name-nondirectory a))
+                                    (upcase (file-name-nondirectory b))))))))
+                (last-file (car (last files))))
+           (mapcan (lambda (f)
+                     (let* ((name (file-name-nondirectory f))
+                            (last (string= f last-file))
+                            (branch (if last "`-- " "|-- "))
+                            (line (concat prefix branch name))
+                            (subtree (when (and (file-directory-p f)
+                                                (member name expand-list))
+                                       (build-tree f (concat prefix (if last "    " "|   "))))))
+                       (cons line subtree)))
+                   files))))
+    (let* ((tree-lines (build-tree dir ""))
+           (max-len (apply #'max (mapcar #'length tree-lines)))
+           (tree-text (mapconcat
+                       (lambda (line)
+                         (concat line (make-string (+ 2 (- max-len (length line))) ? ) "//"))
+                       tree-lines
+                       "\n")))
+      (insert tree-text "\n"))))
 
 (provide 'fun-org-mode)
 ;;; fun-org-mode.el ends here

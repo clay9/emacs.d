@@ -12,6 +12,7 @@
           ("C-k" . org-kill-line)
           ("C-'" . nil)
           :map org-src-mode-map
+          ("C-j" . ascii-dir-tree)
           ("C-c C-c" . org-edit-src-exit))
   :config
   ;;----------------------------------------
