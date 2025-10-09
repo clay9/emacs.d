@@ -3,7 +3,6 @@
 ;; This file manages saving and restoring Emacs sessions between restarts:
 ;;   - Desktop: buffers & window layout
 ;;   - Session: minibuffer history and variables
-;;   - Recentf: recently opened files
 ;;   - Auto-save session on exit
 ;;; Code:
 
@@ -57,29 +56,13 @@
   (savehist-mode 1))
 
 ;; ----------------------
-;;; Recentf: Keep track of recently opened files
-;; ----------------------
-(use-package recentf
-  :defer t
-  :hook (after-init . recentf-mode)
-  :config
-  (setq recentf-save-file (concat my/ecfg-dir "recentf")
-        recentf-max-saved-items 20
-        recentf-exclude `("/tmp/"
-                          "~/my/"
-                          "~/.emacs.d/"
-                          "/ssh:"
-                          ,(concat package-user-dir "/.*-autoloads\\.el\\'"))))
-
-;; ----------------------
 ;;; Auto-save sessions on exit
 ;; ----------------------
 ;; Save desktop, session, and recentf before Emacs exits.
 (add-hook 'kill-emacs-hook
           (lambda ()
             (desktop-save-in-desktop-dir)
-            (session-save-session)
-            (recentf-save-list)))
+            (session-save-session)))
 
 (provide 'init-session)
 ;;; init-session.el ends here
