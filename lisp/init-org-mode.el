@@ -53,7 +53,7 @@
           ("sc" . "C++ :hl_lines")
           ("se" . "emacs-lisp")
           ("ss" . "shell")
-          ("sp" . "plantuml :exports results :eval no-export :file xxx.png")
+          ("sm" . "mermaid :file result.png")
           ;; Hugo shortcodes
           ("hq" . "qr")
           ("hv" . "vimeo")

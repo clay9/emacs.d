@@ -131,7 +131,7 @@
 
 
 ;; =====================
-;;; C-q: Tools
+;;; C-r: Tools
 ;; =====================
 (transient-define-prefix transient/c-r ()
   [[:class transient-column "Capture"
@@ -147,13 +147,12 @@
            ("C-m" "restore" win/restore-window-configuration
             :if win/window-configuration-stack)]
    [:class transient-column "Snippet"
-           ("s" "show all" yas-describe-tables)
            ("v" "visit" yas-visit-snippet-file)
            ("i" "insert" yas-new-snippet)]
    ;; [:class transient-column "api document"
    ;;         ("l" "lookup" devdocs-lookup)]
    ])
-(global-set-key (kbd "C-q") 'transient/c-r)
+(global-set-key (kbd "C-r") 'transient/c-r)
 
 ;; =====================
 ;; Unset Default Keys

@@ -19,8 +19,13 @@
     :config
     ;; mmdc 是 @mermaid-js/mermaid-cli 提供的命令
     (setq ob-mermaid-cli-path
-          "docker run --rm -v $(pwd):/data ghcr.io/mermaid-js/mermaid-cli")
-    ;; 自动在 org-babel 中启用 mermaid
+          (concat "docker run "
+                  "-u 1000 "
+                  "-v /var:/var "
+                  "-v /Users:/Users "
+                  "ghcr.io/mermaid-js/mermaid-cli/mermaid-cli:latest"))
+
+    ;; 在 org-babel 中启用 mermaid
     (add-to-list 'org-babel-load-languages '(mermaid . t))
     ;; ensure major-mode mapping
     (add-to-list 'org-src-lang-modes '("mermaid"  . mermaid))))
