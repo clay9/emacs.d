@@ -26,7 +26,7 @@
           ("qygame/build_publish"    "~/qy/ops/build_publish")
           ("qygame/compiler"         "~/qy/ops/compiler")
           ("qygame/docker_compose"   "~/qy/ops/docker_compose")
-          ("qygame/svr-kernel"       "~/qy/server-kernel")
+          ("qygame/qykernel"         "~/qy/qykernel")
           ("qygame/server"           "~/qy/server")
           ("qygame/database"         "~/qy/database")))
 

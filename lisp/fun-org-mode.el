@@ -27,7 +27,7 @@
       ("C-i" "inactive" org-time-stamp-inactive)
       ("C-a" "active" org-time-stamp)]
      ["Links"
-      ("i" "insert" org-insert-link)
+      ("i" "insert" (lambda() (interactive) (call-interactively 'org-insert-link)))
       ("o" "open" org-open-at-point)
       ("b" "back" org-mark-ring-goto)]
      ["Blocks"
