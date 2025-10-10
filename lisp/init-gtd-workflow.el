@@ -42,10 +42,10 @@
         org-default-priority ?D)
 
   (setq org-priority-faces
-        '((?A . (:foreground "red" :weight bold))
-          (?B . (:foreground "DarkOrange" :weight bold))
-          (?C . (:foreground "yellow" :weight bold))
-          (?D . (:foreground "DodgerBlue" :weight bold)))))
+        '((?A . (:foreground "#ff6b6b" :weight medium))
+          (?B . (:foreground "#f4a261" :weight medium))
+          (?C . (:foreground "#e9c46a" :weight medium))
+          (?D . (:foreground "#8fa3bf" :weight medium)))))
 
 ;;----------------------------------------
 ;;; Clock and effort

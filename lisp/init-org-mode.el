@@ -16,7 +16,7 @@
           ("C-c C-c" . org-edit-src-exit))
   :config
   ;;----------------------------------------
-  ;;; Visual / UI tweaks
+  ;;; Display
   ;;----------------------------------------
   (setq
    ;; Edit settings
