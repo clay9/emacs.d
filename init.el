@@ -54,6 +54,7 @@
 (require 'init-c++-ts-mode)
 (require 'init-dockerfile-ts-mode)
 (require 'init-yaml-ts-mode)
+(require 'init-toml-ts-mode)
 (require 'init-protobuf-mode)
 (require 'init-emacs-lisp-mode)
 (require 'init-help-mode)
