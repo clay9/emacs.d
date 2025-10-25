@@ -22,35 +22,34 @@
   :ensure nil
   :config
   (transient-define-prefix transient/org-agenda-mode()
-    [["filter"
-      ("a" "agenda act" transient/org-agenda-a :if (lambda() (org-agenda-check-type nil 'agenda)) :transient t)
-      ("f" "filter" transient/org-filter)
-      ("j" "quick filter" (lambda() (interactive)
-                            (org-agenda-filter-remove-all)
-                            (org-agenda-filter)))]
-     ["add info"
-      ("t" "todo" org-agenda-todo)
-      (":" "tag" org-agenda-set-tags)
-      ("-" "-priority" org-agenda-priority-down)
-      ("=" "+priority" org-agenda-priority-up)
-      ("p" "property set" org-agenda-set-property)
-      ("e" "effort" org-agenda-set-effort)
-      ("d" "archive done" org-agenda/archive)]
+    ["Transient and dwim commands"
+     ("a" "Add Info" transient/org-agenda-add-info)
+     ("T" "Schedule & Deadline" transient/org-agenda-schedule-deadline)
+     ("c" "Clock" transient/org-agenda-clock)
+     ("v" "View" transient/org-agenda-view :if (lambda() (org-agenda-check-type nil 'agenda)) :transient t)
+     ("f" "Filter" transient/org-agenda-filter)
+     ("l" "Statistics" transient/org-agenda-statistics)])
 
-     ["Schedule & Deadline"
-      ("s" "add" transient/org-agenda-timestamp)]
-
-     ["clock"
-      ("SPC" "clock in" (lambda() (interactive)
-			  (org-agenda-clock-in)
-			  (org-agenda-redo t)))
-      ("RET" "clock out" (lambda() (interactive)
-			   (org-agenda-clock-out)
-			   (org-agenda-redo t)))
-      ("c" "clock cancel" org-agenda-clock-cancel)
-      ("g" "clock go" org-agenda-clock-goto)]])
-
-  (transient-define-prefix transient/org-agenda-a()
+  (transient-define-prefix transient/org-agenda-add-info()
+    ["Add Info"
+     ("t" "todo" org-agenda-todo)
+     (":" "tag" org-agenda-set-tags)
+     ("-" "-priority" org-agenda-priority-down)
+     ("=" "+priority" org-agenda-priority-up)
+     ("p" "property set" org-agenda-set-property)
+     ("e" "effort" org-agenda-set-effort)
+     ("d" "archive done" org-agenda/archive)])
+  (transient-define-prefix transient/org-agenda-schedule-deadline()
+    ["TimeStamp"
+     ("s" "schedule" org-agenda-schedule)
+     ("d" "deadline" org-agenda-deadline)])
+  (transient-define-prefix transient/org-agenda-clock()
+    ["clock"
+     ("i" "clock in" org-agenda-clock-in)
+     ("o" "clock out" org-agenda-clock-out)
+     ("c" "clock cancel" org-agenda-clock-cancel)
+     ("g" "clock go" org-agenda-clock-goto)])
+  (transient-define-prefix transient/org-agenda-view()
     [["view"
       ("d" "day" (lambda() (interactive) (org-agenda-goto-today) (org-agenda-day-view)))
       ("w" "week" org-agenda-week-view)
@@ -61,6 +60,17 @@
       ("g" "go data" org-agenda-goto-date)
       ("b" "previous" org-agenda-earlier)
       ("f" "next" org-agenda-later)]])
+  (transient-define-prefix transient/org-agenda-filter()
+    [["filter"
+      ("t" "tags" org-search-view)
+      ("s" "search" org-tags-view)
+      ("<backspace>" "clear" org-agenda-filter-remove-all)]
+     ["quick choose"
+      ("e" "effort < 15min" (lambda() (interactive)
+		              (org-agenda-filter-remove-all)
+		              ;; must set this val. or `r' will remove all filter
+		              (setq org-agenda-effort-filter (list "+<0:15"))
+		              (org-agenda-filter-apply org-agenda-effort-filter 'effort)))]])
   (transient-define-prefix transient/org-agenda-statistics()
     [["clock report"
       ("d" "day" (lambda() (interactive)
@@ -91,21 +101,7 @@
                        (org-agenda nil "r")
                        (org-agenda-columns)
                        (org-agenda-next-item 1)))]])
-  (transient-define-prefix transient/org-filter()
-    [["filter"
-      ("t" "tags" org-search-view)
-      ("s" "search" org-tags-view)
-      ("<backspace>" "clear" org-agenda-filter-remove-all)]
-     ["quick choose"
-      ("e" "effort < 15min" (lambda() (interactive)
-		              (org-agenda-filter-remove-all)
-		              ;; must set this val. or `r' will remove all filter
-		              (setq org-agenda-effort-filter (list "+<0:15"))
-		              (org-agenda-filter-apply org-agenda-effort-filter 'effort)))]])
-  (transient-define-prefix transient/org-agenda-timestamp()
-    ["timestamp"
-     ("s" "schedule" org-agenda-schedule)
-     ("d" "deadline" org-agenda-deadline)])
+
 
   (defun org-agenda/archive ()
     (interactive)

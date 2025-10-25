@@ -13,7 +13,12 @@
   :ensure nil
   :bind ( :map org-agenda-mode-map
           ;; define transient menus, keybindings
-          ("C-j" . transient/org-agenda-mode)
+          ("?" . transient/org-agenda-mode)
+          ("a" . transient/org-agenda-add-info)
+          ("T" . transient/org-agenda-schedule-deadline)
+          ("c" . transient/org-agenda-clock)
+          ("v" . transient/org-agenda-view)
+          ("f" . transient/org-agenda-filter)
           ("l" . transient/org-agenda-statistics)
           ;; previous && next
           ("p" . org-agenda-previous-item)
@@ -21,22 +26,18 @@
           ;; choose agenda view
           ("SPC" . org-agenda/forward-buffer)
           ;; entry show && entry enter
-          ("RET" . (lambda()
-                     (interactive)
-                     (org-agenda-goto)
-                     ;; (org-show-entry)
-                     (org-narrow-to-subtree)
-                     (kill-buffer org-agenda-buffer)))
-          ("a" . org-agenda/show-entry-text)
-          ;; entry done
-          ("d" . org-agenda/archive)
+          ([return] . (lambda()
+                        (interactive)
+                        (org-agenda-goto)
+                        ;; (org-show-entry)
+                        (org-narrow-to-subtree)
+                        (kill-buffer org-agenda-buffer)))
+          ([tab] . org-agenda/show-entry-text)
           ;; quit && refresh
           ("q" . (lambda() (interactive)
                    (let ((win (selected-window)))
                      (org-agenda-quit)
-                     (delete-window win))))
-          ("g" . org-agenda-redo)))
-
+                     (delete-window win))))))
 
 (with-eval-after-load 'org-colview
   (define-key org-columns-map (kbd "n") nil)
