@@ -77,10 +77,11 @@
         '(("Name" 18 magit-repolist-column-ident nil)
           ("S"    3  magit-repolist-column-flag nil)
           ("B>U"  3  magit-repolist-column-unpushed-to-upstream nil)
-          ("B<U"  3  magit-repolist-column-unpulled-from-upstream ((:right-align t)))
+          ("B<U"  3  magit-repolist-column-unpulled-from-upstream nil)
           ("Date" 12 magit-repos/magit-repolist-column-time nil)
           ("Tag"  8  magit-repos/magit-repolist-column-tag nil)
-          ("Path" 99 magit-repolist-column-path nil)))
+          ;; ("Path" 99 magit-repolist-column-path nil)
+          ))
 
   ;;----------------------------------------
   ;;; 列格式化函数
@@ -132,9 +133,9 @@
 
   (add-hook 'kill-emacs-hook
             (lambda ()
-              (magit-repos/auto-push "~/my/gtd" t)
-              (magit-repos/auto-push "~/my/blog" t)
               (magit-repos/auto-push "~/.emacs.d")
+              (magit-repos/auto-push "~/my/blog" t)
+              (magit-repos/auto-push "~/my/gtd" t)
               (magit-repos/auto-push "~/qy/blog" t))))
 
 (provide 'init-git-repolist)
