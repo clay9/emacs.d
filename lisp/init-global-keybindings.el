@@ -63,50 +63,52 @@
 ;;; C-s: Common Commands
 ;; =====================
 (transient-define-prefix transient/c-s ()
-  [[:class transient-column "Search & Replace"
-           ("s" "search" consult-line)
-           ("t" "replace" replace-regexp)]
-   [:class transient-column "Buffer & File"
-           ("C-d" "delete file" my/delete-current-file)]
+  [[:class transient-column "Search"
+           ("s" "Search" consult-line)
+           ("t" "Replace" replace-regexp)]
+   [:class transient-column
+           :if (lambda () (buffer-file-name))
+           "File"
+           ("k" "Delete" my/delete-current-file)]
    [:class transient-column "Navigation"
-           ("o" "outline" (lambda ()
+           ("o" "Outline" (lambda ()
                             (interactive)
                             (if (derived-mode-p 'org-mode)
                                 (consult-org-heading)
                               (consult-outline))))
-           ("m" "imenu" consult-imenu)
-           ("g" "goto line" consult-goto-line)]
+           ("m" "Imenu" consult-imenu)
+           ("g" "Goto line" consult-goto-line)]
    [:class transient-column
            :if (lambda () (bound-and-true-p outline-minor-mode))
            "Outline Command"
            ("TAB" "toggle" text/outline-cycle)
            ("a" "toggle all" text/outline-toggle-all)
            ("h" "hide other" outline-hide-other)
-           ("p" "previous visible heading" outline-previous-visible-heading)
-           ("n" "next visible heading" outline-next-visible-heading)
+           ;;("p" "previous visible heading" outline-previous-visible-heading :transient t)
+           ;;("n" "next visible heading" outline-next-visible-heading :transient t)
            ;;("f" "forward same heading" outline-forward-same-level)
            ;;("b" "backward same heading" outline-backward-same-level)
            ("u" "up heading" outline-up-heading)]])
 
 (global-set-key (kbd "C-s") 'transient/c-s)
 
-
 ;; =====================
 ;;; C-d: Project Commands
 ;; =====================
 (transient-define-prefix transient/c-d ()
-  [[:class transient-column "search"
-           ("s" "search" project-find-regexp)
-           ("t" "replace" project-query-replace-regexp)
-           ("f" "find-grep" find-grep)]
-   [:class transient-column "buffer"
-           ("k" "kill" project-kill-buffers)]
-   [:class transient-column "compile"
-           ("c" "compile" project-compile)]
-   [:class transient-column "flymake"
-           ("p" "previous" flymake-goto-prev-error :transient t)
-           ("n" "next" flymake-goto-next-error :transient t)
-           ("l" "show line err"
+  [[:class transient-column "Search"
+           ("s" "Minibuf" consult-ripgrep)
+           ("t" "Buffer" my/rg-project)]
+   [:class transient-column "Buffer"
+           ("k" "Kill" project-kill-buffers)]
+   [:class transient-column "Compile"
+           ("c" "Compile" project-compile)]
+   [:class transient-column
+           :if (lambda () (bound-and-true-p flymake-mode))
+           "Flymake"
+           ;;("p" "previous" flymake-goto-prev-error :transient t)
+           ;;("n" "next" flymake-goto-next-error :transient t)
+           ("l" "Show line error"
             (lambda ()
               (interactive)
               (consult--forbid-minibuffer)
@@ -122,11 +124,11 @@
                :narrow (consult--type-narrow consult-flymake--narrow)
                :lookup #'consult--lookup-candidate
                :state (consult--jump-state))))
-           ("b" "show buff err" consult-flymake)
-           ("e" "show project err" (lambda () (interactive) (consult-flymake t)))]
-   [:class transient-column "status"
-           ("a" "view all" magit-list-repositories)
-           ("m" "status" magit-status)]])
+           ("b" "Show buff error" consult-flymake)
+           ("p" "Show project error" (lambda () (interactive) (consult-flymake t)))]
+   [:class transient-column "Magit"
+           ("a" "repolist" magit-list-repositories)
+           ("m" "git" magit-status)]])
 (global-set-key (kbd "C-d") 'transient/c-d)
 
 
