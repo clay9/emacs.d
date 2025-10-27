@@ -41,6 +41,9 @@
                   (while (outline-next-heading)
                     (org-indent-region (point) (org-end-of-subtree t)))))))
 
+  ;; '----'四个及以上- 会被表示为horizontal line
+  (require 'init-org-mode-horizontal-line)
+
   ;;----------------------------------------
   ;;; Structure Templates
   ;;----------------------------------------
