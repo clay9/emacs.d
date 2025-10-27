@@ -69,7 +69,7 @@
    [:class transient-column
            :if (lambda () (buffer-file-name))
            "File"
-           ("k" "Delete" my/delete-current-file)]
+           ("C-d" "Delete" my/delete-current-file)]
    [:class transient-column "Navigation"
            ("o" "Outline" (lambda ()
                             (interactive)
