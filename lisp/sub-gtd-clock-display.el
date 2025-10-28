@@ -10,6 +10,9 @@
   (defvar my/org-clock-posframe-buffer " *org-clock-posframe*"
     "The posframe buffer used to display the current Org Clock status.")
 
+  (defvar my/org-clock-timer nil
+    "Timer object for updating org-clock posframe every 30 seconds.")
+
   (defun my/org-clock-posframe-update ()
     "Show or update the Org Clock status posframe near the title bar.
 If clocking is active, display the current clock string in a small
@@ -37,16 +40,21 @@ If not clocking, hide the posframe."
              (tool-bar-lines . 0)
              (vertical-scroll-bars . nil)
              (horizontal-scroll-bars . nil)
-             (no-other-frame . t))))
+             (no-other-frame . t)))
+
+          (setq my/org-clock-timer
+                (run-with-timer 0 30 #'my/org-clock-posframe-update)))
+
+      ;; close timer
+      (when (timerp my/org-clock-timer)
+        (cancel-timer my/org-clock-timer))
       ;; Hide posframe when not clocking
       (posframe-hide my/org-clock-posframe-buffer)))
 
   ;; Automatically show/hide the posframe when clock starts/stops
   (add-hook 'org-clock-in-hook #'my/org-clock-posframe-update)
   (add-hook 'org-clock-out-hook #'my/org-clock-posframe-update)
-  (add-hook 'org-clock-cancel-hook #'my/org-clock-posframe-update)
-
-  (run-with-timer 0 30 #'my/org-clock-posframe-update))
+  (add-hook 'org-clock-cancel-hook #'my/org-clock-posframe-update))
 
 (provide 'sub-gtd-clock-display)
 ;;; sub-gtd-clock-display.el ends here
