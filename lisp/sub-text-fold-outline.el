@@ -1,4 +1,4 @@
-;;; init-text-fold-outline.el --- Text folding: outline mode -*- lexical-binding: t -*-
+;;; sub-text-fold-outline.el --- Text folding: outline mode -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; This file provides commands and keybindings for folding/hiding text:
 ;;   - Outline minor mode toggles
@@ -68,5 +68,5 @@ If all sublevels are visible, hide to only top-level headings."
      (t
       (outline-hide-subtree)))))
 
-(provide 'init-text-fold-outline)
-;;; init-text-fold-outline.el ends here
+(provide 'sub-text-fold-outline)
+;;; sub-text-fold-outline.el ends here

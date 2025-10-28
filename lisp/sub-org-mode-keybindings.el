@@ -1,8 +1,17 @@
-;;; fun-org-mode.el --- Org-mode Functions -*- lexical-binding: t -*-
+;;; sub-org-mode-keybindings.el --- Org-mode keybindings -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
 (use-package org
+  :bind ( :map org-mode-map
+          ("C-j" . transient/org-mode)
+          ("M-p" . org-backward-heading-same-level)
+          ("M-n" . org-forward-heading-same-level)
+          ("C-k" . org-kill-line)
+          ("C-'" . nil)
+          :map org-src-mode-map
+          ("C-j" . ascii-dir-tree)
+          ("C-c C-c" . org-edit-src-exit))
   :config
   ;;----------------------------------------
   ;;; Transient menus
@@ -203,5 +212,5 @@ only those entries (not their children) will be recursively expanded."
                        "\n")))
       (insert tree-text "\n"))))
 
-(provide 'fun-org-mode)
-;;; fun-org-mode.el ends here
+(provide 'sub-org-mode-keybindings)
+;;; sub-org-mode-keybindings.el ends here

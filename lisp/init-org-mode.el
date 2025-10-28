@@ -2,18 +2,9 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'fun-org-mode)
+(require 'sub-org-mode-keybindings)
 
 (use-package org
-  :bind ( :map org-mode-map
-          ("C-j" . transient/org-mode)
-          ("M-p" . org-backward-heading-same-level)
-          ("M-n" . org-forward-heading-same-level)
-          ("C-k" . org-kill-line)
-          ("C-'" . nil)
-          :map org-src-mode-map
-          ("C-j" . ascii-dir-tree)
-          ("C-c C-c" . org-edit-src-exit))
   :config
   ;;----------------------------------------
   ;;; Display
@@ -42,7 +33,7 @@
                     (org-indent-region (point) (org-end-of-subtree t)))))))
 
   ;; '----'四个及以上- 会被表示为horizontal line
-  (require 'init-org-mode-horizontal-line)
+  (require 'sub-org-mode-horizontal-line)
 
   ;;----------------------------------------
   ;;; Structure Templates

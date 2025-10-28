@@ -1,18 +1,46 @@
-;;; fun-gtd-workflow-fun.el --- fun for gtd workflow -*- lexical-binding: t -*-
+;;; sub-org-agenda-mode-keybindings.el --- Org Agenda Keybindings -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
-(defun no-message (fun &rest args)
-  "Apply FUN to ARGS, skipping message."
-  (let ((inhibit-message t)      ;Don't show the messages in Echo area
-        (message-log-max nil))   ;Don't show the messages in the *Messages* buffer
-    (apply fun args)))
-(defun no-confirm (fun &rest args)
-  "Apply FUN to ARGS, skipping user confirmations."
-  (cl-flet ((always-yes (&rest _) t))
-    (cl-letf (((symbol-function 'y-or-n-p) #'always-yes)
-              ((symbol-function 'yes-or-no-p) #'always-yes))
-      (apply fun args))))
+;;----------------------------------------
+;;; KeyBindings
+;;----------------------------------------
+(use-package org-agenda
+  :after org
+  :ensure nil
+  :bind ( :map org-agenda-mode-map
+          ;; define transient menus, keybindings
+          ("?" . transient/org-agenda-mode)
+          ("a" . transient/org-agenda-add-info)
+          ("T" . transient/org-agenda-schedule-deadline)
+          ("c" . transient/org-agenda-clock)
+          ("v" . transient/org-agenda-view)
+          ("f" . transient/org-agenda-filter)
+          ("l" . transient/org-agenda-statistics)
+          ;; previous && next
+          ("p" . org-agenda-previous-item)
+          ("n" . org-agenda-next-item)
+          ;; choose agenda view
+          ("SPC" . org-agenda/forward-buffer)
+          ;; entry show && entry enter
+          ([return] . (lambda()
+                        (interactive)
+                        (org-agenda-goto)
+                        ;; (org-show-entry)
+                        (org-narrow-to-subtree)
+                        (kill-buffer org-agenda-buffer)))
+          ([tab] . org-agenda/show-entry-text)
+          ;; quit && refresh
+          ("q" . (lambda() (interactive)
+                   (let ((win (selected-window)))
+                     (org-agenda-quit)
+                     (delete-window win))))))
+
+(with-eval-after-load 'org-colview
+  (define-key org-columns-map (kbd "n") nil)
+  (define-key org-columns-map (kbd "p") nil)
+  (define-key org-columns-map (kbd "TAB") nil)
+  (define-key org-columns-map (kbd "q") nil))
 
 ;;----------------------------------------
 ;;; Transient menus
@@ -102,7 +130,6 @@
                        (org-agenda-columns)
                        (org-agenda-next-item 1)))]])
 
-
   (defun org-agenda/archive ()
     (interactive)
     (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
@@ -181,147 +208,6 @@
              (org-agenda nil "a"))))
       (3 (org-agenda nil "a")))))
 
-;;----------------------------------------
-;;; Capture Hook: Set Effort/timestamp
-;;----------------------------------------
-(defun org-agenda/set-effort-and-time ()
-  (let ((todo-key (org-get-todo-state))
-        (time-string (format-time-string
-                      "[%Y-%m-%d %H:%M]"
-                      (time-add (current-time) (days-to-time 0)))))
-    (goto-char (point-min))
-    (org-set-property "CAPTURE_TIME" time-string)
-    (when (member todo-key '("TODO" "WAITING" "PROJECT"))
-      (org-set-effort))))
 
-;;----------------------------------------
-;;; Capture Hook: Auto Refile
-;;----------------------------------------
-(defun org-agenda/auto-refile ()
-  "Automatically refile TODO headings from inbox.org.
-
-Rules:
-1. If heading has no tags → refile to `gtd/task`.
-2. If heading has tags → find PROJECT entry in GTD files
-   where ITEM matches any tag, then refile under that project."
-  (with-current-buffer (find-buffer-visiting gtd/inbox)
-    (org-with-wide-buffer
-     (org-map-entries
-      (lambda ()
-        (let ((tags (org-get-tags))
-              (todo (org-get-todo-state))
-              (pos nil))
-          (when todo
-            (if (not tags)
-                (org-refile nil nil (list nil gtd/task nil nil))
-              (catch 'done
-                (dolist (tag tags)
-                  (dolist (file gtd/projects)
-                    ;; find pos in file
-                    (with-current-buffer (find-file-noselect file)
-                      (org-with-wide-buffer
-                       (catch 'found
-                         (org-map-entries
-                          (lambda ()
-                            (when (and (string= "PROJECT" (org-get-todo-state))
-                                       (string= tag (org-entry-get nil "ITEM")))
-                              (setq pos (point))
-                              (throw 'found t)))
-                          nil 'file))))
-                    ;; when found pos, return
-                    (when pos
-                      (org-toggle-tag tag 'off)
-                      (org-refile nil nil (list nil file nil pos))
-                      (throw 'done t)))))))))
-      nil 'file))))
-
-;;----------------------------------------
-;;; Org Agenda Hook: Delete Empty Blocks
-;;----------------------------------------
-(defun org-agenda/delete-empty-blocks ()
-  "Remove empty agenda blocks.
-  A block is identified as empty if there are fewer than 2
-  non-empty lines in the block (excluding the line with
-  `org-agenda-block-separator' characters)."
-  (when org-agenda-compact-blocks
-    (user-error "Cannot delete empty compact blocks"))
-  (setq buffer-read-only nil)
-  (save-excursion
-    (goto-char (point-min))
-    (let* ((blank-line-re "^\\s-*$")
-           (content-line-count (if (looking-at-p blank-line-re) 0 1))
-           (start-pos (point))
-           (block-re (format "%c\\{10,\\}" org-agenda-block-separator)))
-      (while (and (not (eobp)) (forward-line))
-        (cond
-         ((looking-at-p block-re)
-          (when (< content-line-count 2)
-            (delete-region start-pos (1+ (point-at-bol))))
-          (setq start-pos (point))
-          (forward-line)
-          (setq content-line-count (if (looking-at-p blank-line-re) 0 1)))
-         ((not (looking-at-p blank-line-re))
-          (setq content-line-count (1+ content-line-count)))))
-      (when (< content-line-count 2)
-        (delete-region start-pos (point-max)))
-      (goto-char (point-min))
-      ;; The above strategy can leave a separator line at the beginning
-      ;; of the buffer.
-      (when (looking-at-p block-re)
-        (delete-region (point) (1+ (point-at-eol))))))
-  (setq buffer-read-only t))
-
-;;----------------------------------------
-;;; Org Agenda 'a' Hook: goto 'n'
-;;----------------------------------------
-(defun org-agenda/a-hook ()
-  (when (= org-agenda/current-buffer-number 1)
-    (with-current-buffer org-agenda-buffer
-      (unless (next-single-property-change (line-end-position) 'org-marker)
-        (org-agenda nil "n")))))
-
-;;----------------------------------------
-;;; Functions For 'org-agenda-custom-commands'
-;;----------------------------------------
-;;;; skip entry
-(defun org-agenda/skip-entry ()
-  "Skip entry if its root heading TODO state is DONE or CANCEL."
-  (org-back-to-heading t)
-  (let ((end (org-entry-end-position)))
-    (while (and (org-up-heading-safe) (> (org-outline-level) 1)))
-    (if (org-entry-is-done-p)
-        end
-      nil)))
-
-(defun org-agenda/skip-if-not-root-entry (root)
-  (let* ((end (org-entry-end-position)))
-    (while (and (org-up-heading-safe) (> (org-outline-level) 1)))
-    (message "%s: %s" root (nth 4 (org-heading-components)))
-    (if (string= root (nth 4 (org-heading-components)))
-        nil
-      end)))
-
-;;;; prefix format
-(defun org-agenda/prefix-duration ()
-  "Return a prefix string for Org Agenda.
-Shows time duration since CAPTURE_TIME and top-level heading title."
-  (let* ((capture-time (org-entry-get nil "CAPTURE_TIME"))
-         (v1 "")
-         (v2 "")
-         (todo (org-get-todo-state)))
-    (when capture-time
-      (let* ((dura (org-time-since capture-time))
-             (days (car dura))
-             (seconds (cadr dura))
-             (hours (/ seconds 3600))
-             (minutes (/ seconds 60)))
-        (cond
-         ((> days 0) (setq v1 (format "%dd" days)))
-         ((> hours 0) (setq v1 (format "%dh" hours)))
-         ((> minutes 0) (setq v1 (format "%dm" minutes))))))
-    (when (string= todo "WAITING")
-      (setq v2 "wait"))
-    (format "%-6s%-9s" v1 v2)))
-
-(provide 'fun-gtd-workflow)
-;;; fun-gtd-workflow-fun.el ends here
+(provide 'sub-org-agenda-mode-keybindings)
+;;; sub-org-agenda-mode-keybindings.el ends here

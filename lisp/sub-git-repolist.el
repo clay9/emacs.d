@@ -1,4 +1,4 @@
-;;; init-git-repolist.el --- Manage Git repositories -*- lexical-binding: t -*-
+;;; sub-git-repolist.el --- Manage Git repositories -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; - Magit Repo List Configure
 ;; - Auto Push repo: "~/my/gtd"
@@ -138,5 +138,5 @@
               (magit-repos/auto-push "~/my/gtd" t)
               (magit-repos/auto-push "~/qy/blog" t))))
 
-(provide 'init-git-repolist)
-;;; init-git-repolist.el ends here
+(provide 'sub-git-repolist)
+;;; sub-git-repolist.el ends here

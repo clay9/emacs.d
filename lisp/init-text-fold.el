@@ -8,17 +8,17 @@
 ;; ----------------------
 ;;; Tree-sitter folding
 ;; ----------------------
-(require 'init-text-fold-treesit)
+(require 'sub-text-fold-treesit)
 
 ;; ----------------------
 ;;; hideshow minor mode
 ;; ----------------------
-(require 'init-text-fold-hs)
+(require 'sub-text-fold-hs)
 
 ;; ----------------------
 ;;; Outline minor mode toggles
 ;; ----------------------
-(require 'init-text-fold-outline)
+(require 'sub-text-fold-outline)
 
 ;; ----------------------
 ;;; Hooks

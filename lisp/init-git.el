@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'init-git-repolist)
+(require 'sub-git-repolist)
 
 (use-package magit
   :commands (magit-status)

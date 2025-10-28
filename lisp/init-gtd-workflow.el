@@ -3,8 +3,6 @@
 ;; Org-agenda configuration for GTD workflow
 ;;; Code:
 
-(require 'fun-gtd-workflow)
-
 ;;----------------------------------------
 ;;; GTD files
 ;;----------------------------------------
@@ -114,8 +112,55 @@
         org-bookmark-names-plist nil)
 
   ;; capture hook: Set Effort and Timestamp
+  (defun org-agenda/set-effort-and-time ()
+    (let ((todo-key (org-get-todo-state))
+          (time-string (format-time-string
+                        "[%Y-%m-%d %H:%M]"
+                        (time-add (current-time) (days-to-time 0)))))
+      (goto-char (point-min))
+      (org-set-property "CAPTURE_TIME" time-string)
+      (when (member todo-key '("TODO" "WAITING" "PROJECT"))
+        (org-set-effort))))
   (add-hook 'org-capture-prepare-finalize-hook #'org-agenda/set-effort-and-time)
+
   ;; capture hook: Auto Refile
+  (defun org-agenda/auto-refile ()
+    "Automatically refile TODO headings from inbox.org.
+
+Rules:
+1. If heading has no tags → refile to `gtd/task`.
+2. If heading has tags → find PROJECT entry in GTD files
+   where ITEM matches any tag, then refile under that project."
+    (with-current-buffer (find-buffer-visiting gtd/inbox)
+      (org-with-wide-buffer
+       (org-map-entries
+        (lambda ()
+          (let ((tags (org-get-tags))
+                (todo (org-get-todo-state))
+                (pos nil))
+            (when todo
+              (if (not tags)
+                  (org-refile nil nil (list nil gtd/task nil nil))
+                (catch 'done
+                  (dolist (tag tags)
+                    (dolist (file gtd/projects)
+                      ;; find pos in file
+                      (with-current-buffer (find-file-noselect file)
+                        (org-with-wide-buffer
+                         (catch 'found
+                           (org-map-entries
+                            (lambda ()
+                              (when (and (string= "PROJECT" (org-get-todo-state))
+                                         (string= tag (org-entry-get nil "ITEM")))
+                                (setq pos (point))
+                                (throw 'found t)))
+                            nil 'file))))
+                      ;; when found pos, return
+                      (when pos
+                        (org-toggle-tag tag 'off)
+                        (org-refile nil nil (list nil file nil pos))
+                        (throw 'done t)))))))))
+        nil 'file))))
   (add-hook 'org-capture-after-finalize-hook #'org-agenda/auto-refile))
 
 (provide 'init-gtd-workflow)

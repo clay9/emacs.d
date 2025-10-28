@@ -1,4 +1,4 @@
-;;; init-org-mode-horizontal-line.el --- Horizontal Line -*- lexical-binding: t -*-
+;;; sub-org-mode-horizontal-line.el --- Horizontal Line -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -33,5 +33,5 @@
             (my/org-refresh-horizontal-lines)))
 
 
-(provide 'init-org-mode-horizontal-line)
-;;; init-org-mode-horizontal-line.el ends here
+(provide 'sub-org-mode-horizontal-line)
+;;; sub-org-mode-horizontal-line.el ends here

@@ -1,4 +1,4 @@
-;;; init-text-fold-hs.el --- Text folding: hs-mode -*- lexical-binding: t -*-
+;;; sub-text-fold-hs.el --- Text folding: hs-mode -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; This file provides commands and keybindings for folding/hiding text:
 ;;   - hideshow minor mode for text
@@ -135,5 +135,5 @@ Runs `hs-show-hook' after expanding."
         (run-hooks 'hs-show-hook))))
   (fset 'hs-show-block #'text/hs-show-block))
 
-(provide 'init-text-fold-hs)
-;;; init-text-fold-hs.el ends here
+(provide 'sub-text-fold-hs)
+;;; sub-text-fold-hs.el ends here
