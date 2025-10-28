@@ -70,14 +70,8 @@
         (org-set-effort))))
   (add-hook 'org-clock-in-hook #'my/set-effort-when-clock-in)
 
-  ;; Show/hide clock in header line
-  (defun my/show-org-clock-in-header-line ()
-    (setq-default header-line-format '((" " org-mode-line-string " "))))
-  (defun my/hide-org-clock-from-header-line ()
-    (setq-default header-line-format nil))
-  (add-hook 'org-clock-in-hook #'my/show-org-clock-in-header-line)
-  (add-hook 'org-clock-out-hook #'my/hide-org-clock-from-header-line)
-  (add-hook 'org-clock-cancel-hook #'my/hide-org-clock-from-header-line))
+  ;; Show/hide clock display
+  (require 'sub-gtd-clock-display))
 
 (with-eval-after-load 'org-agenda
   ;; clock face
