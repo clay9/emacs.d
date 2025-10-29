@@ -17,14 +17,6 @@
                (mode . help-mode)))
 
 (add-to-list 'display-buffer-alist
-             `("\\*Org Agenda\\*"
-               (display-buffer-in-side-window)
-               (window-width . 0.4)
-               (side . left)
-               (slot . -1)
-               (dedicated . nil)))
-
-(add-to-list 'display-buffer-alist
              `("\\*e?shell\\*"
                (display-buffer-in-side-window)
                (window-height . 0.4)

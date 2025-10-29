@@ -53,7 +53,10 @@
   "Toggle Org Agenda buffer."
   (interactive)
   (if (buffer-live-p (get-buffer "*Org Agenda*"))
-      (kill-buffer "*Org Agenda*")
+      (progn
+        (kill-buffer "*Org Agenda*")
+        (win/restore-window-configuration))
+    (win/save-window-configuration)
     (org-agenda nil "a")))
 
 (global-set-key (kbd "C-\\") #'my/org-agenda-toggle)

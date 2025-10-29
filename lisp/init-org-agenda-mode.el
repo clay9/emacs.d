@@ -11,7 +11,7 @@
 ;;; Agenda Buffer Display
 ;;----------------------------------------
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-window-setup 'current-window
+  (setq org-agenda-window-setup 'only-window
         ;; not show sublevels in agenda
         org-habit-show-habits-only-for-today t
         ;; disable diary

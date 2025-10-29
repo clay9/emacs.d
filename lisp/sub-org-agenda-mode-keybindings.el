@@ -23,18 +23,15 @@
           ;; choose agenda view
           ("SPC" . org-agenda/forward-buffer)
           ;; entry show && entry enter
-          ([return] . (lambda()
-                        (interactive)
+          ([return] . (lambda() (interactive)
                         (org-agenda-goto)
-                        ;; (org-show-entry)
                         (org-narrow-to-subtree)
-                        (kill-buffer org-agenda-buffer)))
+                        (org-cycle 1)))
           ([tab] . org-agenda/show-entry-text)
-          ;; quit && refresh
+          ;; quit
           ("q" . (lambda() (interactive)
-                   (let ((win (selected-window)))
-                     (org-agenda-quit)
-                     (delete-window win))))))
+                   (org-agenda-quit)
+                   (win/restore-window-configuration)))))
 
 (with-eval-after-load 'org-colview
   (define-key org-columns-map (kbd "n") nil)
