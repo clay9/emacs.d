@@ -132,10 +132,10 @@
             (magit-call-git "push"))))))
 
   (defun magit-repos/auto-push-all()
-    (magit-repos/auto-push-maybe "~/.emacs.d")
-    (magit-repos/auto-push-maybe "~/my/blog" t)
-    (magit-repos/auto-push-maybe "~/my/gtd" t)
-    (magit-repos/auto-push-maybe "~/qy/blog" t))
+    (magit-repos/auto-push "~/.emacs.d")
+    (magit-repos/auto-push "~/my/blog" t)
+    (magit-repos/auto-push "~/my/gtd" t)
+    (magit-repos/auto-push "~/qy/blog" t))
 
   ;; 每次 Emacs 空闲 10 分钟执行一次
   (run-with-idle-timer 600 t #'magit-repos/auto-push-all)
