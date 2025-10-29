@@ -138,9 +138,7 @@
     (magit-repos/auto-push "~/qy/blog" t))
 
   ;; 每次 Emacs 空闲 10 分钟执行一次
-  (run-with-idle-timer 600 t #'magit-repos/auto-push-all)
-  ;; 每天 18:00 定时执行一次
-  (run-at-time "18:00" 86400 #'magit-repos/auto-push-all))
+  (run-with-idle-timer 600 t #'magit-repos/auto-push-all))
 
 (provide 'sub-git-repolist)
 ;;; sub-git-repolist.el ends here
