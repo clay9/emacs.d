@@ -70,6 +70,7 @@
 (require 'init-eshell)
 ;; (require 'init-devdocs)  ;; TODONOW incompat in Macos
 (require 'init-journal)
+(require 'init-input-method)
 
 ;;; Load custom variables if present
 (when (file-exists-p custom-file)
