@@ -35,6 +35,11 @@
   ;; '----'四个及以上- 会被表示为horizontal line
   (require 'sub-org-mode-horizontal-line)
 
+  ;; Drawer face
+  (set-face-attribute 'org-drawer nil :foreground "gray60" :height 0.9)
+  (set-face-attribute 'org-special-keyword nil :foreground "gray60" :height 0.9)
+  (set-face-attribute 'org-property-value nil :foreground "gray60" :height 0.9)
+
   ;;----------------------------------------
   ;;; Structure Templates
   ;;----------------------------------------
