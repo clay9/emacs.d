@@ -77,8 +77,7 @@
     (when (= org-agenda/current-buffer-number 1)
       (with-current-buffer org-agenda-buffer
         (unless (next-single-property-change (line-end-position) 'org-marker)
-          (org-agenda nil "n")))))
-  (add-hook 'org-agenda-finalize-hook 'org-agenda/a-hook))
+          (org-agenda nil "n"))))))
 
 ;;----------------------------------------
 ;;; Agenda buffers Template

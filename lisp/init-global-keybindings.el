@@ -57,7 +57,7 @@
         (kill-buffer "*Org Agenda*")
         (win/restore-window-configuration))
     (win/save-window-configuration)
-    (org-agenda nil "a")))
+    (my/org-agenda-a)))
 
 (global-set-key (kbd "C-\\") #'my/org-agenda-toggle)
 (global-set-key (kbd "C-、") #'my/org-agenda-toggle)  ;; 中文输入法时生效

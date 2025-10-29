@@ -76,11 +76,11 @@
      ("g" "clock go" org-agenda-clock-goto)])
   (transient-define-prefix transient/org-agenda-view()
     [["view"
-      ("d" "day" (lambda() (interactive) (org-agenda-goto-today) (org-agenda-day-view)))
-      ("w" "week" org-agenda-week-view)
-      ("W" "fortnight" org-agenda-fortnight-view)
-      ("m" "month" org-agenda-month-view)
-      ("y" "year" org-agenda-year-view)]
+      ("d" "day" (lambda() (interactive) (org-agenda/a-action "day" nil) (org-agenda-goto-today)))
+      ("w" "week" (lambda() (interactive) (org-agenda/a-action "week" nil)))
+      ("W" "fortnight" (lambda() (interactive) (org-agenda/a-action "fortnight" nil)))
+      ("m" "month" (lambda() (interactive) (org-agenda/a-action "month" nil)))
+      ("y" "year" (lambda() (interactive) (org-agenda/a-action "year" nil)))]
      ["nav"
       ("g" "go data" org-agenda-goto-date)
       ("b" "previous" org-agenda-earlier)
@@ -98,25 +98,11 @@
 		              (org-agenda-filter-apply org-agenda-effort-filter 'effort)))]])
   (transient-define-prefix transient/org-agenda-statistics()
     [["clock report"
-      ("d" "day" (lambda() (interactive)
-                   (org-agenda nil "a")
-                   (org-agenda-clockreport-mode)))
-      ("w" "week" (lambda() (interactive)
-                    (org-agenda nil "a")
-                    (org-agenda-week-view)
-                    (org-agenda-clockreport-mode)))
-      ("m" "month" (lambda() (interactive)
-                     (org-agenda nil "a")
-                     (org-agenda-month-view)
-                     (org-agenda-clockreport-mode)))]
+      ("d" "day" (lambda() (interactive) (org-agenda/a-action "day" "report")))
+      ("w" "week" (lambda() (interactive) (org-agenda/a-action "week" "report")))
+      ("m" "month" (lambda() (interactive) (org-agenda/a-action "month" "report")))]
      ["log"
-      ("l" "!log" (lambda() (interactive)
-                    (if (org-agenda-check-type nil 'agenda)
-                        (org-agenda-log-mode 'clockcheck)
-                      (kill-buffer org-agenda-buffer)
-                      (let ((display-buffer-alist nil))
-                        (org-agenda nil "a")
-                        (org-agenda-log-mode 'clockcheck)))))]
+      ("l" "!log" (lambda() (interactive) (org-agenda/a-action nil "log")))]
      ["project"
       ("p" "project" (lambda() (interactive)
                        (org-agenda nil "p")
@@ -126,6 +112,23 @@
                        (org-agenda nil "r")
                        (org-agenda-columns)
                        (org-agenda-next-item 1)))]])
+
+  (defun org-agenda/a-action (period mode)
+    (interactive)
+    (unless (org-agenda-check-type nil 'agenda)
+      (org-agenda nil "a"))
+
+    (pcase period
+      ("day" (org-agenda-day-view))
+      ("week" (org-agenda-week-view))
+      ("month" (org-agenda-month-view))
+      ("year" (org-agenda-year-view))
+      ("fortnight" (org-agenda-fortnight-view)))
+
+    (pcase mode
+      ("report" (unless (bound-and-true-p org-agenda-clockreport-mode)
+                  (org-agenda-clockreport-mode)))
+      ("log" (org-agenda-log-mode 'clockcheck))))
 
   (defun org-agenda/archive ()
     (interactive)
@@ -188,6 +191,14 @@
 (defun org-agenda/set-buffer-number(number)
   (setq org-agenda/current-buffer-number number))
 
+(defun my/org-agenda-a ()
+  (let ((hook 'org-agenda/a-hook))
+    (unwind-protect
+        (progn
+          (add-hook 'org-agenda-finalize-hook hook)
+          (org-agenda nil "a"))
+      (remove-hook 'org-agenda-finalize-hook hook))))
+
 (defun org-agenda/forward-buffer ()
   "agenda-view, next-view, inbox-view"
   (interactive)
@@ -202,8 +213,8 @@
                   (re-search-forward "* " nil t))))
            (if inbox
 	       (org-agenda nil "i")
-             (org-agenda nil "a"))))
-      (3 (org-agenda nil "a")))))
+             (my/org-agenda-a))))
+      (3 (my/org-agenda-a)))))
 
 
 (provide 'sub-org-agenda-mode-keybindings)
