@@ -9,7 +9,7 @@
   ;;----------------------------------------
   ;; Mermaid CLI in Docker
   (setq mermaid-mmdc-location "docker")
-  (setq mermaid-flags "run -u 1000 -v /tmp:/tmp ghcr.io/mermaid-js/mermaid-cli/mermaid-cli:latest")
+  (setq mermaid-flags "run --rm -u 1000 -v /tmp:/tmp ghcr.io/mermaid-js/mermaid-cli/mermaid-cli:latest")
 
   ;;----------------------------------------
   ;;; Mermaid in Org Babel
@@ -19,7 +19,7 @@
     :config
     ;; mmdc 是 @mermaid-js/mermaid-cli 提供的命令
     (setq ob-mermaid-cli-path
-          (concat "docker run "
+          (concat "docker run --rm "
                   "-u 1000 "
                   "-v /var:/var "
                   "-v /Users:/Users "
