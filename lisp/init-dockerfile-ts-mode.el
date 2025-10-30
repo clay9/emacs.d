@@ -14,13 +14,7 @@
 ;; ------------------------------------------------------------
 (require 'fun-treesit)
 
-(defun treesit/setup-dockerfile ()
-  "确保 Dockerfile Tree-sitter 语法可用。"
-  (treesit/setup-language 'dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile"))
-
-;; 加载 Tree-sitter
-(unless (treesit-ready-p 'dockerfile)
-  (treesit/setup-dockerfile))
+(treesit/load 'dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
 
 (provide 'init-dockerfile-ts-mode)
 ;;; init-dockerfile-ts-mode.el ends here

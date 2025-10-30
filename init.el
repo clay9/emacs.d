@@ -53,6 +53,7 @@
 
 ;;; Major modes
 (require 'init-c++-ts-mode)
+(require 'init-cmake-ts-mode)
 (require 'init-dockerfile-ts-mode)
 (require 'init-yaml-ts-mode)
 (require 'init-toml-ts-mode)

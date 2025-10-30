@@ -37,8 +37,8 @@
 (with-eval-after-load 'c-ts-mode
   (transient-define-prefix transient/c++-ts-mode ()
     [:class transient-column "navigation"
-     ("f" "go-forward" xref-go-forward)
-     ("b" "go-back" xref-go-back)])
+            ("f" "go-forward" xref-go-forward)
+            ("b" "go-back" xref-go-back)])
   (define-key c++-ts-mode-map (kbd "C-j") 'transient/c++-ts-mode))
 
 ;; ------------------------------------------------------------
@@ -54,15 +54,8 @@
 ;; ------------------------------------------------------------
 (require 'fun-treesit)
 
-(defun treesit/setup-cpp-languages ()
-  "确保 C/C++ Tree-sitter 语法可用。"
-  (treesit/setup-language 'c   "https://github.com/tree-sitter/tree-sitter-c")
-  (treesit/setup-language 'cpp "https://github.com/tree-sitter/tree-sitter-cpp"))
-
-;; 加载 Tree-sitter
-(unless (treesit-ready-p 'cpp)
-  (treesit/setup-cpp-languages)
-  (add-to-list 'treesit-load-name-override-list '(c++ "libtree-sitter-cpp")))
+;; (treesit/load 'c   "https://github.com/tree-sitter/tree-sitter-c")
+(treesit/load 'cpp "https://github.com/tree-sitter/tree-sitter-cpp")
 
 (provide 'init-c++-ts-mode)
 ;;; init-c++-ts-mode.el ends here

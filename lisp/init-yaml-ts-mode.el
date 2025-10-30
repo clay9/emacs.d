@@ -13,13 +13,7 @@
 ;; ------------------------------------------------------------
 (require 'fun-treesit)
 
-(defun treesit/setup-yaml ()
-  "确保 YAML Tree-sitter 语法可用。"
-  (treesit/setup-language 'yaml "https://github.com/ikatyang/tree-sitter-yaml"))
-
-;; 加载 Tree-sitter
-(unless (treesit-ready-p 'yaml)
-  (treesit/setup-yaml))
+(treesit/load 'yaml "https://github.com/ikatyang/tree-sitter-yaml")
 
 (provide 'init-yaml-ts-mode)
 ;;; init-yaml-ts-mode.el ends here

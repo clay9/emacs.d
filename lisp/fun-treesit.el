@@ -16,5 +16,10 @@ REPO 是对应的 tree-sitter 仓库 URL。"
   (unless (treesit-language-available-p lang)
     (treesit-install-language-grammar lang)))
 
+(defun treesit/load (lang repo)
+  (unless (treesit-ready-p lang)
+    (treesit/setup-language lang repo)))
+
+
 (provide 'fun-treesit)
 ;;; init-treesit.el ends here
