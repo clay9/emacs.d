@@ -22,13 +22,13 @@
   ;;; 企业/公司仓库列表
   ;;----------------------------------------
   (setq magit-repolist-my-repos-qy
-        '(("qygame/blog"             "~/qy/blog")
-          ("qygame/build_publish"    "~/qy/ops/build_publish")
-          ("qygame/compiler"         "~/qy/ops/compiler")
-          ("qygame/docker_compose"   "~/qy/ops/docker_compose")
-          ("qygame/qykernel"         "~/qy/qykernel")
-          ("qygame/server"           "~/qy/server")
-          ("qygame/database"         "~/qy/database")))
+        '(("qygame/blog"                 "~/qy/blog")
+          ("qygame/build_publish"        "~/qy/ops/build_publish")
+          ("qygame/qycompiler-builder"   "~/qy/ops/qycompiler-builder")
+          ("qygame/docker_compose"       "~/qy/ops/docker_compose")
+          ("qygame/qykernel"             "~/qy/qykernel")
+          ("qygame/server"               "~/qy/server")
+          ("qygame/database"             "~/qy/database")))
 
   ;;----------------------------------------
   ;;; 切换仓库列表
