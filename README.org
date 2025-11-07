@@ -1,0 +1,17 @@
+* 目录
+  #+begin_example
+    |-- .yasnippet   // Snippet definitions
+    |-- lisp         // Emacs configuration files
+    |-- script       // Scripts for blog usage (exporting org files  to hugo markdown)
+    `-- init.el      // Main Emacs initialization file
+  #+end_example
+
+* 外部依赖
+  | 程序名字 | 功能说明   | 使用对象          |
+  |----------+------------+-------------------|
+  | git      | 版本管理   | magit             |
+  |----------+------------+-------------------|
+  | clangd   | lsp server | eglot             |
+  |----------+------------+-------------------|
+  | rp       | grep替代   | init-text-grep.el |
+  |----------+------------+-------------------|

@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: init file (key: it)
+# key: it
+# --
+
+;;; `(buffer-name)` --- $1 -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
+$0
+
+(provide '`(substring (buffer-name) 0 -3)`)
+;;; `(buffer-name)` ends here
