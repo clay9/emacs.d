@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: C++ auto header include guard in project
+# key: once
+# expand-env: ((result (upcase (subst-char-in-string ?/ ?_ (concat "_" (file-relative-name (file-name-sans-extension buffer-file-name) (concat (project-root (project-current)) "src" )) "_H_")))))
+# --
+
+#ifndef ${1:$$(upcase yas-text)}`result`
+#define $1`result`
+
+$0
+
+#endif  // $1`result`

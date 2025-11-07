@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: defun (key: df)
+# key: df
+# --
+
+(defun ${1:name} ()
+  (interactive)
+  $0)

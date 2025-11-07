@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: hugo docs (key: docs)
+# key: docs
+# --
+#+title: $1
+#+date: `(format-time-string "%Y-%m-%d %T")`
+#+hugo_section: docs
+#+hugo_bundle: `(yas/hugo-get-bundle)`
+#+export_file_name: `(yas/hugo-get-bundle-name)`
+#+hugo_weight: `(or (yas/hugo-get-weight) (yas-field-value "2"))`
+#+hugo_draft: false
+#+hugo_auto_set_lastmod: t
+#+hugo_custom_front_matter: :bookCollapseSection `(yas/hugo-get-collapse-section)`
+#+hugo_paired_shortcodes: qr %columns %details %hint mermaid %steps tabs tab
+
+ $3
+
+#+hugo: more
