@@ -6,8 +6,10 @@
 ;;; Code:
 
 (use-package yasnippet
-  :diminish yas-minor-mode
   :config
+  ;; Hide minor mode indicator in the mode line.
+  (when-let ((cell (assq 'yas-minor-mode minor-mode-alist)))
+    (setcdr cell '("")))
   ;; 设置 snippet 存放路径
   (setq yas-snippet-dirs (list (expand-file-name ".yasnippet" user-emacs-directory)))
 

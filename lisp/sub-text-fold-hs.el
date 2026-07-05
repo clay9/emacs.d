@@ -5,9 +5,12 @@
 ;;; Code:
 
 (use-package hideshow
-  :diminish hs-minor-mode
   :ensure nil
   :config
+  ;;; Hide minor mode indicator in the mode line.
+  (when-let ((cell (assq 'hs-minor-mode minor-mode-alist)))
+    (setcdr cell '("")))
+
   ;; ----------------------
   ;;; hideshow minor cycle
   ;; ----------------------
@@ -85,7 +88,7 @@
         ;; 跳过二级, 三级.. child
         (hs-find-block-beginning)
         (setq child-min (1+ (point)))
-	(funcall hs-forward-sexp-func 1)
+        (funcall hs-forward-sexp-func 1)
         (setq child-max (1+ (point)))
 
         (let* ((one-line (<= (count-lines child-min child-max) 1))

@@ -37,9 +37,5 @@
           transient-values-file  (expand-file-name "values.el" dir)
           transient-levels-file (expand-file-name "levels.el" dir))))
 
-;; Diminish mode-line clutter
-(use-package diminish
-  :ensure t)
-
 (provide 'init-package)
 ;;; init-package.el ends here

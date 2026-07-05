@@ -26,7 +26,9 @@
                 global-eldoc-mode))
   (add-hook 'after-init-hook mode))
 
-(diminish 'eldoc-mode)
+;; Hide minor mode indicator in the mode line.
+(when-let ((cell (assq 'eldoc-mode minor-mode-alist)))
+  (setcdr cell '("")))
 
 ;; ----------------------
 ;;; Whitespace management

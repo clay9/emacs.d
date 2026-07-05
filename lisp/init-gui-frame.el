@@ -67,8 +67,10 @@
 
 ;; Disable mouse globally
 ;; (use-package disable-mouse
-;;   :diminish disable-mouse-global-mode
-;;   :config
+;; :config
+;; ;; Hide minor mode indicator in the mode line.
+;; (when-let ((cell (assq 'disable-mouse-global-mode minor-mode-alist)))
+;;   (setcdr cell '("")))
 ;;   (global-disable-mouse-mode 1))
 
 (provide 'init-gui-frame)
