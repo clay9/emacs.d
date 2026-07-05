@@ -12,6 +12,9 @@
 
 (setq custom-file (concat my/config-dir "custom.el"))
 
+(startup-redirect-eln-cache
+ (expand-file-name "cache/eln/" my/config-dir))
+
 ;;; Bootstrap config
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 

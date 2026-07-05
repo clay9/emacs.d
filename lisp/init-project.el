@@ -2,10 +2,14 @@
 ;;; Commentary:
 ;;; Code:
 
-(with-eval-after-load 'project
-  (setq project-list-file (concat my/config-dir "projects"))
+(use-package project
+  :ensure nil
+  :init
+  (setq project-list-file
+        (expand-file-name "projects.eld" my/config-dir))
+  :config
   ;; Call 'project-switch-project' without promt menu
-  (setq project-switch-commands 'project-find-file))
+  (setq project-switch-commands '(project-find-file)))
 
 (provide 'init-project)
 ;;; init-project.el ends here

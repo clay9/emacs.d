@@ -1,8 +1,4 @@
 .config
 .elpa-*
 .DS_Store
-/eln-cache
-projects
-projects.eld
 /tree-sitter
-/transient/

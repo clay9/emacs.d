@@ -30,7 +30,12 @@
 
 ;; Optional: manage transient with use-package
 (use-package transient
-  :ensure t)
+  :ensure t
+  :init
+  (let ((dir (expand-file-name "cache/transient/" my/config-dir)))
+    (setq transient-history-file (expand-file-name "history.el" dir)
+          transient-values-file  (expand-file-name "values.el" dir)
+          transient-levels-file (expand-file-name "levels.el" dir))))
 
 ;; Diminish mode-line clutter
 (use-package diminish
