@@ -66,10 +66,10 @@
 (ffap-bindings)
 
 ;; Disable mouse globally
-(use-package disable-mouse
-  :diminish disable-mouse-global-mode
-  :config
-  (global-disable-mouse-mode 1))
+;; (use-package disable-mouse
+;;   :diminish disable-mouse-global-mode
+;;   :config
+;;   (global-disable-mouse-mode 1))
 
 (provide 'init-gui-frame)
 ;;; init-gui-frame.el ends here
