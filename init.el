@@ -74,7 +74,7 @@
 (require 'init-eshell)
 (require 'init-devdocs)
 (require 'init-journal)
-(require 'init-input-method)
+;; (require 'init-input-method)
 
 ;;; Load custom variables if present
 (when (file-exists-p custom-file)

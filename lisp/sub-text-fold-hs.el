@@ -8,7 +8,7 @@
   :ensure nil
   :config
   ;;; Hide minor mode indicator in the mode line.
-  (when-let ((cell (assq 'hs-minor-mode minor-mode-alist)))
+  (when-let* ((cell (assq 'hs-minor-mode minor-mode-alist)))
     (setcdr cell '("")))
 
   ;; ----------------------

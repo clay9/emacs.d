@@ -37,5 +37,12 @@
           transient-values-file  (expand-file-name "values.el" dir)
           transient-levels-file (expand-file-name "levels.el" dir))))
 
+;; Configure `project.el` before it is first loaded.
+(use-package project
+  :ensure nil
+  :init
+  (setq project-list-file
+        (expand-file-name "projects.eld" my/config-dir)))
+
 (provide 'init-package)
 ;;; init-package.el ends here
