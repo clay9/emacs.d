@@ -5,12 +5,12 @@
 ;;(setq debug-on-error t)
 
 ;;; Constants
-(defconst my/ecfg-dir (expand-file-name ".config/" user-emacs-directory)
+(defconst my/config-dir (expand-file-name ".config/" user-emacs-directory)
   "Directory for custom Emacs configuration files.")
 
-(unless (file-directory-p my/ecfg-dir) (make-directory my/ecfg-dir))
+(unless (file-directory-p my/config-dir) (make-directory my/config-dir))
 
-(setq custom-file (concat my/ecfg-dir "custom.el"))
+(setq custom-file (concat my/config-dir "custom.el"))
 
 ;;; Bootstrap config
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))

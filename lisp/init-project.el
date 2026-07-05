@@ -3,7 +3,7 @@
 ;;; Code:
 
 (with-eval-after-load 'project
-  (setq project-list-file (concat my/ecfg-dir "projects"))
+  (setq project-list-file (concat my/config-dir "projects"))
   ;; Call 'project-switch-project' without promt menu
   (setq project-switch-commands 'project-find-file))
 

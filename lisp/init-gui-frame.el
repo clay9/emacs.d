@@ -39,9 +39,9 @@
 ;; File and package related paths
 (setq auth-sources  "~/my/gtd/.emacs_cfg/authinfo"
       bookmark-default-file "~/my/gtd/.emacs_cfg/bookmark"
-      savehist-file (expand-file-name "save-history" my/ecfg-dir )
-      auto-save-list-file-prefix (expand-file-name "auto-save-list/saves-" my/ecfg-dir)
-      tramp-persistency-file-name (expand-file-name "tramp" my/ecfg-dir)
+      savehist-file (expand-file-name "save-history" my/config-dir )
+      auto-save-list-file-prefix (expand-file-name "auto-save-list/saves-" my/config-dir)
+      tramp-persistency-file-name (expand-file-name "tramp" my/config-dir)
       tramp-verbose 1)
 
 ;; Misc

@@ -6,7 +6,7 @@
   :ensure nil
   :commands (eshell)
   :config
-  (setq eshell-directory-name (concat my/ecfg-dir "eshell/")
+  (setq eshell-directory-name (concat my/config-dir "eshell/")
         eshell-input-filter 'my/eshell-input-filter)
 
   (defun my/eshell-input-filter (input)

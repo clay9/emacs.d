@@ -10,7 +10,7 @@
 ;;; Desktop: Save open buffers & layout
 ;; ----------------------
 ;; Keep track of open buffers and window layouts.
-(setq desktop-path (list my/ecfg-dir)
+(setq desktop-path (list my/config-dir)
       desktop-base-file-name "emacs.desktop"
       desktop-base-lock-name "emacs.desktop.lock"
       desktop-auto-save-timeout 600
@@ -49,7 +49,7 @@
   :defer t
   :hook (after-init . session-initialize)
   :config
-  (setq session-save-file (concat my/ecfg-dir "session")
+  (setq session-save-file (concat my/config-dir "session")
         session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)"
         session-save-file-coding-system 'utf-8
         history-length 200)

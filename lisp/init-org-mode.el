@@ -87,7 +87,7 @@
   ;;; Misc: persistence, ctags fix, performance
   ;;----------------------------------------
   (with-eval-after-load 'org-persist
-    (setq org-persist-directory (expand-file-name "org-persist/" my/ecfg-dir)))
+    (setq org-persist-directory (expand-file-name "org-persist/" my/config-dir)))
 
   ;; fix org-ctags bug: https://emacs.stackexchange.com/questions/76351/how-to-follow-an-internal-link-in-recent-org-mode
   (with-eval-after-load 'org-ctags

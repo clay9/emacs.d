@@ -5,7 +5,7 @@
 (use-package devdocs
   :config
   ;; 设置 Devdocs 数据目录
-  (setq devdocs-data-dir (concat my/ecfg-dir "devdocs"))
+  (setq devdocs-data-dir (concat my/config-dir "devdocs"))
   ;; 打开文档时自动选择窗口
   (setq devdocs-window-select t)
 
