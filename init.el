@@ -15,7 +15,6 @@
 ;;; Bootstrap config
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
-(require 'init-site-lisp)
 (require 'init-package)
 
 ;;; Emacs core setup
