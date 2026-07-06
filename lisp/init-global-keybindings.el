@@ -154,7 +154,10 @@
            ("v" "visit" yas-visit-snippet-file)
            ("i" "insert" yas-new-snippet)]
    [:class transient-column "api document"
-           ("l" "lookup" devdocs-lookup)]])
+           ("l" "lookup" (lambda ()
+                           (interactive)
+                           (devdocs-lookup nil (thing-at-point 'word t))))]])
+
 (global-set-key (kbd "C-r") 'transient/c-r)
 
 ;; =====================
