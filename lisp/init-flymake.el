@@ -20,19 +20,7 @@
 ;;----------------------------------------
 ;;; C/C++ 后端: Google cpplint
 ;;----------------------------------------
-(use-package flymake-easy :defer t)
-(use-package flymake-google-cpplint
-  :vc (:url "https://github.com/flymake/flymake-google-cpplint.git" :rev :newest)
-  :hook ((c-mode c++-mode c-ts-mode c++-ts-mode) . flymake-google-cpplint-load)
-  :init
-  ;; 确保 cpplint 路径有效
-  (setq flymake-google-cpplint-command
-        (or (executable-find "cpplint.py")
-            "/usr/local/bin/cpplint.py"))
-  :config
-  (setq flymake-google-cpplint-verbose "--verbose=0"
-        flymake-google-cpplint-filter
-        "--filter=-legal/copyright,-build/header_guard,-build/include_subdir"))
+(require 'sub-flymake-cpp)
 
 (provide 'init-flymake)
 ;;; init-flymake.el ends here
