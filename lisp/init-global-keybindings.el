@@ -151,9 +151,8 @@
    [:class transient-column "Snippet"
            ("v" "visit" yas-visit-snippet-file)
            ("i" "insert" yas-new-snippet)]
-   ;; [:class transient-column "api document"
-   ;;         ("l" "lookup" devdocs-lookup)]
-   ])
+   [:class transient-column "api document"
+           ("l" "lookup" devdocs-lookup)]])
 (global-set-key (kbd "C-r") 'transient/c-r)
 
 ;; =====================
