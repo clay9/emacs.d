@@ -36,10 +36,29 @@
   ;; 设置consult buffer过滤规则
   (setq consult-buffer-filter
         '("\\` "                  ;; 空格开头的缓冲区
-          "\\`\\*[^s][^c]*\\*"    ;; 隐藏 * 开头但不是 *scratch*
+          "\\magit:*"
+          "\\`\\*.*\\*"           ;; 隐藏 * 开头
           "\\.jd\\'"              ;; 隐藏.jd 日记文件
           "inbox.org" "task.org" "archive.org"  ;; 隐藏gtd buffers
-          "emacs.org" "qygame.org" )))
+          "emacs.org" "qygame.org" ))
+
+  ;; 隐藏Hidden buff中的部分buff
+  (setq consult-source-hidden-buffer
+        (plist-put consult-source-hidden-buffer
+                   :items
+                   (lambda ()
+                     (seq-remove
+                      (lambda (pair)
+                        (let ((name (car pair))) ;; pair = (NAME . BUFFER)
+                          (or (string-match-p "\\` " name)
+                              (string-match-p "\\*Messages\\*" name)
+                              (string-match-p "\\*scratch\\*" name)
+                              (string-match-p "\\magit:*" name))))
+                      (consult--buffer-query
+                       :sort 'alpha  ;; change sort by alpha
+                       :filter 'invert
+                       :as #'consult--buffer-pair
+                       :buffer-list t))))))
 
 ;; ------------------------------------------------------------
 ;;; Embark: actions for minibuffer/buffer candidates

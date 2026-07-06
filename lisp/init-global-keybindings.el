@@ -23,6 +23,8 @@
 (global-set-key (kbd "C-x s") 'save-buffer)
 (global-set-key (kbd "M-k") 'kill-current-buffer)
 
+(global-set-key (kbd "C-h s") 'scratch-buffer)
+
 ;; =====================
 ;;; File Shortcuts
 ;; =====================
