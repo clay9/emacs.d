@@ -5,31 +5,41 @@
 ;; ------------------------------------------------------------
 ;;; Google Style 缩进
 ;; ------------------------------------------------------------
-(with-eval-after-load 'c-ts-mode
-  (defvar my/google-c-style-cache nil
-    "缓存 Google C/C++ Tree-sitter 缩进规则。")
+;; 详细的ts indent信息
+(setq treesit--indent-verbose t)
 
-  (defun google-c-style ()
-    "Override the built-in `gnu' indentation style with Google C++ rules."
-    (or my/google-c-style-cache
-        (setq my/google-c-style-cache
-              `(((node-is ")") parent-bol 0)
-                ((match nil "argument_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
-                ((parent-is "argument_list") first-sibling 1)
-                ((match "parameter_declaration" "parameter_list" nil nil nil) first-sibling 1)
-                ((match nil "parameter_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
-                ((parent-is "parameter_list") prev-sibling 0)
-                ((n-p-gp nil nil "namespace_definition") grand-parent 0)
-                ((match "access_specifier" "base_class_clause" nil nil nil) parent-bol 0)
-                ((match "access_specifier" "field_declaration_list" nil nil nil) parent-bol 1)
-                ((node-is "field_initializer_list") parent-bol 4)
-                ((match nil "field_initializer_list" nil 2 nil) parent-bol 2)
-                ((node-is "case_statement") parent-bol 2)
-                ((node-is "field_identifier") prev-sibling 0)
-                ;; 继承 GNU 样式
-                ,@(alist-get 'gnu (c-ts-mode--indent-styles 'cpp))))))
+(use-package c-ts-mode
+  :ensure nil
+  :init
+  (setq c-ts-mode-indent-style #'my-c-ts-google-rules-complete)
 
-  (setq c-ts-mode-indent-style #'google-c-style))
+  :config
+  (defun my-c-ts-google-rules-complete ()
+    "Google C++ Style layout rules for c-ts-mode with explicit language tags."
+    (let ((core-rules `(((n-p-gp nil nil "namespace_definition") grand-parent 0)
+                        ((node-is "}") parent-bol 0)
+                        ((node-is "access_specifier") parent-bol 1)
+                        ((parent-is "field_declaration_list") parent-bol c-ts-indent-offset)
+                        ((parent-is "initializer_list") parent-bol 4)
+                        ((node-is "initializer_pair") parent-bol 4)
+                        ((node-is "case_statement") parent-bol 0)
+                        ((parent-is "case_statement") parent-bol c-ts-indent-offset)
+                        ((parent-is "if_statement") parent-bol c-ts-indent-offset)
+                        ((parent-is "for_statement") parent-bol c-ts-indent-offset)
+                        ((parent-is "while_statement") parent-bol c-ts-indent-offset)
+                        ((parent-is "do_statement") parent-bol c-ts-indent-offset)
+                        ((parent-is "try_statement") parent-bol c-ts-indent-offset)
+                        ((parent-is "catch_clause") parent-bol c-ts-indent-offset)
+                        ((parent-is "translation_unit") parent-bol 0)
+                        ((parent-is "compound_statement") parent-bol c-ts-indent-offset)
+                        ((node-is ")") parent-bol 0)
+                        ((parent-is "parameter_list") parent-bol c-ts-indent-offset)
+                        ((parent-is "argument_list") parent-bol c-ts-indent-offset)
+                        (no-node parent-bol 0)
+                        (,(lambda (_ _ _) t) parent-bol 0))))
+      ;; fix bug：返回必须带有语言符号头，彻底根除 listp, parent-bol 错误
+      `((c . ,core-rules)
+        (cpp . ,core-rules)))))
 
 ;; ------------------------------------------------------------
 ;;; transient 快捷键
