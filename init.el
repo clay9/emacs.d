@@ -33,6 +33,7 @@
 ;;; Text editor enhancements
 (require 'init-text-display)
 (require 'init-text-commands)
+(require 'init-text-quoted-insert)
 (require 'init-text-fold)
 (require 'init-text-snippet)
 (require 'init-text-grep)

@@ -41,6 +41,15 @@
 (global-set-key (kbd "C--") 'er/contract-region)
 (global-set-key (kbd "<backtab>") 'text/fold)
 
+(global-unset-key (kbd "C-q"))
+(transient-define-prefix transient/c-q ()
+  [[:class transient-column "navigation"
+           ("p" "previous" text/backward-page :transient t)
+           ("n" "next" text/forward-page :transient t)]
+   [:class transient-column "quoted insert"
+           ("l" "" text/quoted-insert-l)]])
+(global-set-key (kbd "C-q") 'transient/c-q)
+
 ;; =====================
 ;;; Embark
 ;; =====================

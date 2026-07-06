@@ -18,17 +18,24 @@
 ;; ----------------------
 ;;; Basic visual enhancements
 ;; ----------------------
-(dolist (mode '(transient-mark-mode
-                electric-pair-mode
-                show-paren-mode
-                delete-selection-mode
-                electric-indent-mode
-                global-eldoc-mode))
-  (add-hook 'after-init-hook mode))
+;; global mode
+(transient-mark-mode 1)
+(electric-pair-mode 1)
+(show-paren-mode 1)
+(delete-selection-mode 1)
+(electric-indent-mode 1)
+(global-eldoc-mode 1)
 
-;; Hide minor mode indicator in the mode line.
-(when-let* ((cell (assq 'eldoc-mode minor-mode-alist)))
-  (setcdr cell '("")))
+;; local mode
+;; set  (C-q C-l) to horizontal line
+;; bug: 与 display-number-mode 冲突
+;; (add-hook 'prog-mode-hook #'whitespace-page-delimiters-mode)
+;; (add-hook 'text-mode-hook #'whitespace-page-delimiters-mode)
+
+;; Hide ElDoc indicator in the mode line.
+(with-eval-after-load 'eldoc
+  (when-let* ((cell (assq 'eldoc-mode minor-mode-alist)))
+    (setcdr cell '(""))))
 
 ;; ----------------------
 ;;; Whitespace management
@@ -51,9 +58,9 @@
 ;; ----------------------
 ;;; Line numbers
 ;; ----------------------
-(when (fboundp 'display-line-numbers-mode)
-  (setq-default display-line-numbers-width 3)
-  (add-hook 'prog-mode-hook #'display-line-numbers-mode))
+(setq-default display-line-numbers-width 3)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+
 
 (provide 'init-text-display)
 ;;; init-text-display.el ends here
