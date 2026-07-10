@@ -1,7 +1,7 @@
 ;;; sub-git-repolist.el --- Manage Git repositories -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; - Magit Repo List Configure
-;; - Auto Push repo: "~/my/gtd"
+;; - Auto Push repos. (Emacs 空闲5分钟执行一次)
 ;;; Code:
 
 ;;----------------------------------------
