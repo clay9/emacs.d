@@ -2,8 +2,10 @@
 ;;; Commentary:
 ;;; Code:
 
-(defconst my/librime-dir (expand-file-name "cache/librime/dist" my/config-dir)
-  "Rime librime path")
+(defconst my/librime-version "1.16.0" "can be `latest'")
+(defconst my/librime-dir (expand-file-name "cache/librime/dist" my/config-dir) "Rime librime path")
+
+(require 'sub-input-method) ;; Auto download librime
 
 (use-package rime
   :if (file-directory-p my/librime-dir) ;; 仅在 librime 存在时加载
@@ -48,8 +50,10 @@
   (defun my/activate-input-method()
     (activate-input-method default-input-method))
   (add-hook 'text-mode-hook #'my/activate-input-method)
-  (add-hook 'prog-mode-hook #'my/activate-input-method))
+  (add-hook 'prog-mode-hook #'my/activate-input-method)
 
+  ;; 每次 Emacs 空闲 5 分钟执行一次
+  (run-with-idle-timer 300 t #'rime-sync))
 
 ;; 如果 librime 不存在，输出提示
 (unless (file-directory-p my/librime-dir)
