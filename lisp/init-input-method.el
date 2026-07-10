@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(defconst my/librime-dir (expand-file-name "librime/dist" user-emacs-directory)
+(defconst my/librime-dir (expand-file-name "cache/librime/dist" my/config-dir)
   "Rime librime path")
 
 (use-package rime
