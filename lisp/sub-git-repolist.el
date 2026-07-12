@@ -133,15 +133,41 @@
   (defun my/clone-repos ()
     (interactive)
     (run-hooks 'magit-credential-hook)
-    (let ((magit-clone-set-remote.pushDefault nil))
-      (dolist (v magit/repos)
-        (let ((url (magit-clone--name-to-url (car v)))
-              (path (cadr v))
-              (args nil))
-          (unless (file-exists-p path)
-            (magit-run-git-async
-             "clone" args "--" url
-             (magit-convert-filename-for-git path))))))))
+    (let* ((magit-clone-set-remote.pushDefault nil)
+           (results nil)
+           ;; 全部成功显示: "✅ Git Clone Success"
+           ;; 下载失败显示: ❌ qygame/blogs
+           ;;               ❌ qygame/blog2
+           (finish
+            (lambda (name success)
+              (push (cons name success) results)
+              (when (= (length results) (length magit/repos))
+                (if (cl-every #'cdr results)
+                    (message "✅ Git Clone Success")
+                  (message
+                   "%s"
+                   (mapconcat
+                    (lambda (x)
+                      (format "❌ %s" (car x)))
+                    (seq-filter (lambda (x) (not (cdr x)))
+                                (reverse results))
+                    "\n")))))))
+      (dolist (repo magit/repos)
+        (let* ((name (car repo))
+               (path (cadr repo))
+               (url (magit-clone--name-to-url name)))
+          (if (file-directory-p (expand-file-name ".git" path))
+              (funcall finish name t)
+            (set-process-sentinel
+             (magit-run-git-async
+              "clone" nil "--" url
+              (magit-convert-filename-for-git path))
+             (lambda (process _event)
+               (funcall
+                finish
+                name
+                (and (eq (process-status process) 'exit)
+                     (zerop (process-exit-status process))))))))))))
 
 
 (provide 'sub-git-repolist)
