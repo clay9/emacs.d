@@ -6,7 +6,7 @@
 ;;; Google Style 缩进
 ;; ------------------------------------------------------------
 ;; 详细的ts indent信息
-(setq treesit--indent-verbose t)
+;; (setq treesit--indent-verbose t)
 
 (use-package c-ts-mode
   :ensure nil
