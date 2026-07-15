@@ -2,6 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 
+;;; TODO 后续删除cpplint, 使用clang-tidy代替
+
 (require 'flymake)
 
 (defconst flymake/cpplint-prog (or (executable-find "cpplint.py")

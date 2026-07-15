@@ -21,9 +21,15 @@
   ;;; LSP Server 配置: C++
   ;;----------------------------------------
   (add-to-list 'eglot-server-programs
-               '(c++-ts-mode . ("clangd"
+               '(c++-ts-mode . ("docker"
+                                "exec"
+                                "-i"
+                                "qy-dev"
+                                "clangd"
+                                ;; path map. host-path, container-path
+                                "--path-mappings=/Users/clay/qy=/home/data"
                                 "--background-index"
-                                "--clang-tidy"
+                                "--clang-tidy"  ;; 静态检查
                                 "--completion-style=detailed"
                                 "--header-insertion=never"
                                 "--limit-results=500"))))

@@ -20,7 +20,8 @@
 ;;----------------------------------------
 ;;; C/C++ 后端: Google cpplint
 ;;----------------------------------------
-(require 'sub-flymake-cpp)
+;; (require 'sub-flymake-cpp)
+
 
 (provide 'init-flymake)
 ;;; init-flymake.el ends here
