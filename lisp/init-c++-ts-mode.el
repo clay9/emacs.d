@@ -15,31 +15,26 @@
 
   :config
   (defun my-c-ts-google-rules-complete ()
-    "Google C++ Style layout rules for c-ts-mode with explicit language tags."
-    (let ((core-rules `(((n-p-gp nil nil "namespace_definition") grand-parent 0)
-                        ((node-is "}") parent-bol 0)
-                        ((node-is "access_specifier") parent-bol 1)
-                        ((parent-is "field_declaration_list") parent-bol c-ts-indent-offset)
-                        ((parent-is "initializer_list") parent-bol 4)
-                        ((node-is "initializer_pair") parent-bol 4)
-                        ((node-is "case_statement") parent-bol 0)
-                        ((parent-is "case_statement") parent-bol c-ts-indent-offset)
-                        ((parent-is "if_statement") parent-bol c-ts-indent-offset)
-                        ((parent-is "for_statement") parent-bol c-ts-indent-offset)
-                        ((parent-is "while_statement") parent-bol c-ts-indent-offset)
-                        ((parent-is "do_statement") parent-bol c-ts-indent-offset)
-                        ((parent-is "try_statement") parent-bol c-ts-indent-offset)
-                        ((parent-is "catch_clause") parent-bol c-ts-indent-offset)
-                        ((parent-is "translation_unit") parent-bol 0)
-                        ((parent-is "compound_statement") parent-bol c-ts-indent-offset)
-                        ((node-is ")") parent-bol 0)
-                        ((parent-is "parameter_list") parent-bol c-ts-indent-offset)
-                        ((parent-is "argument_list") parent-bol c-ts-indent-offset)
-                        (no-node parent-bol 0)
-                        (,(lambda (_ _ _) t) parent-bol 0))))
+    (let* ((base-rules (cdr (car (c-ts-mode--simple-indent-rules 'cpp 'k&r))))
+           (google-rules `(;; namespace
+                           ((n-p-gp nil nil "namespace_definition") grand-parent 0)
+                           ;; class 列表初始化中的 `:'
+                           ((node-is "field_initializer_list") parent-bol 4)
+                           ;; class `public', `private'
+                           ((node-is "access_specifier") parent-bol 1)
+                           ;; class 中的函数|变量 声明
+                           ((and (node-is "field_declaration")(parent-is "field_declaration_list")) parent-bol c-ts-mode-indent-offset)
+                           ;; class 中的函数|变量 定义
+                           ((and (node-is "function_definition")(parent-is "field_declaration_list")) parent-bol c-ts-mode-indent-offset)
+                           ;; 处理长函数调用、参数、赋值换行
+                           ;; 第一个命名的参数. 因为`('会被当作第一个参数, 所以这里添加命名过滤一下
+                           ((and (parent-is "argument_list")
+                                 (lambda (node &rest _)
+                                   (null (treesit-node-prev-sibling node t)))) ; t 表示只寻找命名的兄弟节点
+                            parent-bol 4)
+                           ,@base-rules)))
       ;; fix bug：返回必须带有语言符号头，彻底根除 listp, parent-bol 错误
-      `((c . ,core-rules)
-        (cpp . ,core-rules)))))
+      `((cpp . ,google-rules)))))
 
 ;; ------------------------------------------------------------
 ;;; transient 快捷键
