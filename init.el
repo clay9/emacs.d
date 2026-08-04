@@ -63,6 +63,7 @@
 (require 'init-protobuf-mode)
 (require 'init-emacs-lisp-mode)
 (require 'init-help-mode)
+(require 'init-dired-mode)
 (require 'init-org-mode)
 (require 'init-org-agenda-mode)
 (require 'init-sqlite-mode)
