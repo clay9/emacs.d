@@ -12,7 +12,13 @@
 ;;; Vertico: minibuffer completion UI
 ;; ------------------------------------------------------------
 (use-package vertico
-  :hook (after-init . vertico-mode))
+  :hook (after-init . vertico-mode)
+  :config
+  (require 'vertico-multiform)
+  ;; 文件使用字母排序
+  (setq vertico-multiform-categories
+        '((file (vertico-sort-function . vertico-sort-alpha))))
+  (vertico-multiform-mode 1))
 
 ;; ------------------------------------------------------------
 ;;; Orderless: 高级匹配风格
