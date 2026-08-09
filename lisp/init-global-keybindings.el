@@ -43,6 +43,7 @@
 (global-set-key (kbd "C--") 'er/contract-region)
 (global-set-key (kbd "<backtab>") 'text/fold)
 
+;;; C-q: Insert quoted
 (global-unset-key (kbd "C-q"))
 (transient-define-prefix transient/c-q ()
   [[:class transient-column "navigation"
@@ -53,12 +54,12 @@
 (global-set-key (kbd "C-q") 'transient/c-q)
 
 ;; =====================
-;;; Embark
+;;; C-u: Embark
 ;; =====================
 (global-set-key (kbd "C-u") 'embark-act)
 
 ;; =====================
-;;; Org Agenda Toggle
+;;; C-\: Org Agenda Toggle
 ;; =====================
 (global-set-key (kbd "C-\\") #'my/org-agenda-toggle)
 
