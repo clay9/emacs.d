@@ -16,7 +16,7 @@
           ("c" . transient/org-agenda-clock)
           ("v" . transient/org-agenda-view)
           ("F" . transient/org-agenda-filter)
-          ("S" . transient/org-agenda-statistics)
+          ("s" . transient/org-agenda-statistics)
           ;; previous && next
           ("p" . org-agenda-previous-item)
           ("n" . org-agenda-next-item)
@@ -59,7 +59,7 @@
      ("c" "Clock" transient/org-agenda-clock)
      ("v" "View" transient/org-agenda-view :if (lambda() (org-agenda-check-type nil 'agenda)) :transient t)
      ("F" "Filter" transient/org-agenda-filter)
-     ("S" "Statistics" transient/org-agenda-statistics)])
+     ("s" "Statistics" transient/org-agenda-statistics)])
 
   (transient-define-prefix transient/org-agenda-add-info()
     ["Add Info"
@@ -103,11 +103,13 @@
 		              (setq org-agenda-effort-filter (list "+<0:15"))
 		              (org-agenda-filter-apply org-agenda-effort-filter 'effort)))]])
   (transient-define-prefix transient/org-agenda-statistics()
-    [["project"
-      ("p" "project" (lambda() (interactive)
-                       (org-agenda nil "p")
-                       (org-agenda-columns)
-                       (org-agenda-next-item 1)))
+    [["time"
+      ("r" "report" org-agenda-clockreport-mode)]
+     ["project"
+      ("p" "project ing" (lambda() (interactive)
+                           (org-agenda nil "p")
+                           (org-agenda-columns)
+                           (org-agenda-next-item 1)))
       ("a" "archive" (lambda() (interactive)
                        (org-agenda nil "r")
                        (org-agenda-columns)
@@ -119,11 +121,11 @@
       (org-agenda nil "a"))
 
     (pcase period
-      ("day" (unless (eq org-agenda-span 'day) (org-agenda-day-view)))
-      ("week" (unless (eq org-agenda-span 'week) (org-agenda-week-view)))
-      ("month" (unless (eq org-agenda-span 'month) (org-agenda-month-view)))
-      ("year" (unless (eq org-agenda-span 'year) (org-agenda-year-view)))
-      ("fortnight" (unless (eq org-agenda-span 'fortnight) (org-agenda-fortnight-view))))
+      ("day" (org-agenda-day-view))
+      ("week" (org-agenda-week-view))
+      ("month" (org-agenda-month-view))
+      ("year" (org-agenda-year-view))
+      ("fortnight" (org-agenda-fortnight-view)))
 
     (pcase mode
       ("report" (unless (bound-and-true-p org-agenda-clockreport-mode)
@@ -153,13 +155,24 @@
           (when (and (org-clock-is-active)
                      (string= (org-entry-get nil "ITEM") org-clock-current-task))
             (org-agenda-clock-out))
-          ;; 3. move to %project%_archive or archive.org::
+          ;; 3. add ARCHIVE tag
+          (org-toggle-tag "ARCHIVE" 'on)
+          ;; 4. move to %project%_archive or archive.org::
           (if (string= "task.org" (buffer-name buffer))
-              (let* ((org-archive-location (if (string= todo-state "PROJECT")
-                                               "archive.org::* Project"
-                                             "archive.org::* Todo && Waiting")))
+              (let ((org-archive-location (if (string= todo-state "PROJECT")
+                                              "archive.org::* Project"
+                                            "archive.org::* Todo && Waiting")))
                 (org-archive-subtree))
-            (org-archive-subtree)))))
+            ;; 项目文件, 则使用refile 来避免org-archive-subtree 的bug
+            (let* ((target-heading "archive")
+                   ;; 1. 限定搜索范围为当前文件
+                   (org-refile-targets '((nil :maxlevel . 2)))
+                   (org-refile-use-outline-path nil)
+                   ;; 2. 自动匹配 Org 认可的标准 RFLNAV 结构（含精准 pos）
+                   (target (cl-find-if (lambda (tbl)
+                                         (string= (car tbl) target-heading))
+                                       (org-refile-get-targets))))
+              (org-refile nil nil target))))))
     ;; revert org-agenda buff
     (org-agenda-redo t))
 

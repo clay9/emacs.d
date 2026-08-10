@@ -28,7 +28,7 @@
 ;;----------------------------------------
 (with-eval-after-load 'org
   (setq org-todo-keywords
-        '((type "TODO(t)" "WAITING(w)" "PROJECT(p)" "|" "DONE(d)" "CANCEL(c)")))
+        '((type "TODO(t)" "WAITING(w)" "PROJECT(p)" "|" "DONE(d)" "CANC(c)")))
 
   (setq org-enforce-todo-dependencies t
         org-closed-keep-when-no-todo nil
@@ -162,5 +162,35 @@ Rules:
                         (throw 'done t)))))))))
         nil 'file))))
   (add-hook 'org-capture-after-finalize-hook #'org-agenda/auto-refile))
+
+
+;;----------------------------------------
+;;; Statistics
+;;----------------------------------------
+(defvar gtd/org-daily-clockreport
+  "\n** Daily Report\n#+BEGIN: clocktable :scope agenda :block today :stepskip0 t :fileskip0 t :maxlevel 3\n#+END:\n")
+
+(defun gtd/org-update-daily-clockreport-file ()
+  (interactive)
+  (let* ((filename (concat (format-time-string "%Y-%m-%d") ".jd"))
+         (report-file (expand-file-name filename "~/my/gtd/journal")))
+    (when (file-exists-p report-file)
+      (let ((buf (find-file-noselect report-file)))
+        (with-current-buffer buf
+          (save-excursion
+            (goto-char (point-min))
+            (unless (search-forward "#+BEGIN: clocktable" nil t)
+              (goto-char (point-max))
+              (insert gtd/org-daily-clockreport)))
+          (org-update-all-dblocks)
+          ;; indent
+          (goto-char (point-max))
+          (org-indent-block)
+          (save-buffer))
+        (message "Daily clock report updated in %s at %s"
+                 report-file (format-time-string "%H:%M:%S"))))))
+
+;; 每日 23:30 自动静默运行
+(run-at-time "23:30" 86400 #'gtd/org-update-daily-clockreport-file)
 
 (provide 'init-gtd-workflow)

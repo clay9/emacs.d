@@ -39,6 +39,7 @@
   (require 'sub-org-mode-horizontal-line)
 
   ;; Drawer face
+  (set-face-attribute 'org-headline-done nil :strike-through nil)  ;; 去除DONE heading中的删除线
   (set-face-attribute 'org-drawer nil :foreground "gray60" :height 0.9)
   (set-face-attribute 'org-special-keyword nil :foreground "gray60" :height 0.9)
   (set-face-attribute 'org-property-value nil :foreground "gray60" :height 0.9)
