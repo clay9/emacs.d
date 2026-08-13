@@ -44,7 +44,9 @@
       ("C-j" "edit-src" org-edit-special)]
      ["Export" ("C-e" "export" transient/org-export)]
      ["Statistics"
-      ("1" "view" org-columns)
+      ("1" "view" (lambda() (interactive)
+                    (let ((org-agenda-skip-archived-trees nil))
+                      (org-columns))))
       ("2" "insert" org-columns-insert-dblock)]])
 
   (transient-define-prefix transient/org-export ()

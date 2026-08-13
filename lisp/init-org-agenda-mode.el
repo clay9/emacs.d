@@ -221,7 +221,7 @@ Shows time duration since CAPTURE_TIME and top-level heading title."
 ;;; Org columns
 ;;----------------------------------------
 (with-eval-after-load 'org-colview
-  (setq org-columns-default-format "%24ITEM %7TODO %1PRIORITY %10TAGS %Effort %10CLOCKSUM")
+  (setq org-columns-default-format "%24ITEM %7TODO %1PRIORITY %10TAGS %Effort{:} %10CLOCKSUM")
   (set-face-attribute 'org-column nil
                       :background (face-attribute 'default :background)
                       :height     (face-attribute 'default :height)
