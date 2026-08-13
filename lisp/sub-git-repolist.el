@@ -39,7 +39,8 @@
       (when default-directory
         (when (and auto-commit
                    (magit-anything-modified-p))
-          (magit-call-git "commit" "-am Auto Push")
+          (magit-call-git "add" "-A")
+          (magit-call-git "commit" "-m Auto Push")
           (message "Auto Commit %s" dir))
         (let* ((br (magit-get-upstream-branch))
                (unpush-count (car (magit-rev-diff-count "HEAD" br))))
