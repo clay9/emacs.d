@@ -39,6 +39,9 @@
 ;; ------------------------------------------------------------
 (use-package consult
   :config
+  ;; 设置样式
+  (setq xref-show-xrefs-function #'consult-xref)
+
   ;; 设置consult buffer过滤规则
   (setq consult-buffer-filter
         '("\\` "                  ;; 空格开头的缓冲区
