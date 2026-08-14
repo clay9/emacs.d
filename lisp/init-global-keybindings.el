@@ -54,9 +54,9 @@
 (global-set-key (kbd "C-q") 'transient/c-q)
 
 ;; =====================
-;;; C-u: Embark
+;;; C-.: Embark
 ;; =====================
-(global-set-key (kbd "C-u") 'embark-act)
+(global-set-key (kbd "C-.") 'embark-act)
 
 ;; =====================
 ;;; C-\: Org Agenda Toggle

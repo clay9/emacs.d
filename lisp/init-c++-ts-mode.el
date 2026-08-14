@@ -54,6 +54,8 @@
                 (c-or-c++-mode . c-or-c++-ts-mode)))
   (add-to-list 'major-mode-remap-alist pair))
 
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-ts-mode))
+
 ;; ------------------------------------------------------------
 ;;; Tree-sitter 安装与配置
 ;; ------------------------------------------------------------
