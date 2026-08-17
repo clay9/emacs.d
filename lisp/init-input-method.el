@@ -33,9 +33,15 @@
   ;; (rime-show-preedit 'inline)
 
   :config
+  (defun my/rime-predicate-minibuffer-p ()
+    "Minibuffer 中禁用 Rime。"
+    (minibufferp (current-buffer)))
+
   ;; 自动切换中英. 当其中有任何一个断言的值不是 nil 时，会自动使用英文
   (setq rime-disable-predicates
-        '(;; 任意英文字符后
+        '(;; Minibuf 只允许输入英文
+          my/rime-predicate-minibuffer-p
+          ;; 任意英文字符后
           rime-predicate-after-ascii-char-p
           ;; 在 prog-mode 和 conf-mode 中除了注释和引号内字符串之外的区域
           rime-predicate-prog-in-code-p
