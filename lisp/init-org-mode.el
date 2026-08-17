@@ -53,7 +53,7 @@
           ("q"  . "quote")
           ;; src templates start with 's' key in our usage above
           ("sa" . "artist")
-          ("sc" . "C++ :hl_lines")
+          ("sc" . "C++")
           ("se" . "emacs-lisp")
           ("ss" . "shell")
           ("sm" . "mermaid :file result.png")
