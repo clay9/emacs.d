@@ -102,7 +102,7 @@
 (transient-define-prefix transient/c-d ()
   [[:class transient-column "Search"
            ("s" "Minibuf" consult-ripgrep)
-           ("t" "Buffer" text/rg-project)]
+           ("b" "Buffer" text/rg-project)]
    [:class transient-column "Buffer"
            ("k" "Kill" project-kill-buffers)]
    [:class transient-column "Compile"
@@ -140,7 +140,7 @@
 ;; =====================
 (transient-define-prefix transient/c-r ()
   [[:class transient-column "Capture"
-           ("h" "capture" org-capture)
+           ("t" "capture" org-capture)
            ("j" "journal" org-journal-new-entry)
            ("w" "store link" org-store-link)]
    [:class transient-column
