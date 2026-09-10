@@ -26,6 +26,8 @@
                            ((and (node-is "field_declaration")(parent-is "field_declaration_list")) parent-bol c-ts-mode-indent-offset)
                            ;; class 中的函数|变量 定义
                            ((and (node-is "function_definition")(parent-is "field_declaration_list")) parent-bol c-ts-mode-indent-offset)
+                           ;; class 中的 comment
+                           ((and (node-is "comment")(parent-is "field_declaration_list")) parent-bol c-ts-mode-indent-offset)
                            ;; 处理长函数调用、参数、赋值换行
                            ;; 第一个命名的参数. 因为`('会被当作第一个参数, 所以这里添加命名过滤一下
                            ((and (parent-is "argument_list")
