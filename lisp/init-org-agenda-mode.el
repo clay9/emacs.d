@@ -29,12 +29,6 @@
                                "" "")
         org-agenda-scheduled-leaders '("" "Start %dd")
         org-agenda-deadline-leaders  '("❗" "⏳ %dd" "🔥 %dd"))
-  ;; today face
-  (set-face-attribute 'org-agenda-date-today nil
-                      :weight 'bold
-                      :italic nil
-                      :underline '(:color foreground-color :style line)
-                      :inherit '(org-agenda-date))
 
   ;;;; Hooks
   ;; Hook: Clean empty agenda blocks
@@ -221,11 +215,7 @@ Shows time duration since CAPTURE_TIME and top-level heading title."
 ;;; Org columns
 ;;----------------------------------------
 (with-eval-after-load 'org-colview
-  (setq org-columns-default-format "%24ITEM %7TODO %1PRIORITY %10TAGS %Effort{:} %10CLOCKSUM")
-  (set-face-attribute 'org-column nil
-                      :background (face-attribute 'default :background)
-                      :height     (face-attribute 'default :height)
-                      :family     (face-attribute 'default :family)))
+  (setq org-columns-default-format "%24ITEM %7TODO %1PRIORITY %10TAGS %Effort{:} %10CLOCKSUM"))
 
 ;;----------------------------------------
 ;;; Save all Org buffers on exit

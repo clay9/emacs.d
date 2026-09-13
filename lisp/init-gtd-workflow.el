@@ -72,8 +72,6 @@
   (require 'sub-gtd-clock-display))
 
 (with-eval-after-load 'org-agenda
-  ;; clock face
-  (set-face-attribute 'org-agenda-clocking nil :extend t :background "color-29")
   ;; skip zero-time in clock-report
   (setq org-agenda-clockreport-parameter-plist
         '(:stepskip0 t :link t :maxlevel 3 :fileskip0 t)))

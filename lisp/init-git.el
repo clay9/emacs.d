@@ -41,19 +41,6 @@
   (setq magit-module-sections-nested t)
   (setq magit-section-visibility-indicator nil)
 
-  ;; 高亮设置
-  (set-face-attribute 'magit-section-highlight nil
-                      :extend t
-                      :background (face-attribute 'default :background))
-  (set-face-attribute 'magit-diff-hunk-heading-highlight nil
-                      :extend t
-                      :foreground (face-attribute 'default :foreground)
-                      :background (face-attribute 'default :background))
-  (set-face-attribute 'magit-diff-hunk-heading nil
-                      :extend t
-                      :foreground (face-attribute 'default :foreground)
-                      :background (face-attribute 'default :background))
-
   ;;----------------------------------------
   ;;; Git diff 设置
   ;;----------------------------------------

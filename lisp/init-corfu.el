@@ -22,10 +22,7 @@
   :if (not (display-graphic-p))
   :config
   ;; 启用corfu-terminal
-  (corfu-terminal-mode +1)
-  ;; 调整终端下的Corfu face
-  (set-face-attribute 'corfu-default nil
-                      :foreground "color-240"))
+  (corfu-terminal-mode +1))
 
 (provide 'init-corfu)
 ;;; init-corfu.el ends here
