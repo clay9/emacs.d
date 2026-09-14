@@ -63,44 +63,23 @@
 - archive to task-specific target when buffer name is `task.org`."
     (interactive)
     (let ((todo (org-get-todo-state)))
-      ;; ensure it's DONE if it's a todo entry with a state
+      ;; 1. ensure it's DONE if it's a todo entry with a state
       (while (and (org-get-todo-state)
                   (not (org-entry-is-done-p)))
         (org-todo))
-      ;; close clock if active and matches this entry
+      ;; 2. close clock if active and matches this entry
       (when (and (org-clock-is-active)
                  (string= (org-entry-get nil "ITEM") org-clock-current-task))
         (org-agenda-clock-out))
-      ;; add ARCHIVE tag
+      ;; 3. add ARCHIVE tag
       (org-toggle-tag "ARCHIVE" 'on)
 
-      ;; bug: when subtree under archive-tree. archive fail. 20206/8/10
-      ;;      等org-mode 修复了这个问题, 再使用org-archive-subtree. 使用refile 代替
-      ;;
-      ;; set archive target when in task.org
-      ;; (let ((org-archive-location
-      ;;        (if (string= "task.org" (buffer-name))
-      ;;            (if (string= todo "PROJECT")
-      ;;                "archive.org::* Project"
-      ;;              "archive.org::* Todo && Waiting")
-      ;;          org-archive-location)))
-      ;;   (org-archive-subtree))
-
-      (if (string= "task.org" (buffer-name))
-          (let ((org-archive-location (if (string= todo "PROJECT")
-                                          "archive.org::* Project"
-                                        "archive.org::* Todo && Waiting")))
-            (org-archive-subtree))
-        ;; 项目文件, 则使用refile 来避免org-archive-subtree 的bug
-        (let* ((target-heading "archive")
-               ;; 1. 限定搜索范围为当前文件
-               (org-refile-targets '((nil :maxlevel . 2)))
-               (org-refile-use-outline-path nil)
-               ;; 2. 自动匹配 Org 认可的标准 RFLNAV 结构（含精准 pos）
-               (target (cl-find-if (lambda (tbl)
-                                     (string= (car tbl) target-heading))
-                                   (org-refile-get-targets))))
-          (org-refile nil nil target)))))
+      ;; 4. move to archive.org::
+      (when (string= "task.org" (buffer-name))
+        (let ((org-archive-location (if (string= todo "PROJECT")
+                                        "archive.org::* Project"
+                                      "archive.org::* Todo && Waiting")))
+          (org-archive-subtree)))))
 
   ;;----------------------------------------
   ;;; Structure Insert

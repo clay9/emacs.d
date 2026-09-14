@@ -206,6 +206,7 @@ Shows time duration since CAPTURE_TIME and top-level heading title."
   (let* ((capture-time (org-entry-get nil "CAPTURE_TIME"))
          (v1 "")
          (v2 "")
+         (v3 "")
          (todo (org-get-todo-state)))
     (when capture-time
       (let* ((dura (org-time-since capture-time))
@@ -219,7 +220,13 @@ Shows time duration since CAPTURE_TIME and top-level heading title."
          ((> minutes 0) (setq v1 (format "%dm" minutes))))))
     (when (string= todo "WAITING")
       (setq v2 "wait"))
-    (format "%-6s%-9s" v1 v2)))
+
+    ;; 只获取上一级父节点的标题
+    (let ((parents (org-get-outline-path)))
+      (when parents
+        (setq v3 (format "%s / " (car (last parents))))))
+
+    (format "%-6s%-9s%s" v1 v2 v3)))
 
 
 (provide 'init-gtd-agenda)
