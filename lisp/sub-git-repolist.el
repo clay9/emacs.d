@@ -27,6 +27,7 @@
     ("qygame/docker_compose"     "~/qy/ops/docker_compose"        )
     ("qygame/qykernel"           "~/qy/qykernel"                  )
     ("qygame/server"             "~/qy/server"                    )
+    ("qygame/client"             "~/qy/client"                    )
     ("qygame/database"           "~/qy/database"                  )))
 
 ;;----------------------------------------
