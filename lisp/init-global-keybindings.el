@@ -101,8 +101,7 @@
 ;; =====================
 (transient-define-prefix transient/c-d ()
   [[:class transient-column "Search"
-           ("s" "Minibuf" consult-ripgrep)
-           ("b" "Buffer" text/rg-project)]
+           ("s" "Search" consult-ripgrep)]
    [:class transient-column "Buffer"
            ("k" "Kill" project-kill-buffers)]
    [:class transient-column "Compile"
