@@ -30,6 +30,9 @@
 ;; set  to horizontal line
 (add-hook 'prog-mode-hook #'whitespace-page-delimiters-mode)
 (add-hook 'text-mode-hook #'whitespace-page-delimiters-mode)
+;; whitespace-page-delimiters-mode 会自动开启whitespace mode,
+;; 因此这里修改下默认样式
+(setq-default whitespace-style '(face page-delimiters))
 
 ;; Hide ElDoc indicator in the mode line.
 (with-eval-after-load 'eldoc
