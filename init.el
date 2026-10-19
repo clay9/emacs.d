@@ -37,6 +37,7 @@
 (require 'init-text-fold)
 (require 'init-text-snippet)
 (require 'init-text-grep)
+(require 'init-text-navigation)
 
 (require 'init-vertico-suite)
 (require 'init-corfu)

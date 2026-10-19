@@ -5,6 +5,15 @@
 ;;; Code:
 
 ;; =====================
+;; Unset Default Keys
+;; =====================
+(dolist (key '("M-<backspace>" "M-DEL"
+               "s-p" "s-n" "s-x" "s-k"
+               "C-j" "C-t" "C-z" "C-q"
+               "C-x C-x" "C-x C-e"))
+  (global-unset-key (kbd key)))
+
+;; =====================
 ;;; Window Shortcuts
 ;; =====================
 (global-set-key (kbd "C-x o") 'win/switch-window)
@@ -43,15 +52,7 @@
 (global-set-key (kbd "C--") 'er/contract-region)
 (global-set-key (kbd "<backtab>") 'text/fold)
 
-;;; C-q: Insert quoted
-(global-unset-key (kbd "C-q"))
-(transient-define-prefix transient/c-q ()
-  [[:class transient-column "navigation"
-           ("p" "previous" text/backward-page :transient t)
-           ("n" "next" text/forward-page :transient t)]
-   [:class transient-column "quoted insert"
-           ("l" "" text/quoted-insert-l)]])
-(global-set-key (kbd "C-q") 'transient/c-q)
+(global-set-key (kbd "C-q C-l") 'text/quoted-insert-l)
 
 ;; =====================
 ;;; C-.: Embark
@@ -75,24 +76,9 @@
            "File"
            ("C-d" "Delete" my/delete-current-file)]
    [:class transient-column "Navigation"
-           ("o" "Outline" (lambda ()
-                            (interactive)
-                            (if (derived-mode-p 'org-mode)
-                                (consult-org-heading)
-                              (consult-outline))))
+           ("o" "Navigation" text/navigation)
            ("m" "Imenu" consult-imenu)
-           ("g" "Goto line" consult-goto-line)]
-   [:class transient-column
-           :if (lambda () (bound-and-true-p outline-minor-mode))
-           "Outline Command"
-           ("TAB" "toggle" text/outline-cycle)
-           ("a" "toggle all" text/outline-toggle-all)
-           ("h" "hide other" outline-hide-other)
-           ;;("p" "previous visible heading" outline-previous-visible-heading :transient t)
-           ;;("n" "next visible heading" outline-next-visible-heading :transient t)
-           ;;("f" "forward same heading" outline-forward-same-level)
-           ;;("b" "backward same heading" outline-backward-same-level)
-           ("u" "up heading" outline-up-heading)]])
+           ("g" "Goto line" consult-goto-line)]])
 
 (global-set-key (kbd "C-s") 'transient/c-s)
 
@@ -160,14 +146,6 @@
 
 (global-set-key (kbd "C-r") 'transient/c-r)
 
-;; =====================
-;; Unset Default Keys
-;; =====================
-(dolist (key '("M-<backspace>" "M-DEL"
-               "s-p" "s-n" "s-x" "s-k"
-               "C-j" "C-t" "C-z"
-               "C-x C-x" "C-x C-e"))
-  (global-unset-key (kbd key)))
 
 (provide 'init-global-keybindings)
 ;;; init-global-keybindings.el ends here

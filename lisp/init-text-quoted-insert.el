@@ -11,7 +11,7 @@
   (unless (bolp)
     (end-of-line)
     (insert "\n"))
-  (insert "\n\f\n"))
+  (insert "\n\f\n\n"))
 
 ;; =====================
 ;;; forward-page, backward-page

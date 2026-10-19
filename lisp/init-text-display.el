@@ -27,10 +27,9 @@
 (global-eldoc-mode 1)
 
 ;; local mode
-;; set  (C-q C-l) to horizontal line
-;; bug: 与 display-number-mode 冲突
-;; (add-hook 'prog-mode-hook #'whitespace-page-delimiters-mode)
-;; (add-hook 'text-mode-hook #'whitespace-page-delimiters-mode)
+;; set  to horizontal line
+(add-hook 'prog-mode-hook #'whitespace-page-delimiters-mode)
+(add-hook 'text-mode-hook #'whitespace-page-delimiters-mode)
 
 ;; Hide ElDoc indicator in the mode line.
 (with-eval-after-load 'eldoc
