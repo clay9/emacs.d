@@ -28,11 +28,12 @@
                                 "clangd"
                                 ;; path map. host-path, container-path
                                 "--path-mappings=/Users/clay/qy=/home/data"
-                                "--background-index"
-                                "--clang-tidy"  ;; 静态检查
+                                "--background-index=0"
+                                "--clang-tidy=0"  ;; 静态检查
                                 "--completion-style=detailed"
                                 "--header-insertion=never"
-                                "--limit-results=500"))))
+                                "--limit-results=100"
+                                "-j=2"))))
 
 (provide 'init-eglot)
 ;;; init-eglot.el ends here
