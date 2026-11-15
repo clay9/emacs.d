@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: hugo bookIcon (key: itb)
+# key: itb
+# --
+#+title: $1
+#+hugo_front_matter_format: yaml
+#+begin_src yaml :front_matter_extra t
+  params:
+    bookFlatSection: true
+    bookIcon: $2
+    bookCollapseSection: false
+#+end_src
+
+ $3

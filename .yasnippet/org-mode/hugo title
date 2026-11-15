@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: hugo title (key: it)
+# key: it
+# --
+#+title: $1
+
+ $3
