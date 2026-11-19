@@ -42,11 +42,13 @@
         '(;; Minibuf 只允许输入英文
           my/rime-predicate-minibuffer-p
           ;; 任意英文字符后
-          rime-predicate-after-ascii-char-p
+          ;; rime-predicate-after-ascii-char-p
+          ;; 任意英文字母之后
+          rime-predicate-after-alphabet-char-p
           ;; 在 prog-mode 和 conf-mode 中除了注释和引号内字符串之外的区域
           rime-predicate-prog-in-code-p
           ;; 当要输入的是符号时
-          rime-predicate-current-input-punctuation-p
+          ;; rime-predicate-current-input-punctuation-p
           ;; 将要输入的为大写字母时
           rime-predicate-current-uppercase-letter-p
           ;; 在中文字符且有空格之后
